@@ -449,11 +449,23 @@ function obFrame(step, total, question, body, canGo, onNext, mood) {
   </div>`;
   $('#next').onclick = onNext;
 }
+// Mata greets you in the language you pick (the course's own word for "hello").
+function greetFor(cid) {
+  const c = C[cid]; if (!c || c.kind) return null;
+  for (const U of c.units) for (const w of U.words || []) if (w[1] === 'hello') return { t: w[0], r: w[3] || '' };
+  return null;
+}
+function greetHtml(cid) {
+  const g = greetFor(cid), n = esc(C[cid].name);
+  if (!g) return `<span class="hello">${C[cid].iconText ? '👋' : esc(C[cid].icon || '👋')} Great choice!</span><small>Let’s learn ${n} together.</small>`;
+  const word = g.t[0] !== g.t[0].toUpperCase() ? g.t[0].toUpperCase() + g.t.slice(1) : g.t;
+  return `<span class="hello" dir="auto">${cid === 'es' ? '¡' : ''}${esc(word)}!</span>${g.r ? `<span class="rom">${esc(g.r)}</span>` : ''}<small>That’s “hello” in ${n}.</small>`;
+}
 function renderOnboard(step) {
   const T = 4, L = draft.course ? C[draft.course].name : 'it';
-  const set = (k, v) => { draft[k] = v; saveDraft(); sfx.tap(); renderOnboard(step); const m = $('.ask .mascot'); if (m && !mataReduce) mataCls(m, 'poke', 600); const nb = $('#next'); if (nb && !nb.disabled) { nb.classList.remove('flash'); void nb.offsetWidth; nb.classList.add('flash'); } };
+  const set = (k, v) => { draft[k] = v; saveDraft(); sfx.tap(); if (k === 'course') { const g = greetFor(v); if (g) speak(g.t, v); } renderOnboard(step); const m = $('.ask .mascot'); if (m && !mataReduce) mataCls(m, 'poke', 600); const nb = $('#next'); if (nb && !nb.disabled) { nb.classList.remove('flash'); void nb.offsetWidth; nb.classList.add('flash'); } };
   window.obSet = set;
-  if (step === 1) obFrame(1, T, 'What would you like to learn?',
+  if (step === 1) obFrame(1, T, draft.course ? greetHtml(draft.course) : 'What would you like to learn?',
     [['Languages', COURSE_IDS.filter(c => !C[c].kind)], ...GROUPS.map(([h, g]) => [h, COURSE_IDS.filter(c => C[c].group === g)]), ['Games & sports', COURSE_IDS.filter(c => C[c].kind && !C[c].group)]].filter(([, ids]) => ids.length).map(([h, ids]) => `<h3 class="ob-sec">${h}</h3><div class="choices grid">${ids.map(c => `<button class="choice course ${draft.course === c ? 'on' : ''}" onclick="obSet('course','${c}')">${flag(c, 1)}${C[c].name}</button>`).join('')}</div>`).join(''),
     !!draft.course, () => go('#/start/2'), 'wave');
   else if (step === 2) obFrame(2, T, `Why are you learning ${L}?`,

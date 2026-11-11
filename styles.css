@@ -563,3 +563,8 @@ details.credits ul{margin:8px 0 0 18px;display:grid;gap:4px}
 
 /* Steady light (overrides the earlier flash/pulse) */
 #next.ready,#next.flash{animation:none;filter:brightness(1.08);box-shadow:0 0 0 5px color-mix(in srgb,var(--brand) 28%,transparent),0 0 22px 4px color-mix(in srgb,var(--brand) 45%,transparent),0 6px 16px -6px var(--brand)}
+
+/* Mata's hello bubble */
+.speech .hello{display:block;font-size:26px;line-height:1.15}
+.speech .rom{margin-top:2px}
+.speech small{display:block;font:500 13px/1.4 var(--font);color:var(--muted);margin-top:4px}
