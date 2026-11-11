@@ -8,6 +8,7 @@ const LEVELS = [['🌱', "I'm new to {L}", 'Start from the very beginning', 0], 
 const SKILL_LEVELS = [['🌱', "I'm new to {L}", 'Start from the very beginning', 0], ['📖', 'I know the basics', 'Start at Unit 2', 5], ['🏆', 'I play regularly', 'Start at Unit 3', 10]];
 const CODE_LEVELS = [['🌱', "I'm new to {L}", 'Start from the very beginning', 0], ['💻', "I've written a little {L}", 'Start at Unit 2', 5], ['🚀', 'I use it regularly', 'Start at Unit 3', 10]];
 const TRIVIA_LEVELS = [['🌱', "I'm new to {L}", 'Start from the very beginning', 0], ['📖', 'I know some fun facts', 'Start at Unit 2', 5], ['🏆', 'I’m a trivia expert', 'Start at Unit 3', 10]];
+const SCHOOL_LEVELS = [['🌱', "I'm new to {L}", 'Start from the very beginning', 0], ['📖', 'I know the basics', 'Start at Unit 2', 5], ['🎓', 'I’m confident in {L}', 'Start at Unit 3', 10]];
 const LPU = 5, MAX_HEARTS = 5, HEART_MS = 30 * 60 * 1000, REFILL_COST = 100, FREEZE_COST = 50;
 const OFFS = [0, 52, 78, 52, 0];
 const LEAGUES = [['🌱', 'Seedling'], ['🌿', 'Sprout'], ['🌳', 'Grove'], ['🌲', 'Forest'], ['🏔️', 'Summit']];
@@ -452,13 +453,13 @@ function renderOnboard(step) {
   const set = (k, v) => { draft[k] = v; saveDraft(); sfx.tap(); renderOnboard(step); const m = $('.ask .mascot'); if (m && !mataReduce) mataCls(m, 'poke', 600); };
   window.obSet = set;
   if (step === 1) obFrame(1, T, 'What would you like to learn?',
-    [['Languages', COURSE_IDS.filter(c => !C[c].kind)], ['Programming', COURSE_IDS.filter(c => C[c].group === 'code')], ['Trivia', COURSE_IDS.filter(c => C[c].group === 'trivia')], ['Games & sports', COURSE_IDS.filter(c => C[c].kind && !C[c].group)]].map(([h, ids]) => `<h3 class="ob-sec">${h}</h3><div class="choices grid">${ids.map(c => `<button class="choice course ${draft.course === c ? 'on' : ''}" onclick="obSet('course','${c}')">${flag(c, 1)}${C[c].name}</button>`).join('')}</div>`).join(''),
+    [['Languages', COURSE_IDS.filter(c => !C[c].kind)], ['School subjects', COURSE_IDS.filter(c => C[c].group === 'school')], ['Programming', COURSE_IDS.filter(c => C[c].group === 'code')], ['Trivia', COURSE_IDS.filter(c => C[c].group === 'trivia')], ['Games & sports', COURSE_IDS.filter(c => C[c].kind && !C[c].group)]].map(([h, ids]) => `<h3 class="ob-sec">${h}</h3><div class="choices grid">${ids.map(c => `<button class="choice course ${draft.course === c ? 'on' : ''}" onclick="obSet('course','${c}')">${flag(c, 1)}${C[c].name}</button>`).join('')}</div>`).join(''),
     !!draft.course, () => go('#/start/2'), 'wave');
   else if (step === 2) obFrame(2, T, `Why are you learning ${L}?`,
     `<div class="choices grid">${REASONS.map((r, i) => `<button class="choice ${draft.reason === i ? 'on' : ''}" onclick="obSet('reason',${i})"><span class="em">${r[0]}</span>${r[1]}</button>`).join('')}</div>`,
     draft.reason != null, () => go('#/start/3'));
   else if (step === 3) obFrame(3, T, `How much ${L} do you know?`,
-    `<div class="choices">${(draft.course && C[draft.course].group === 'trivia' ? TRIVIA_LEVELS : draft.course && C[draft.course].group === 'code' ? CODE_LEVELS : draft.course && C[draft.course].kind ? SKILL_LEVELS : LEVELS).map((r, i) => `<button class="choice ${draft.level === i ? 'on' : ''}" onclick="obSet('level',${i})"><span class="em">${r[0]}</span><span>${r[1].replace('{L}', L)}<small>${r[2]}</small></span></button>`).join('')}</div>`,
+    `<div class="choices">${(draft.course && C[draft.course].group === 'school' ? SCHOOL_LEVELS : draft.course && C[draft.course].group === 'trivia' ? TRIVIA_LEVELS : draft.course && C[draft.course].group === 'code' ? CODE_LEVELS : draft.course && C[draft.course].kind ? SKILL_LEVELS : LEVELS).map((r, i) => `<button class="choice ${draft.level === i ? 'on' : ''}" onclick="obSet('level',${i})"><span class="em">${r[0]}</span><span>${r[1].replace('{L}', L)}<small>${r[2]}</small></span></button>`).join('')}</div>`,
     draft.level != null, () => go('#/start/4'), 'wow');
   else obFrame(4, T, 'What’s your daily learning goal?',
     `<div class="choices">${GOALS.map((g, i) => `<button class="choice ${draft.goal === i ? 'on' : ''}" onclick="obSet('goal',${i})"><span class="em">${['☕', '🚶', '🏃', '🔥'][i]}</span><span style="flex:1">${g.min} min / day</span><span class="muted">${g.label}</span></button>`).join('')}</div>`,
