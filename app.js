@@ -74,7 +74,12 @@ const FLAGS = {
   es: '<svg viewBox="0 0 30 20"><rect width="30" height="20" fill="#C60B1E"/><rect y="5" width="30" height="10" fill="#FFC400"/></svg>',
   fr: '<svg viewBox="0 0 30 20"><rect width="10" height="20" fill="#0055A4"/><rect x="10" width="10" height="20" fill="#fff"/><rect x="20" width="10" height="20" fill="#EF4135"/></svg>',
   ja: '<svg viewBox="0 0 30 20"><rect width="30" height="20" fill="#fff"/><circle cx="15" cy="10" r="6" fill="#BC002D"/></svg>',
-  ph: '<svg viewBox="0 0 30 20"><rect width="30" height="10" fill="#0038A8"/><rect y="10" width="30" height="10" fill="#CE1126"/><path d="M0 0l17 10L0 20z" fill="#fff"/><circle cx="5.6" cy="10" r="2.2" fill="#FCD116"/><circle cx="1.8" cy="3" r=".8" fill="#FCD116"/><circle cx="1.8" cy="17" r=".8" fill="#FCD116"/><circle cx="13" cy="10" r=".8" fill="#FCD116"/></svg>'
+  ph: '<svg viewBox="0 0 30 20"><rect width="30" height="10" fill="#0038A8"/><rect y="10" width="30" height="10" fill="#CE1126"/><path d="M0 0l17 10L0 20z" fill="#fff"/><circle cx="5.6" cy="10" r="2.2" fill="#FCD116"/><circle cx="1.8" cy="3" r=".8" fill="#FCD116"/><circle cx="1.8" cy="17" r=".8" fill="#FCD116"/><circle cx="13" cy="10" r=".8" fill="#FCD116"/></svg>',
+  ko: '<svg viewBox="0 0 30 20"><rect width="30" height="20" fill="#fff"/><g transform="translate(15 10) rotate(33.7)"><path d="M-5 0a5 5 0 0 1 10 0a2.5 2.5 0 0 1-5 0a2.5 2.5 0 0 0-5 0z" fill="#CD2E3A"/><path d="M-5 0a5 5 0 0 0 10 0a2.5 2.5 0 0 0-5 0a2.5 2.5 0 0 1-5 0z" fill="#0047A0"/></g><g fill="#000"><g transform="translate(6.2 4.1) rotate(-56.3)"><rect x="-2.3" y="-1.5" width="4.6" height=".7"/><rect x="-2.3" y="-.35" width="4.6" height=".7"/><rect x="-2.3" y=".8" width="4.6" height=".7"/></g><g transform="translate(23.8 15.9) rotate(-56.3)"><rect x="-2.3" y="-1.5" width="4.6" height=".7"/><rect x="-2.3" y="-.35" width="4.6" height=".7"/><rect x="-2.3" y=".8" width="4.6" height=".7"/></g><g transform="translate(23.8 4.1) rotate(56.3)"><rect x="-2.3" y="-1.5" width="4.6" height=".7"/><rect x="-2.3" y="-.35" width="4.6" height=".7"/><rect x="-2.3" y=".8" width="4.6" height=".7"/></g><g transform="translate(6.2 15.9) rotate(56.3)"><rect x="-2.3" y="-1.5" width="4.6" height=".7"/><rect x="-2.3" y="-.35" width="4.6" height=".7"/><rect x="-2.3" y=".8" width="4.6" height=".7"/></g></g></svg>',
+  zh: '<svg viewBox="0 0 30 20"><rect width="30" height="20" fill="#EE1C25"/><g fill="#FFFF00"><polygon transform="translate(5 5) scale(3)" points="0,-1 .2245,-.309 .951,-.309 .363,.118 .588,.809 0,.382 -.588,.809 -.363,.118 -.951,-.309 -.2245,-.309"/><polygon transform="translate(10 2) scale(1) rotate(23)" points="0,-1 .2245,-.309 .951,-.309 .363,.118 .588,.809 0,.382 -.588,.809 -.363,.118 -.951,-.309 -.2245,-.309"/><polygon transform="translate(12 4) scale(1) rotate(46)" points="0,-1 .2245,-.309 .951,-.309 .363,.118 .588,.809 0,.382 -.588,.809 -.363,.118 -.951,-.309 -.2245,-.309"/><polygon transform="translate(12 7) scale(1) rotate(70)" points="0,-1 .2245,-.309 .951,-.309 .363,.118 .588,.809 0,.382 -.588,.809 -.363,.118 -.951,-.309 -.2245,-.309"/><polygon transform="translate(10 9) scale(1) rotate(21)" points="0,-1 .2245,-.309 .951,-.309 .363,.118 .588,.809 0,.382 -.588,.809 -.363,.118 -.951,-.309 -.2245,-.309"/></g></svg>',
+  de: '<svg viewBox="0 0 30 20"><rect width="30" height="7" fill="#000"/><rect y="6.67" width="30" height="6.67" fill="#DD0000"/><rect y="13.33" width="30" height="6.67" fill="#FFCE00"/></svg>',
+  it: '<svg viewBox="0 0 30 20"><rect width="10" height="20" fill="#009246"/><rect x="10" width="10" height="20" fill="#fff"/><rect x="20" width="10" height="20" fill="#CE2B37"/></svg>',
+  br: '<svg viewBox="0 0 30 20"><rect width="30" height="20" fill="#009C3B"/><path d="M15 2.2 27.4 10 15 17.8 2.6 10z" fill="#FFDF00"/><circle cx="15" cy="10" r="4.6" fill="#002776"/><path d="M10.6 9.1q4.6-1.4 8.8 1.4" stroke="#fff" stroke-width=".7" fill="none"/></svg>'
 };
 const flag = (cid, lg) => `<span class="flag ${lg ? 'lg' : ''}">${FLAGS[C[cid].flag]}</span>`;
 // Mata the tarsier — layered SVG so each part can move (see .mascot rules in styles.css + mataLife below)
@@ -236,7 +241,7 @@ function unit(cid, ui) {
 function itemByRef(ref) { const [cid, k, ui, i] = ref.split('|'); const U = unit(cid, +ui); return { cid, ui: +ui, kind: k, item: k === 'w' ? U.W[+i] : U.S[+i], U }; }
 const totalLessons = cid => C[cid].units.length * LPU;
 const lessonTitle = li => ['New words', 'More words', 'First phrases', 'More phrases', 'Unit review'][li];
-const stripArticle = t => t.replace(/^(el|la|los|las|un|una|le|les|une)\s+/i, '').replace(/^l'/i, '');
+const stripArticle = t => t.replace(/^(el|la|los|las|un|una|le|les|une|der|die|das|il|lo|gli|i|o|a|os|as)\s+/i, '').replace(/^l'/i, '');
 const wordLabel = (w, cid) => `${esc(w.t)}${C[cid].romaji && w.r ? `<span class="rom">${esc(w.r)}</span>` : ''}`;
 
 /* ---------------- exercise builders ---------------- */
@@ -618,7 +623,7 @@ function renderLesson() {
       break;
     }
     case 'type':
-      body = `<h2>${esc(ex.prompt)}</h2><div class="hint-em">${ex.w.i}</div><textarea class="typebox" id="typeIn" placeholder="Type in ${C[cid].name}${C[cid].romaji ? ' (romaji is fine)' : ''}" autocomplete="off" autocapitalize="off" spellcheck="false" ${locked ? 'disabled' : ''}>${esc(L.typed || '')}</textarea>`;
+      body = `<h2>${esc(ex.prompt)}</h2><div class="hint-em">${ex.w.i}</div><textarea class="typebox" id="typeIn" placeholder="Type in ${C[cid].name}${C[cid].romaji ? ` (${C[cid].romName || 'romaji'} is fine)` : ''}" autocomplete="off" autocapitalize="off" spellcheck="false" ${locked ? 'disabled' : ''}>${esc(L.typed || '')}</textarea>`;
       break;
     case 'match': {
       const m = L.sel;
