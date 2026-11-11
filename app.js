@@ -445,13 +445,13 @@ function obFrame(step, total, question, body, canGo, onNext, mood) {
       <div class="bar"><i style="width:${(step / total) * 100}%"></i></div></div>
     <div class="ask">${mascot(mood || 'happy')}<div class="speech">${question}</div></div>
     ${body}
-    <div class="ob-foot"><button class="btn primary" id="next" ${canGo ? '' : 'disabled'}>Continue</button></div>
+    <div class="ob-foot"><button class="btn primary ${canGo ? 'ready' : ''}" id="next" ${canGo ? '' : 'disabled'}>Continue</button></div>
   </div>`;
   $('#next').onclick = onNext;
 }
 function renderOnboard(step) {
   const T = 4, L = draft.course ? C[draft.course].name : 'it';
-  const set = (k, v) => { draft[k] = v; saveDraft(); sfx.tap(); renderOnboard(step); const m = $('.ask .mascot'); if (m && !mataReduce) mataCls(m, 'poke', 600); };
+  const set = (k, v) => { draft[k] = v; saveDraft(); sfx.tap(); renderOnboard(step); const m = $('.ask .mascot'); if (m && !mataReduce) mataCls(m, 'poke', 600); const nb = $('#next'); if (nb && !nb.disabled) { nb.classList.remove('flash'); void nb.offsetWidth; nb.classList.add('flash'); } };
   window.obSet = set;
   if (step === 1) obFrame(1, T, 'What would you like to learn?',
     [['Languages', COURSE_IDS.filter(c => !C[c].kind)], ...GROUPS.map(([h, g]) => [h, COURSE_IDS.filter(c => C[c].group === g)]), ['Games & sports', COURSE_IDS.filter(c => C[c].kind && !C[c].group)]].filter(([, ids]) => ids.length).map(([h, ids]) => `<h3 class="ob-sec">${h}</h3><div class="choices grid">${ids.map(c => `<button class="choice course ${draft.course === c ? 'on' : ''}" onclick="obSet('course','${c}')">${flag(c, 1)}${C[c].name}</button>`).join('')}</div>`).join(''),

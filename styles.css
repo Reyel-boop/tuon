@@ -553,3 +553,10 @@ details.credits ul{margin:8px 0 0 18px;display:grid;gap:4px}
 /* Continue button follows you while scrolling the long course list */
 .ob-foot{position:sticky;bottom:0;z-index:15;margin:0 -16px;padding:18px 16px calc(16px + env(safe-area-inset-bottom));background:linear-gradient(to bottom,transparent,var(--bg) 38%)}
 .ob-foot .btn:disabled{background:var(--lock);opacity:1}
+
+/* Continue lights up when an option is picked */
+#next.ready{animation:readyPulse 2.2s ease-in-out infinite}
+#next.flash{animation:btnFlash .65s cubic-bezier(.3,1.6,.5,1),readyPulse 2.2s ease-in-out .65s infinite}
+@keyframes btnFlash{0%{transform:scale(.92);filter:brightness(1)}45%{transform:scale(1.08);filter:brightness(1.25);box-shadow:0 0 0 10px color-mix(in srgb,var(--brand) 30%,transparent),0 10px 28px -6px var(--brand)}100%{transform:scale(1)}}
+@keyframes readyPulse{0%,100%{box-shadow:0 6px 16px -6px var(--brand),0 0 0 0 color-mix(in srgb,var(--brand) 35%,transparent)}50%{box-shadow:0 6px 16px -6px var(--brand),0 0 0 9px color-mix(in srgb,var(--brand) 0%,transparent)}}
+@media (prefers-reduced-motion:reduce){#next.ready,#next.flash{animation:none}}
