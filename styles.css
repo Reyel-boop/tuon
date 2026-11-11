@@ -560,3 +560,6 @@ details.credits ul{margin:8px 0 0 18px;display:grid;gap:4px}
 @keyframes btnFlash{0%{transform:scale(.92);filter:brightness(1)}45%{transform:scale(1.08);filter:brightness(1.25);box-shadow:0 0 0 10px color-mix(in srgb,var(--brand) 30%,transparent),0 10px 28px -6px var(--brand)}100%{transform:scale(1)}}
 @keyframes readyPulse{0%,100%{box-shadow:0 6px 16px -6px var(--brand),0 0 0 0 color-mix(in srgb,var(--brand) 35%,transparent)}50%{box-shadow:0 6px 16px -6px var(--brand),0 0 0 9px color-mix(in srgb,var(--brand) 0%,transparent)}}
 @media (prefers-reduced-motion:reduce){#next.ready,#next.flash{animation:none}}
+
+/* Steady light (overrides the earlier flash/pulse) */
+#next.ready,#next.flash{animation:none;filter:brightness(1.08);box-shadow:0 0 0 5px color-mix(in srgb,var(--brand) 28%,transparent),0 0 22px 4px color-mix(in srgb,var(--brand) 45%,transparent),0 6px 16px -6px var(--brand)}
