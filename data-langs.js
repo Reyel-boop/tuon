@@ -203,5 +203,6 @@
        ['Hoje está ensolarado.','Está chovendo.','Eu estou feliz.','Eu estou muito cansado.','Minha mãe está doente.','Está ventando muito.']]
     ]) }
   };
+  window.TUON_BUILD = build;
   Object.assign(window.COURSES, add);
 })();

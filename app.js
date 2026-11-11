@@ -23,8 +23,8 @@ const dayOffset = n => { const d = new Date(); d.setDate(d.getDate() + n); retur
 const yesterday = () => dayOffset(-1);
 const daysBetween = (a, b) => Math.round((new Date(b + 'T00:00') - new Date(a + 'T00:00')) / 864e5);
 function weekKey() { const d = new Date(); d.setDate(d.getDate() - (d.getDay() + 6) % 7); return dkey(d); }
-const tokens = s => s.replace(/[.,!?¿¡;:。、？！]/g, ' ').split(/\s+/).filter(Boolean);
-const norm = s => String(s).toLowerCase().replace(/[’‘`]/g, "'").replace(/[.,!?¿¡;:"“”。、？！]/g, '').replace(/\s+/g, ' ').trim();
+const tokens = s => s.replace(/[.,!?¿¡;:。、？！،؟।]/g, ' ').split(/\s+/).filter(Boolean);
+const norm = s => String(s).toLowerCase().replace(/[’‘`]/g, "'").replace(/[.,!?¿¡;:"“”。、？！،؟।]/g, '').replace(/\s+/g, ' ').trim();
 const deacc = s => s.normalize('NFD').replace(/[̀-ͯ]/g, '').normalize('NFC');
 function lev(a, b) { const m = a.length, n = b.length; const d = Array.from({ length: m + 1 }, (_, i) => [i]); for (let j = 1; j <= n; j++) d[0][j] = j; for (let i = 1; i <= m; i++) for (let j = 1; j <= n; j++) d[i][j] = Math.min(d[i - 1][j] + 1, d[i][j - 1] + 1, d[i - 1][j - 1] + (a[i - 1] === b[j - 1] ? 0 : 1)); return d[m][n]; }
 function seeded(str) { let h = 1779033703 ^ str.length; for (let i = 0; i < str.length; i++) { h = Math.imul(h ^ str.charCodeAt(i), 3432918353); h = h << 13 | h >>> 19; } return () => { h = Math.imul(h ^ h >>> 16, 2246822507); h = Math.imul(h ^ h >>> 13, 3266489909); return ((h ^= h >>> 16) >>> 0) / 4294967296; }; }
@@ -79,7 +79,15 @@ const FLAGS = {
   zh: '<svg viewBox="0 0 30 20"><rect width="30" height="20" fill="#EE1C25"/><g fill="#FFFF00"><polygon transform="translate(5 5) scale(3)" points="0,-1 .2245,-.309 .951,-.309 .363,.118 .588,.809 0,.382 -.588,.809 -.363,.118 -.951,-.309 -.2245,-.309"/><polygon transform="translate(10 2) scale(1) rotate(23)" points="0,-1 .2245,-.309 .951,-.309 .363,.118 .588,.809 0,.382 -.588,.809 -.363,.118 -.951,-.309 -.2245,-.309"/><polygon transform="translate(12 4) scale(1) rotate(46)" points="0,-1 .2245,-.309 .951,-.309 .363,.118 .588,.809 0,.382 -.588,.809 -.363,.118 -.951,-.309 -.2245,-.309"/><polygon transform="translate(12 7) scale(1) rotate(70)" points="0,-1 .2245,-.309 .951,-.309 .363,.118 .588,.809 0,.382 -.588,.809 -.363,.118 -.951,-.309 -.2245,-.309"/><polygon transform="translate(10 9) scale(1) rotate(21)" points="0,-1 .2245,-.309 .951,-.309 .363,.118 .588,.809 0,.382 -.588,.809 -.363,.118 -.951,-.309 -.2245,-.309"/></g></svg>',
   de: '<svg viewBox="0 0 30 20"><rect width="30" height="7" fill="#000"/><rect y="6.67" width="30" height="6.67" fill="#DD0000"/><rect y="13.33" width="30" height="6.67" fill="#FFCE00"/></svg>',
   it: '<svg viewBox="0 0 30 20"><rect width="10" height="20" fill="#009246"/><rect x="10" width="10" height="20" fill="#fff"/><rect x="20" width="10" height="20" fill="#CE2B37"/></svg>',
-  br: '<svg viewBox="0 0 30 20"><rect width="30" height="20" fill="#009C3B"/><path d="M15 2.2 27.4 10 15 17.8 2.6 10z" fill="#FFDF00"/><circle cx="15" cy="10" r="4.6" fill="#002776"/><path d="M10.6 9.1q4.6-1.4 8.8 1.4" stroke="#fff" stroke-width=".7" fill="none"/></svg>'
+  br: '<svg viewBox="0 0 30 20"><rect width="30" height="20" fill="#009C3B"/><path d="M15 2.2 27.4 10 15 17.8 2.6 10z" fill="#FFDF00"/><circle cx="15" cy="10" r="4.6" fill="#002776"/><path d="M10.6 9.1q4.6-1.4 8.8 1.4" stroke="#fff" stroke-width=".7" fill="none"/></svg>',
+  nl: '<svg viewBox="0 0 30 20"><rect width="30" height="20" fill="#21468B"/><rect width="30" height="13.33" fill="#fff"/><rect width="30" height="6.67" fill="#AE1C28"/></svg>',
+  ru: '<svg viewBox="0 0 30 20"><rect width="30" height="20" fill="#D52B1E"/><rect width="30" height="13.33" fill="#0039A6"/><rect width="30" height="6.67" fill="#fff"/></svg>',
+  ua: '<svg viewBox="0 0 30 20"><rect width="30" height="20" fill="#FFD500"/><rect width="30" height="10" fill="#005BBB"/></svg>',
+  eg: '<svg viewBox="0 0 30 20"><rect width="30" height="20" fill="#000"/><rect width="30" height="13.33" fill="#fff"/><rect width="30" height="6.67" fill="#CE1126"/><path d="M15 7.6l1.6 1.2-.4 2.6h-2.4l-.4-2.6z" fill="#C09300"/></svg>',
+  il: '<svg viewBox="0 0 30 20"><rect width="30" height="20" fill="#fff"/><rect y="2" width="30" height="2.6" fill="#0038B8"/><rect y="15.4" width="30" height="2.6" fill="#0038B8"/><g fill="none" stroke="#0038B8" stroke-width=".9"><path d="M15 6.2l3.3 5.7h-6.6z"/><path d="M15 13.8l-3.3-5.7h6.6z"/></g></svg>',
+  in: '<svg viewBox="0 0 30 20"><rect width="30" height="20" fill="#138808"/><rect width="30" height="13.33" fill="#fff"/><rect width="30" height="6.67" fill="#FF9933"/><circle cx="15" cy="10" r="2.6" fill="none" stroke="#000080" stroke-width=".6"/><circle cx="15" cy="10" r=".5" fill="#000080"/></svg>',
+  th: '<svg viewBox="0 0 30 20"><rect width="30" height="20" fill="#A51931"/><rect y="3.33" width="30" height="13.33" fill="#F4F5F8"/><rect y="6.67" width="30" height="6.67" fill="#2D2A4A"/></svg>',
+  ke: '<svg viewBox="0 0 30 20"><rect width="30" height="20" fill="#006600"/><rect width="30" height="13.6" fill="#fff"/><rect width="30" height="6" fill="#000"/><rect y="7.2" width="30" height="5.6" fill="#BB0000"/><ellipse cx="15" cy="10" rx="2.6" ry="5" fill="#BB0000" stroke="#000" stroke-width=".5"/><path d="M15 5v10" stroke="#fff" stroke-width=".5"/></svg>'
 };
 const flag = (cid, lg) => `<span class="flag ${lg ? 'lg' : ''}">${FLAGS[C[cid].flag]}</span>`;
 // Mata the tarsier — layered SVG so each part can move (see .mascot rules in styles.css + mataLife below)
@@ -242,7 +250,7 @@ function itemByRef(ref) { const [cid, k, ui, i] = ref.split('|'); const U = unit
 const totalLessons = cid => C[cid].units.length * LPU;
 const lessonTitle = li => ['New words', 'More words', 'First phrases', 'More phrases', 'Unit review'][li];
 const stripArticle = t => t.replace(/^(el|la|los|las|un|una|le|les|une|der|die|das|il|lo|gli|i|o|a|os|as)\s+/i, '').replace(/^l'/i, '');
-const wordLabel = (w, cid) => `${esc(w.t)}${C[cid].romaji && w.r ? `<span class="rom">${esc(w.r)}</span>` : ''}`;
+const wordLabel = (w, cid) => `<bdi>${esc(w.t)}</bdi>${C[cid].romaji && w.r ? `<span class="rom">${esc(w.r)}</span>` : ''}`;
 
 /* ---------------- exercise builders ---------------- */
 const others = (all, x, n) => sample(all.filter(o => o.e !== x.e && o.t !== x.t), n);
@@ -617,13 +625,13 @@ function renderLesson() {
       const tile = (b, i, used) => `<button class="tile ${used ? 'used' : ''}" onclick="LT(${i})" ${locked ? 'disabled' : ''}>${esc(b.t)}${b.r ? `<span class="rom">${esc(b.r)}</span>` : ''}</button>`;
       const head = ex.type === 'listenTiles'
         ? `<div class="big-say"><button data-say="${esc(ex.s.t)}" data-cid="${cid}" aria-label="Play">${ICON.speaker}</button><button class="slow" data-say="${esc(ex.s.t)}" data-cid="${cid}" data-slow="1" aria-label="Play slowly">${ICON.snail}</button></div>`
-        : `<div class="prompt-row">${mascot(L.state === 'feedback' ? (L.ok ? 'cheer' : 'sad') : 'happy')}<div class="speech" style="display:flex;align-items:center;gap:10px">${ex.dir === 'en' ? sayBtn(ex.s.t, cid) + `<span>${esc(ex.s.t)}${ex.s.r ? `<span class="rom">${esc(ex.s.r)}</span>` : ''}</span>` : esc(ex.s.e)}</div></div>`;
-      body = `<h2>${esc(ex.prompt)}</h2>${head}<div class="answer-line">${L.sel.map(i => `<button class="tile" onclick="LU(${i})" ${locked ? 'disabled' : ''}>${esc(ex.bank[i].t)}${ex.bank[i].r ? `<span class="rom">${esc(ex.bank[i].r)}</span>` : ''}</button>`).join('')}</div>
+        : `<div class="prompt-row">${mascot(L.state === 'feedback' ? (L.ok ? 'cheer' : 'sad') : 'happy')}<div class="speech" style="display:flex;align-items:center;gap:10px">${ex.dir === 'en' ? sayBtn(ex.s.t, cid) + `<span dir="auto">${esc(ex.s.t)}${ex.s.r ? `<span class="rom">${esc(ex.s.r)}</span>` : ''}</span>` : esc(ex.s.e)}</div></div>`;
+      body = `<h2>${esc(ex.prompt)}</h2>${head}<div class="answer-line" ${C[cid].rtl && ex.dir !== 'en' ? 'dir="rtl"' : ''}>${L.sel.map(i => `<button class="tile" onclick="LU(${i})" ${locked ? 'disabled' : ''}>${esc(ex.bank[i].t)}${ex.bank[i].r ? `<span class="rom">${esc(ex.bank[i].r)}</span>` : ''}</button>`).join('')}</div>
         <div class="bank">${ex.bank.map((b, i) => tile(b, i, L.sel.includes(i))).join('')}</div>`;
       break;
     }
     case 'type':
-      body = `<h2>${esc(ex.prompt)}</h2><div class="hint-em">${ex.w.i}</div><textarea class="typebox" id="typeIn" placeholder="Type in ${C[cid].name}${C[cid].romaji ? ` (${C[cid].romName || 'romaji'} is fine)` : ''}" autocomplete="off" autocapitalize="off" spellcheck="false" ${locked ? 'disabled' : ''}>${esc(L.typed || '')}</textarea>`;
+      body = `<h2>${esc(ex.prompt)}</h2><div class="hint-em">${ex.w.i}</div><textarea class="typebox" id="typeIn" dir="auto" placeholder="Type in ${C[cid].name}${C[cid].romaji ? ` (${C[cid].romName || 'romaji'} is fine)` : ''}" autocomplete="off" autocapitalize="off" spellcheck="false" ${locked ? 'disabled' : ''}>${esc(L.typed || '')}</textarea>`;
       break;
     case 'match': {
       const m = L.sel;
