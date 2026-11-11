@@ -448,21 +448,65 @@ function shell(active, main) {
     <nav class="bottom">${navHtml}</nav></div>`;
 }
 
+/* ---------------- Learn-path scenery: Bohol morning / sunset / night ---------------- */
+const LEAF = `<svg viewBox="0 0 170 170" aria-hidden="true">
+  <g><path d="M8 162C18 98 66 44 150 30C122 84 82 134 8 162Z" fill="var(--leaf1)"/><path d="M8 162C50 118 92 74 150 30" stroke="var(--leaf3)" stroke-width="2.5" fill="none" opacity=".7"/></g>
+  <g transform="rotate(28 8 162)"><path d="M8 162C22 110 60 70 128 54C104 98 70 136 8 162Z" fill="var(--leaf2)"/><path d="M8 162C44 126 80 92 128 54" stroke="var(--leaf3)" stroke-width="2" fill="none" opacity=".6"/></g>
+  <g transform="rotate(-30 8 162)"><path d="M8 162C26 116 58 84 112 72C92 108 62 140 8 162Z" fill="var(--leaf3)"/></g>
+</svg>`;
+const BRANCH = `<svg class="branch" viewBox="0 0 220 60" aria-hidden="true">
+  <path d="M0 30C60 26 120 34 220 24" stroke="#7A5232" stroke-width="11" stroke-linecap="round" fill="none"/>
+  <path d="M0 30C60 26 120 34 220 24" stroke="#94673F" stroke-width="5" stroke-linecap="round" fill="none" opacity=".7"/>
+  <path d="M70 30q12-22 34-24q-10 18-34 24z" fill="var(--leaf1)"/><path d="M150 29q14 20 36 18q-12-16-36-18z" fill="var(--leaf2)"/>
+  <path d="M30 29q-6 20 8 30q4-18-8-30z" fill="var(--leaf3)"/>
+</svg>`;
+function sceneHtml(ui) {
+  const t = ui % 3, r = seeded('scene' + ui);
+  const dots = (n, cls) => [...Array(n)].map(() => `<i class="${cls}" style="left:${(4 + r() * 92).toFixed(1)}%;top:${(4 + r() * 80).toFixed(1)}%;animation-delay:${(r() * 4).toFixed(2)}s;animation-duration:${(3 + r() * 4).toFixed(2)}s"></i>`).join('');
+  return `<div class="scene" aria-hidden="true">
+    ${t === 2 ? `<div class="moon"></div>${dots(26, 'star')}` : `<div class="sun"></div>`}
+    <div class="cloud" style="top:9%;animation-duration:60s"></div><div class="cloud sm" style="top:30%;animation-duration:85s;animation-delay:-40s"></div>
+    <svg class="hills" viewBox="0 0 400 120" preserveAspectRatio="none">
+      <path d="M0 120V70Q25 30 50 68Q75 26 100 66Q130 22 160 64Q190 30 215 66Q245 24 275 64Q305 32 330 66Q360 26 400 62V120Z" fill="var(--hill1)"/>
+      <path d="M0 120V92Q40 56 80 90Q120 50 165 88Q210 58 250 92Q300 52 345 88Q375 66 400 84V120Z" fill="var(--hill2)"/>
+    </svg>
+    <div class="leaf tl">${LEAF}</div><div class="leaf mr">${LEAF}</div><div class="leaf bl">${LEAF}</div>
+    ${dots(t === 2 ? 14 : 8, 'fly')}
+    <svg class="trail"></svg>
+  </div>`;
+}
+function drawTrails() {
+  document.querySelectorAll('.path').forEach(p => {
+    const svg = p.querySelector('.trail'); if (!svg) return;
+    const box = p.getBoundingClientRect(); if (!box.width) return;
+    const pts = [...p.querySelectorAll('.node')].map(n => { const b = n.getBoundingClientRect(); return [b.left + b.width / 2 - box.left, b.top + b.height / 2 - box.top]; });
+    if (pts.length < 2) return;
+    let d = `M${pts[0][0]} ${pts[0][1] - 60}L${pts[0][0]} ${pts[0][1]}`;
+    for (let i = 1; i < pts.length; i++) { const [x0, y0] = pts[i - 1], [x1, y1] = pts[i], my = (y0 + y1) / 2; d += `C${x0} ${my} ${x1} ${my} ${x1} ${y1}`; }
+    const last = pts[pts.length - 1]; d += `L${last[0]} ${box.height}`;
+    svg.setAttribute('viewBox', `0 0 ${box.width} ${box.height}`);
+    svg.innerHTML = `<path d="${d}" class="trail-bed"/><path d="${d}" class="trail-dash"/>`;
+  });
+}
+let trailTimer;
+window.addEventListener('resize', () => { clearTimeout(trailTimer); trailTimer = setTimeout(drawTrails, 120); });
+
 /* ---------------- learn page ---------------- */
 function renderLearn() {
   const u = me(), cid = u.course, front = u.progress[cid] || 0;
   let html = '';
   C[cid].units.forEach((U, ui) => {
-    html += `<div class="unit-head u${ui % 3}"><div><p>Unit ${ui + 1}</p><h2>${esc(U.title)}</h2><p style="font-size:14px">${esc(U.desc)}</p></div><button class="guide" onclick="A.guide(${ui})">${ICON.book}<span>Guidebook</span></button></div><div class="path">`;
+    html += `<div class="unit-head u${ui % 3}"><div><p>Unit ${ui + 1}</p><h2>${esc(U.title)}</h2><p style="font-size:14px">${esc(U.desc)}</p></div><button class="guide" onclick="A.guide(${ui})">${ICON.book}<span>Guidebook</span></button></div><div class="path sc${ui % 3}">${sceneHtml(ui)}`;
     for (let li = 0; li < LPU; li++) {
       const n = ui * LPU + li, st = n < front ? 'done' : n === front ? 'cur' : 'locked', trophy = li === LPU - 1;
       const ic = st === 'locked' ? (trophy ? ICON.cup : ICON.lock) : st === 'done' ? (trophy ? ICON.cup : ICON.check) : (trophy ? ICON.cup : ICON.star);
       html += `<div class="node-wrap u${ui % 3}n" id="nw-${n}" style="transform:translateX(${(ui % 2 ? -1 : 1) * OFFS[li]}px)">${st === 'cur' ? '<div class="start-tag">START</div>' : ''}<button class="node ${st} ${trophy ? 'trophy' : ''}" onclick="A.node(${ui},${li},event)" aria-label="${lessonTitle(li)}">${ic}</button></div>`;
     }
-    html += `<div class="deco" style="top:110px;${ui % 2 ? 'right' : 'left'}:6%">${mascot(ui === 1 ? 'wow' : ui === 2 ? 'happy' : 'wave')}</div></div>`;
+    html += `<div class="deco ${ui % 2 ? 'right' : 'left'}" style="top:110px;${ui % 2 ? 'right' : 'left'}:6%">${BRANCH}${mascot(ui === 1 ? 'wow' : ui === 2 ? 'happy' : 'wave')}</div></div>`;
   });
   if (front >= totalLessons(cid)) html += `<div class="card" style="text-align:center">${mascot('wow')}<h3>Course complete! 🎉</h3><p class="muted">You finished every lesson in ${C[cid].name}. Keep practicing to stay sharp, or start another course from your profile.</p></div>`;
   shell('learn', `<div style="max-width:600px;margin:0 auto">${html}</div>`);
+  requestAnimationFrame(drawTrails); if (document.fonts) document.fonts.ready.then(drawTrails);
   if (welcome) { welcome = false; modal(`${mascot('wave')}<h2>Welcome, ${esc(u.name)}!</h2><p class="muted">I’m Mata the tarsier. Tap the glowing lesson to start your first ${C[cid].name} lesson.</p><div class="acts"><button class="btn primary" onclick="closeModal()">Let’s go!</button></div>`); }
   const cur = document.getElementById('nw-' + front);
   if (cur && front > 0) setTimeout(() => cur.scrollIntoView({ block: 'center' }), 30);
