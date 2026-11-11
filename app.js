@@ -5,6 +5,7 @@ const COURSE_IDS = Object.keys(C);
 const GOALS = [{ xp: 10, min: 5, label: 'Casual' }, { xp: 20, min: 10, label: 'Regular' }, { xp: 30, min: 15, label: 'Serious' }, { xp: 50, min: 20, label: 'Intense' }];
 const REASONS = [['🧳', 'Travel'], ['💼', 'Work & career'], ['🧠', 'Train my brain'], ['🎓', 'School'], ['💬', 'Talk with people'], ['✨', 'Just for fun']];
 const LEVELS = [['🌱', "I'm new to {L}", 'Start from the very beginning', 0], ['📖', 'I know some common words', 'Start at Unit 2', 5], ['💬', 'I can have basic conversations', 'Start at Unit 3', 10]];
+const SKILL_LEVELS = [['🌱', "I'm new to {L}", 'Start from the very beginning', 0], ['📖', 'I know the basics', 'Start at Unit 2', 5], ['🏆', 'I play regularly', 'Start at Unit 3', 10]];
 const LPU = 5, MAX_HEARTS = 5, HEART_MS = 30 * 60 * 1000, REFILL_COST = 100, FREEZE_COST = 50;
 const OFFS = [0, 52, 78, 52, 0];
 const LEAGUES = [['🌱', 'Seedling'], ['🌿', 'Sprout'], ['🌳', 'Grove'], ['🌲', 'Forest'], ['🏔️', 'Summit']];
@@ -89,7 +90,7 @@ const FLAGS = {
   th: '<svg viewBox="0 0 30 20"><rect width="30" height="20" fill="#A51931"/><rect y="3.33" width="30" height="13.33" fill="#F4F5F8"/><rect y="6.67" width="30" height="6.67" fill="#2D2A4A"/></svg>',
   ke: '<svg viewBox="0 0 30 20"><rect width="30" height="20" fill="#006600"/><rect width="30" height="13.6" fill="#fff"/><rect width="30" height="6" fill="#000"/><rect y="7.2" width="30" height="5.6" fill="#BB0000"/><ellipse cx="15" cy="10" rx="2.6" ry="5" fill="#BB0000" stroke="#000" stroke-width=".5"/><path d="M15 5v10" stroke="#fff" stroke-width=".5"/></svg>'
 };
-const flag = (cid, lg) => `<span class="flag ${lg ? 'lg' : ''}">${FLAGS[C[cid].flag]}</span>`;
+const flag = (cid, lg) => C[cid].kind ? `<span class="flag ic ${lg ? 'lg' : ''}" style="background:${C[cid].iconBg}">${C[cid].icon}</span>` : `<span class="flag ${lg ? 'lg' : ''}">${FLAGS[C[cid].flag]}</span>`;
 // Mata the tarsier — layered SVG so each part can move (see .mascot rules in styles.css + mataLife below)
 function mascot(mood = 'happy') {
   const S = 'stroke-linecap="round" fill="none"';
@@ -248,7 +249,7 @@ function unit(cid, ui) {
 }
 function itemByRef(ref) { const [cid, k, ui, i] = ref.split('|'); const U = unit(cid, +ui); return { cid, ui: +ui, kind: k, item: k === 'w' ? U.W[+i] : U.S[+i], U }; }
 const totalLessons = cid => C[cid].units.length * LPU;
-const lessonTitle = li => ['New words', 'More words', 'First phrases', 'More phrases', 'Unit review'][li];
+const lessonTitle = (li, cid, ui) => cid && C[cid].kind ? (li < 4 ? C[cid].units[ui].topics[li].card.t : 'Unit review') : ['New words', 'More words', 'First phrases', 'More phrases', 'Unit review'][li];
 const stripArticle = t => t.replace(/^(el|la|los|las|un|una|le|les|une|der|die|das|il|lo|gli|i|o|a|os|as)\s+/i, '').replace(/^l'/i, '');
 const wordLabel = (w, cid) => `<bdi>${esc(w.t)}</bdi>${C[cid].romaji && w.r ? `<span class="rom">${esc(w.r)}</span>` : ''}`;
 
@@ -274,7 +275,70 @@ function exTiles(cid, s, S, dir, listen) {
 }
 function exChoose(cid, s, S) { const opts = shuffle([s, ...others(S, s, 2)]); return { type: 'choose', cid, ref: s.ref, s, prompt: `How do you say “${s.e}”?`, opts, answer: opts.indexOf(s), solution: s.t }; }
 
+
+/* ---------------- game & sport courses ---------------- */
+const PIECE = { k: '♚', q: '♛', r: '♜', b: '♝', n: '♞', p: '♟' };
+function parseFen(fen) { const b = {}; fen.split('/').forEach((row, ri) => { let f = 0; for (const ch of row) { if (/\d/.test(ch)) f += +ch; else { b['abcdefgh'[f] + (8 - ri)] = ch; f++; } } }); return b; }
+function pieceMoves(fen, from) {
+  const b = parseFen(fen), p = b[from]; if (!p) return [];
+  const white = p === p.toUpperCase(), t = p.toLowerCase(), fx = 'abcdefgh'.indexOf(from[0]), fy = +from[1], out = [];
+  const name = (x, y) => 'abcdefgh'[x] + y, at = (x, y) => b[name(x, y)], inb = (x, y) => x >= 0 && x < 8 && y >= 1 && y <= 8;
+  const enemy = q => q && (q === q.toUpperCase()) !== white;
+  const slide = dirs => dirs.forEach(([dx, dy]) => { let x = fx + dx, y = fy + dy; while (inb(x, y)) { const q = at(x, y); if (q) { if (enemy(q)) out.push(name(x, y)); break; } out.push(name(x, y)); x += dx; y += dy; } });
+  const step = dirs => dirs.forEach(([dx, dy]) => { const x = fx + dx, y = fy + dy; if (inb(x, y) && (!at(x, y) || enemy(at(x, y)))) out.push(name(x, y)); });
+  const R = [[1, 0], [-1, 0], [0, 1], [0, -1]], B = [[1, 1], [1, -1], [-1, 1], [-1, -1]];
+  if (t === 'r') slide(R); else if (t === 'b') slide(B); else if (t === 'q') slide(R.concat(B)); else if (t === 'k') step(R.concat(B));
+  else if (t === 'n') step([[1, 2], [2, 1], [-1, 2], [-2, 1], [1, -2], [2, -1], [-1, -2], [-2, -1]]);
+  else if (t === 'p') {
+    const d = white ? 1 : -1, start = white ? 2 : 7;
+    if (inb(fx, fy + d) && !at(fx, fy + d)) { out.push(name(fx, fy + d)); if (fy === start && !at(fx, fy + 2 * d)) out.push(name(fx, fy + 2 * d)); }
+    [-1, 1].forEach(dx => { if (inb(fx + dx, fy + d) && enemy(at(fx + dx, fy + d))) out.push(name(fx + dx, fy + d)); });
+  }
+  return out;
+}
+function boardHtml(fen, o = {}) {
+  const b = parseFen(fen || '8/8/8/8/8/8/8/8'), tag = o.click ? 'button' : 'div';
+  let h = `<div class="board ${o.small ? 'small' : ''} ${o.click ? 'click' : ''}">`;
+  for (let r = 8; r >= 1; r--) for (let f = 0; f < 8; f++) {
+    const sq = 'abcdefgh'[f] + r, p = b[sq], cls = ['sq', (f + r) % 2 === 1 ? 'd' : 'l'];
+    if (o.hl && o.hl.includes(sq)) cls.push('hl'); if (o.from === sq) cls.push('from'); if (o.sel === sq) cls.push('sel');
+    if (o.good && o.good.includes(sq)) cls.push('good'); if (o.bad === sq) cls.push('bad');
+    h += `<${tag} class="${cls.join(' ')}" ${o.click ? `onclick="LQ('${sq}')" aria-label="${sq}"` : ''}>${p ? `<span class="pc ${p === p.toUpperCase() ? 'w' : 'b'}">${PIECE[p.toLowerCase()]}\uFE0E</span>` : ''}${f === 0 ? `<i class="rk">${r}</i>` : ''}${r === 1 ? `<i class="fl">${'abcdefgh'[f]}</i>` : ''}</${tag}>`;
+  }
+  return h + '</div>';
+}
+const skillRef = (cid, ui, t, qi) => `${cid}|q|${ui}|${t}|${qi}`;
+function skillQ(cid, ui, t, qi) {
+  const q = C[cid].units[ui].topics[t].qs[qi], ref = skillRef(cid, ui, t, qi);
+  if (q.from || q.sq) { const targets = q.sq || pieceMoves(q.fen, q.from); return { type: 'squares', cid, ref, prompt: q.q, fen: q.fen, from: q.from || null, targets, why: q.why, solution: targets.length <= 4 ? targets.join(', ') : 'Any of the highlighted squares' }; }
+  const opts = q.keep ? q.o.slice() : shuffle(q.o);
+  return { type: 'mc', cid, ref, prompt: q.q, fen: q.fen, em: q.em, opts, answer: opts.indexOf(q.o[q.a]), solution: q.o[q.a], why: q.why };
+}
+function buildSkill(cid, ui, li) {
+  const U = C[cid].units[ui];
+  if (li < 4) {
+    const T = U.topics[li], ex = [{ type: 'card', cid, ...T.card }];
+    ex.push(...shuffle(T.qs.map((_, qi) => skillQ(cid, ui, li, qi))));
+    const earlier = []; for (let t = 0; t < li; t++) U.topics[t].qs.forEach((_, qi) => earlier.push([t, qi]));
+    sample(earlier, 2).forEach(([t, qi]) => ex.push(skillQ(cid, ui, t, qi)));
+    return ex;
+  }
+  const all = []; U.topics.forEach((T, t) => T.qs.forEach((_, qi) => all.push([t, qi])));
+  return sample(all, 10).map(([t, qi]) => skillQ(cid, ui, t, qi));
+}
+function skillPractice(u, cid, unitsOpen) {
+  const all = []; for (let ui = 0; ui < unitsOpen; ui++) C[cid].units[ui].topics.forEach((T, t) => T.qs.forEach((_, qi) => all.push([ui, t, qi])));
+  const miss = all.filter(a => u.mistakes.includes(skillRef(cid, ...a))).slice(0, 5);
+  return shuffle(miss.concat(sample(all.filter(a => !miss.includes(a)), 9 - miss.length))).map(([ui, t, qi]) => skillQ(cid, ui, t, qi));
+}
+function skillGuide(ui) {
+  const cid = me().course, U = C[cid].units[ui];
+  modal(`<h2>Unit ${ui + 1} guidebook · ${esc(U.title)}</h2><p class="muted" style="margin-bottom:16px">The key ideas in this unit.</p>
+    ${U.topics.map(T => `<div class="gcard"><h3>${esc(T.card.t)}</h3><p>${esc(T.card.x)}</p>${T.card.fen ? boardHtml(T.card.fen, { hl: T.card.hl, small: 1 }) : ''}${T.card.em ? `<div class="hint-em" style="font-size:34px;margin:8px 0 0">${T.card.em}</div>` : ''}</div>`).join('')}
+    <div class="acts"><button class="btn primary" onclick="closeModal()">Got it</button></div>`, true);
+}
 function buildLesson(cid, ui, li) {
+  if (C[cid].kind) return buildSkill(cid, ui, li);
   const { W, S } = unit(cid, ui), tts = canSpeak(cid);
   let ex = [];
   if (li < 2) {
@@ -305,6 +369,7 @@ function buildPractice(u) {
   const cid = u.course, front = u.progress[cid] || 0;
   const unitsOpen = Math.min(C[cid].units.length, Math.ceil(front / LPU) || 0);
   if (!unitsOpen) return null;
+  if (C[cid].kind) return skillPractice(u, cid, unitsOpen);
   const all = [];
   for (let ui = 0; ui < unitsOpen; ui++) { const U = unit(cid, ui); U.W.forEach(w => all.push({ kind: 'w', item: w, W: U.W, S: U.S })); U.S.forEach(s => all.push({ kind: 's', item: s, W: U.W, S: U.S })); }
   const miss = u.mistakes.filter(r => r.startsWith(cid + '|')).map(r => all.find(a => a.item.ref === r)).filter(Boolean).slice(0, 5);
@@ -370,13 +435,13 @@ function renderOnboard(step) {
   const set = (k, v) => { draft[k] = v; saveDraft(); sfx.tap(); renderOnboard(step); const m = $('.ask .mascot'); if (m && !mataReduce) mataCls(m, 'poke', 600); };
   window.obSet = set;
   if (step === 1) obFrame(1, T, 'What would you like to learn?',
-    `<div class="choices grid">${COURSE_IDS.map(c => `<button class="choice course ${draft.course === c ? 'on' : ''}" onclick="obSet('course','${c}')">${flag(c, 1)}${C[c].name}</button>`).join('')}</div>`,
+    [['Languages', COURSE_IDS.filter(c => !C[c].kind)], ['Games & sports', COURSE_IDS.filter(c => C[c].kind)]].map(([h, ids]) => `<h3 class="ob-sec">${h}</h3><div class="choices grid">${ids.map(c => `<button class="choice course ${draft.course === c ? 'on' : ''}" onclick="obSet('course','${c}')">${flag(c, 1)}${C[c].name}</button>`).join('')}</div>`).join(''),
     !!draft.course, () => go('#/start/2'), 'wave');
   else if (step === 2) obFrame(2, T, `Why are you learning ${L}?`,
     `<div class="choices grid">${REASONS.map((r, i) => `<button class="choice ${draft.reason === i ? 'on' : ''}" onclick="obSet('reason',${i})"><span class="em">${r[0]}</span>${r[1]}</button>`).join('')}</div>`,
     draft.reason != null, () => go('#/start/3'));
   else if (step === 3) obFrame(3, T, `How much ${L} do you know?`,
-    `<div class="choices">${LEVELS.map((r, i) => `<button class="choice ${draft.level === i ? 'on' : ''}" onclick="obSet('level',${i})"><span class="em">${r[0]}</span><span>${r[1].replace('{L}', L)}<small>${r[2]}</small></span></button>`).join('')}</div>`,
+    `<div class="choices">${(draft.course && C[draft.course].kind ? SKILL_LEVELS : LEVELS).map((r, i) => `<button class="choice ${draft.level === i ? 'on' : ''}" onclick="obSet('level',${i})"><span class="em">${r[0]}</span><span>${r[1].replace('{L}', L)}<small>${r[2]}</small></span></button>`).join('')}</div>`,
     draft.level != null, () => go('#/start/4'), 'wow');
   else obFrame(4, T, 'What’s your daily learning goal?',
     `<div class="choices">${GOALS.map((g, i) => `<button class="choice ${draft.goal === i ? 'on' : ''}" onclick="obSet('goal',${i})"><span class="em">${['☕', '🚶', '🏃', '🔥'][i]}</span><span style="flex:1">${g.min} min / day</span><span class="muted">${g.label}</span></button>`).join('')}</div>`,
@@ -513,7 +578,7 @@ function renderLearn() {
     for (let li = 0; li < LPU; li++) {
       const n = ui * LPU + li, st = n < front ? 'done' : n === front ? 'cur' : 'locked', trophy = li === LPU - 1;
       const ic = st === 'locked' ? (trophy ? ICON.cup : ICON.lock) : st === 'done' ? (trophy ? ICON.cup : ICON.check) : (trophy ? ICON.cup : ICON.star);
-      html += `<div class="node-wrap u${ui % 5}n" id="nw-${n}" style="transform:translateX(${(ui % 2 ? -1 : 1) * OFFS[li]}px)">${st === 'cur' ? '<div class="start-tag">START</div>' : ''}<button class="node ${st} ${trophy ? 'trophy' : ''}" onclick="A.node(${ui},${li},event)" aria-label="${lessonTitle(li)}">${ic}</button></div>`;
+      html += `<div class="node-wrap u${ui % 5}n" id="nw-${n}" style="transform:translateX(${(ui % 2 ? -1 : 1) * OFFS[li]}px)">${st === 'cur' ? '<div class="start-tag">START</div>' : ''}<button class="node ${st} ${trophy ? 'trophy' : ''}" onclick="A.node(${ui},${li},event)" aria-label="${lessonTitle(li, cid, ui)}">${ic}</button></div>`;
     }
     html += `<div class="deco ${ui % 2 ? 'right' : 'left'}" style="top:110px;${ui % 2 ? 'right' : 'left'}:6%">${BRANCH}${mascot(ui === 1 ? 'wow' : ui === 2 ? 'happy' : 'wave')}</div></div>`;
   });
@@ -534,10 +599,10 @@ const A = window.A = {
     document.querySelectorAll('.pop').forEach(p => { p.parentElement.style.zIndex = ''; p.remove(); });
     if (open) return;
     const U = C[cid].units[ui], locked = n > front;
-    const words = li < 2 ? U.words.slice(li * 4, li * 4 + 4).map(w => w[0]).join(', ') : li < 4 ? 'Build sentences with what you know' : 'Prove your skills to finish the unit';
+    const words = U.topics ? (li < 4 ? 'Learn it, then answer a quick quiz' : 'Review everything in this unit') : li < 2 ? U.words.slice(li * 4, li * 4 + 4).map(w => w[0]).join(', ') : li < 4 ? 'Build sentences with what you know' : 'Prove your skills to finish the unit';
     const pop = document.createElement('div');
     pop.className = 'pop' + (locked ? ' locked' : '');
-    pop.innerHTML = `<h4>${lessonTitle(li)}</h4><p>${locked ? 'Complete all lessons above to unlock this.' : `Lesson ${li + 1} of ${LPU} · ${esc(words)}`}</p>
+    pop.innerHTML = `<h4>${lessonTitle(li, cid, ui)}</h4><p>${locked ? 'Complete all lessons above to unlock this.' : `Lesson ${li + 1} of ${LPU} · ${esc(words)}`}</p>
       ${locked ? '' : `<button class="btn" onclick="A.start(${ui},${li})">${n < front ? 'Practice +5 XP' : `Start +${li === LPU - 1 ? 15 : 10} XP`}</button>`}`;
     pop.onclick = e => e.stopPropagation();
     wrap.style.zIndex = 6; wrap.appendChild(pop);
@@ -554,6 +619,7 @@ const A = window.A = {
     startLesson({ mode: 'practice', cid: me().course, ex });
   },
   guide(ui) {
+    if (C[me().course].kind) return skillGuide(ui);
     const u = me(), cid = u.course, U = unit(cid, ui);
     modal(`<h2>Unit ${ui + 1} guidebook · ${esc(U.title)}</h2><p class="muted" style="margin-bottom:16px">Key words and phrases for this unit.</p>
       <h3 style="margin-bottom:10px">Words</h3><div class="vocab">${U.W.map(w => `<div><span class="ve">${w.i}</span><span style="flex:1"><b>${wordLabel(w, cid)}</b><span>${esc(w.e)}</span></span>${sayBtn(w.t, cid)}</div>`).join('')}</div>
@@ -633,6 +699,15 @@ function renderLesson() {
     case 'type':
       body = `<h2>${esc(ex.prompt)}</h2><div class="hint-em">${ex.w.i}</div><textarea class="typebox" id="typeIn" dir="auto" placeholder="Type in ${C[cid].name}${C[cid].romaji ? ` (${C[cid].romName || 'romaji'} is fine)` : ''}" autocomplete="off" autocapitalize="off" spellcheck="false" ${locked ? 'disabled' : ''}>${esc(L.typed || '')}</textarea>`;
       break;
+    case 'card':
+      body = `<span class="new-word">✦ New lesson</span><div class="lcard"><h2>${esc(ex.t)}</h2><p>${esc(ex.x)}</p>${ex.fen ? boardHtml(ex.fen, { hl: ex.hl }) : ''}${ex.em ? `<div class="hint-em">${ex.em}</div>` : ''}</div>`;
+      break;
+    case 'mc':
+      body = `<h2>${esc(ex.prompt)}</h2>${ex.fen ? boardHtml(ex.fen, { small: 1 }) : ''}${ex.em ? `<div class="hint-em">${ex.em}</div>` : ''}<div class="opts">${ex.opts.map((o, i) => `<button class="opt ${L.sel === i ? 'on' : ''} ${locked && i === ex.answer ? 'right' : ''} ${locked && L.sel === i && i !== ex.answer ? 'wrong' : ''}" onclick="LS(${i})" ${locked ? 'disabled' : ''}>${optKey(i)}${esc(o)}</button>`).join('')}</div>`;
+      break;
+    case 'squares':
+      body = `<h2>${esc(ex.prompt)}</h2>${boardHtml(ex.fen, { click: !locked, sel: L.sel, from: ex.from, good: locked ? ex.targets : null, bad: locked && !L.ok ? L.sel : null })}`;
+      break;
     case 'match': {
       const m = L.sel;
       const cls = (side, w) => { const done = m.ok.includes(w.ref); return `mtile ${done ? 'gone' : ''} ${m[side] === w.ref ? 'on' : ''} ${m.bad && m.bad.includes(side + w.ref) ? 'bad' : ''}`; };
@@ -643,10 +718,11 @@ function renderLesson() {
   }
   const canCheck = ex.type === 'type' ? !!(L.typed || '').trim() : ex.type === 'match' ? false : Array.isArray(L.sel) ? L.sel.length > 0 : L.sel != null;
   let foot;
-  if (L.state === 'answer') foot = `<div class="lesson-foot"><div class="in"><button class="btn ghost skip" onclick="LSkip()">${ex.type.startsWith('listen') ? 'Can’t listen now' : 'Skip'}</button><button class="btn primary" id="checkBtn" onclick="LCheck()" ${canCheck ? '' : 'disabled'}>Check</button></div></div>`;
+  if (L.state === 'answer' && ex.type === 'card') foot = `<div class="lesson-foot"><div class="in"><span></span><button class="btn primary" id="checkBtn" onclick="LCard()">Got it</button></div></div>`;
+  else if (L.state === 'answer') foot = `<div class="lesson-foot"><div class="in"><button class="btn ghost skip" onclick="LSkip()">${ex.type.startsWith('listen') ? 'Can’t listen now' : 'Skip'}</button><button class="btn primary" id="checkBtn" onclick="LCheck()" ${canCheck ? '' : 'disabled'}>Check</button></div></div>`;
   else {
     const praise = pick(['Nice!', 'Great job!', 'Excellent!', 'You got it!', 'Ayos!', 'Correct!']);
-    foot = `<div class="lesson-foot ${L.ok ? 'ok' : 'bad'}"><div class="in"><div class="fb"><div class="badge">${mascot(L.ok ? 'cheer' : 'sad')}</div><div><h3>${L.ok ? praise : 'Correct answer:'}</h3><p>${L.ok ? esc(L.note || '') : esc(ex.solution)}</p>${!L.ok && ex.type === 'tiles' && ex.dir === 'en' ? '' : ''}</div></div><button class="btn primary" id="checkBtn" onclick="LNext()">Continue</button></div></div>`;
+    foot = `<div class="lesson-foot ${L.ok ? 'ok' : 'bad'}"><div class="in"><div class="fb"><div class="badge">${mascot(L.ok ? 'cheer' : 'sad')}</div><div><h3>${L.ok ? praise : 'Correct answer:'}</h3><p>${L.ok ? esc(L.note || '') : esc(ex.solution)}</p>${ex.why ? `<p class="why">${esc(ex.why)}</p>` : ''}</div></div><button class="btn primary" id="checkBtn" onclick="LNext()">Continue</button></div></div>`;
   }
   app.innerHTML = `<div class="lesson">
     <div class="lesson-top"><button class="icon-btn" onclick="LQuit()" aria-label="Quit lesson">${ICON.x}</button><div class="bar"><i style="width:${pct}%"></i></div>
@@ -657,6 +733,8 @@ function renderLesson() {
   if (L.state === 'answer' && !L.played && (ex.type === 'listenPick' || ex.type === 'listenTiles')) { L.played = true; setTimeout(() => speak(ex.type === 'listenPick' ? ex.w.t : ex.s.t, cid), 250); }
 }
 window.LS = i => { if (L.state !== 'answer' || Array.isArray(L.sel) || !cur().opts) return; L.sel = i; sfx.tap(); const ex = cur(); if (ex.type === 'pick' || ex.type === 'listenPick') speak(ex.opts[i].t, L.cid); renderLesson(); };
+window.LQ = sq => { if (L.state !== 'answer') return; L.sel = sq; sfx.tap(); renderLesson(); };
+window.LCard = () => { if (L.state !== 'answer') return; L.done++; L.state = 'feedback'; L.ok = true; LNext(); };
 window.LT = i => { if (L.state !== 'answer' || L.sel.includes(i)) return; L.sel.push(i); sfx.tap(); const ex = cur(); if (ex.dir !== 'en') speak(ex.bank[i].t, L.cid); renderLesson(); };
 window.LU = i => { if (L.state !== 'answer') return; L.sel = L.sel.filter(x => x !== i); renderLesson(); };
 window.LM = (side, ref) => {
@@ -683,7 +761,8 @@ window.LCheck = () => {
   if (L.state !== 'answer') return LNext();
   const ex = cur(), u = me();
   let ok = false; L.note = '';
-  if (['pick', 'meaning', 'listenPick', 'choose'].includes(ex.type)) { if (L.sel == null) return; ok = L.sel === ex.answer; }
+  if (ex.type === 'squares') { if (!L.sel) return; ok = ex.targets.includes(L.sel); }
+  else if (['pick', 'meaning', 'listenPick', 'choose', 'mc'].includes(ex.type)) { if (L.sel == null) return; ok = L.sel === ex.answer; }
   else if (ex.type === 'tiles' || ex.type === 'listenTiles') { if (!L.sel.length) return; ok = norm(L.sel.map(i => ex.bank[i].t).join(' ')) === norm(ex.answer.join(' ')); }
   else if (ex.type === 'type') { const r = checkTyped(L.typed || '', ex.accepts); ok = r.ok; L.note = r.note || ''; }
   else return;
@@ -726,7 +805,7 @@ function finishLesson() {
   const replay = L.mode === 'lesson' && n < front;
   let xp = L.mode === 'practice' ? 10 : replay ? 5 : (L.li === LPU - 1 ? 15 : 10);
   const perfect = L.wrong === 0; if (perfect && !replay) xp += 5;
-  if (L.mode === 'lesson' && n === front) { u.progress[L.cid] = front + 1; if (L.li < 2) u.words += 4; }
+  if (L.mode === 'lesson' && n === front) { u.progress[L.cid] = front + 1; if (L.li < 2 && !C[L.cid].kind) u.words += 4; }
   if (L.mode === 'practice' && u.hearts < MAX_HEARTS) { u.hearts++; }
   const d = dayStat(u); const wasGoal = d.xp >= goalXp(u);
   d.xp += xp; d.lessons++; d.combo = Math.max(d.combo, L.best);
@@ -780,7 +859,8 @@ function renderPractice() {
   const u = me(), cid = u.course, front = u.progress[cid] || 0, unitsOpen = Math.min(C[cid].units.length, Math.ceil(front / LPU));
   const miss = u.mistakes.filter(r => r.startsWith(cid + '|')).length;
   let vocab = '';
-  for (let ui = 0; ui < unitsOpen; ui++) vocab += unit(cid, ui).W.map(w => `<div><span class="ve">${w.i}</span><span style="flex:1"><b>${wordLabel(w, cid)}</b><span>${esc(w.e)}</span></span>${sayBtn(w.t, cid)}</div>`).join('');
+  if (C[cid].kind) for (let ui = 0; ui < unitsOpen; ui++) vocab += C[cid].units[ui].topics.map(T => `<div><span class="ve">${C[cid].icon}</span><span style="flex:1"><b>${esc(T.card.t)}</b><span>${esc(C[cid].units[ui].title)}</span></span></div>`).join('');
+  else for (let ui = 0; ui < unitsOpen; ui++) vocab += unit(cid, ui).W.map(w => `<div><span class="ve">${w.i}</span><span style="flex:1"><b>${wordLabel(w, cid)}</b><span>${esc(w.e)}</span></span>${sayBtn(w.t, cid)}</div>`).join('');
   shell('practice', `<div class="stack">
     <div><h1 class="page-title">Practice</h1><p class="page-sub">Strengthen what you’ve learned and earn hearts back.</p></div>
     <div class="hero-card">${mascot('wow')}<div><h2>Personalized review</h2><p>${miss ? `Mata picked ${Math.min(miss, 5)} of your ${miss} recent mistake${miss > 1 ? 's' : ''} to fix.` : 'A mix of words and phrases from units you’ve started.'} No hearts lost — and you earn one back.</p><button class="btn" onclick="A.practice()" ${front ? '' : 'disabled'}>Start practice +10 XP</button></div></div>
@@ -789,7 +869,7 @@ function renderPractice() {
       <div class="shop-item" style="padding-top:14px"><div class="si">🧊</div><div class="sb"><b>Streak freeze</b><span>Protects your streak for one missed day (${u.freezes}/2 equipped)</span></div><button class="price" onclick="A.freeze()" ${u.gems < FREEZE_COST || u.freezes >= 2 ? 'disabled' : ''}>${ICON.gem}${FREEZE_COST}</button></div>
     </div>
     <div class="rail-mobile" style="flex-direction:column;gap:16px">${goalCard(u)}${questCard(u)}</div>
-    <div class="card"><h3>Words you’ve unlocked</h3>${vocab ? `<div class="vocab">${vocab}</div>` : '<p class="muted">Finish a lesson to start your word list.</p>'}</div>
+    <div class="card"><h3>${C[cid].kind ? 'Topics you’ve unlocked' : 'Words you’ve unlocked'}</h3>${vocab ? `<div class="vocab">${vocab}</div>` : `<p class="muted">Finish a lesson to start your ${C[cid].kind ? 'topic' : 'word'} list.</p>`}</div>
   </div>`);
 }
 const BOT_NAMES = ['Aiko', 'Mateo', 'Jun', 'Camille', 'Lito', 'Priya', 'Noah', 'Bea', 'Sora', 'Diego', 'Inday', 'Lucas', 'Mina', 'Paolo', 'Elif', 'Tomás', 'Hana', 'Kofi', 'Nena', 'Yuki', 'Rafa', 'Leni', 'Omar', 'Zoe'];
