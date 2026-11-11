@@ -77,26 +77,51 @@ const FLAGS = {
   ph: '<svg viewBox="0 0 30 20"><rect width="30" height="10" fill="#0038A8"/><rect y="10" width="30" height="10" fill="#CE1126"/><path d="M0 0l17 10L0 20z" fill="#fff"/><circle cx="5.6" cy="10" r="2.2" fill="#FCD116"/><circle cx="1.8" cy="3" r=".8" fill="#FCD116"/><circle cx="1.8" cy="17" r=".8" fill="#FCD116"/><circle cx="13" cy="10" r=".8" fill="#FCD116"/></svg>'
 };
 const flag = (cid, lg) => `<span class="flag ${lg ? 'lg' : ''}">${FLAGS[C[cid].flag]}</span>`;
-// Mata the tarsier
+// Mata the tarsier — layered SVG so each part can move (see .mascot rules in styles.css + mataLife below)
 function mascot(mood = 'happy') {
-  const mouth = { happy: '<path d="M52 82q8 7 16 0" stroke="#5A3520" stroke-width="3" fill="none" stroke-linecap="round"/>',
-    wow: '<ellipse cx="60" cy="84" rx="5" ry="6" fill="#5A3520"/>',
-    sad: '<path d="M52 86q8-6 16 0" stroke="#5A3520" stroke-width="3" fill="none" stroke-linecap="round"/>' }[mood] || '';
-  const brow = mood === 'sad' ? '<path d="M28 36l16 5M92 36l-16 5" stroke="#7A4B2A" stroke-width="3" stroke-linecap="round"/>' : '';
-  const arm = mood === 'wave' || mood === 'wow' ? '<path d="M88 100q16-6 18-26" stroke="#A86F43" stroke-width="9" fill="none" stroke-linecap="round"/><circle cx="106" cy="72" r="6" fill="#E9B28C"/>'
-    : '<path d="M86 104q10 4 10 12" stroke="#A86F43" stroke-width="9" fill="none" stroke-linecap="round"/>';
-  return `<svg class="mascot" viewBox="0 0 120 130" aria-hidden="true">
-  <ellipse cx="60" cy="126" rx="30" ry="4" fill="#000" opacity=".08"/>
-  <path d="M86 116q24 2 26-14" stroke="#8C5A35" stroke-width="4" fill="none" stroke-linecap="round"/>
-  <ellipse cx="60" cy="106" rx="28" ry="20" fill="#A86F43"/><ellipse cx="60" cy="110" rx="16" ry="12" fill="#D9A47A"/>
-  <path d="M34 104q-10 4-10 12" stroke="#A86F43" stroke-width="9" fill="none" stroke-linecap="round"/>${arm}
-  <ellipse cx="20" cy="34" rx="16" ry="20" fill="#B57A4C" transform="rotate(-20 20 34)"/><ellipse cx="20" cy="35" rx="9" ry="13" fill="#EBA98A" transform="rotate(-20 20 35)"/>
-  <ellipse cx="100" cy="34" rx="16" ry="20" fill="#B57A4C" transform="rotate(20 100 34)"/><ellipse cx="100" cy="35" rx="9" ry="13" fill="#EBA98A" transform="rotate(20 100 35)"/>
-  <circle cx="60" cy="58" r="38" fill="#C48A5A"/><ellipse cx="60" cy="76" rx="24" ry="17" fill="#E9C39D"/>
-  <circle cx="42" cy="54" r="16" fill="#3A2414"/><circle cx="42" cy="54" r="13" fill="#F2A33A"/><circle cx="42" cy="55" r="7.5" fill="#1D120A"/><circle cx="38" cy="50" r="3.4" fill="#fff"/>
-  <circle cx="78" cy="54" r="16" fill="#3A2414"/><circle cx="78" cy="54" r="13" fill="#F2A33A"/><circle cx="78" cy="55" r="7.5" fill="#1D120A"/><circle cx="74" cy="50" r="3.4" fill="#fff"/>
-  ${brow}<path d="M57 72h6l-3 3z" fill="#5A3520"/>${mouth}
-  <ellipse cx="32" cy="74" rx="5" ry="3" fill="#F08E7A" opacity=".45"/><ellipse cx="88" cy="74" rx="5" ry="3" fill="#F08E7A" opacity=".45"/>
+  const S = 'stroke-linecap="round" fill="none"';
+  const mouth = {
+    happy: `<path d="M52 82q8 7 16 0" stroke="#5A3520" stroke-width="3" ${S}/>`,
+    wave: `<path d="M52 82q8 7 16 0" stroke="#5A3520" stroke-width="3" ${S}/>`,
+    cheer: '<path d="M50 80q10 13 20 0z" fill="#5A3520"/><path d="M54.5 85.5q5.5 3.5 11 0" fill="#F08E7A"/>',
+    wow: '<ellipse cx="60" cy="84" rx="4.5" ry="5.5" fill="#5A3520"/>',
+    sad: `<path d="M52 87q8-6 16 0" stroke="#5A3520" stroke-width="3" ${S}/>`
+  }[mood] || '';
+  const brow = mood === 'sad' ? `<path d="M29 37l14 4M91 37l-14 4" stroke="#7A4B2A" stroke-width="3" ${S}/>` : '';
+  const pads = (x, y) => `<circle cx="${x - 4}" cy="${y - 3}" r="2.2" fill="#F3C9A6"/><circle cx="${x}" cy="${y - 5}" r="2.2" fill="#F3C9A6"/><circle cx="${x + 4}" cy="${y - 3}" r="2.2" fill="#F3C9A6"/>`;
+  const up = side => side === 'r'
+    ? `<g class="m-arm-r"><path d="M86 102q16-6 18-26" stroke="#A86F43" stroke-width="9" ${S}/><circle cx="104" cy="75" r="5.5" fill="#E9B28C"/>${pads(104, 72)}</g>`
+    : `<g class="m-arm-l"><path d="M34 102q-16-6-18-26" stroke="#A86F43" stroke-width="9" ${S}/><circle cx="16" cy="75" r="5.5" fill="#E9B28C"/>${pads(16, 72)}</g>`;
+  const down = side => side === 'r'
+    ? `<g class="m-arm-r"><path d="M86 103q10 4 10 13" stroke="#A86F43" stroke-width="9" ${S}/><circle cx="96" cy="117" r="4.5" fill="#E9B28C"/></g>`
+    : `<g class="m-arm-l"><path d="M34 103q-10 4-10 13" stroke="#A86F43" stroke-width="9" ${S}/><circle cx="24" cy="117" r="4.5" fill="#E9B28C"/></g>`;
+  const armR = ['wave', 'wow', 'cheer'].includes(mood) ? up('r') : down('r');
+  const armL = mood === 'cheer' ? up('l') : down('l');
+  const eye = (cx, side) => `<g class="m-eye m-eye-${side}"><circle cx="${cx}" cy="54" r="16.5" fill="#3A2414"/><circle cx="${cx}" cy="54" r="13.2" fill="#F2A33A"/>
+    <circle cx="${cx}" cy="54" r="10.5" fill="none" stroke="#DB8420" stroke-width="1.4" opacity=".7"/>
+    <g class="m-look"><circle cx="${cx}" cy="55" r="7.5" fill="#1D120A"/><circle cx="${cx - 4}" cy="50.5" r="3.4" fill="#fff"/><circle cx="${cx + 3.5}" cy="58.5" r="1.5" fill="#fff" opacity=".8"/></g>
+    <g class="m-lid"><circle cx="${cx}" cy="54" r="17.4" fill="#C48A5A"/><path d="M${cx - 12} 60q12 6 24 0" stroke="#7A4B2A" stroke-width="2.6" fill="none" stroke-linecap="round"/></g></g>`;
+  return `<svg class="mascot m-${mood}" viewBox="0 0 120 130" aria-hidden="true">
+  <ellipse class="m-shadow" cx="60" cy="126" rx="30" ry="4" fill="#000" opacity=".08"/>
+  <g class="m-all">
+   <g class="m-tail"><path d="M84 117q26 3 27-17q1-14-6-24" stroke="#8C5A35" stroke-width="3.5" ${S}/><path d="M105 76q-3-9 3-15q4 7 1 15z" fill="#8C5A35"/></g>
+   <g class="m-body">
+    <ellipse cx="60" cy="106" rx="28" ry="20" fill="#A86F43"/><ellipse cx="60" cy="110" rx="16" ry="12" fill="#D9A47A"/>
+    <ellipse cx="44" cy="124" rx="9" ry="4" fill="#A86F43"/><ellipse cx="76" cy="124" rx="9" ry="4" fill="#A86F43"/>
+    <circle cx="37" cy="124" r="2" fill="#F3C9A6"/><circle cx="83" cy="124" r="2" fill="#F3C9A6"/>
+    ${armL}${armR}
+   </g>
+   <g class="m-head">
+    <g class="m-ear-l"><ellipse cx="20" cy="34" rx="16" ry="20" fill="#B57A4C" transform="rotate(-20 20 34)"/><ellipse cx="20" cy="35" rx="9" ry="13" fill="#EBA98A" transform="rotate(-20 20 35)"/></g>
+    <g class="m-ear-r"><ellipse cx="100" cy="34" rx="16" ry="20" fill="#B57A4C" transform="rotate(20 100 34)"/><ellipse cx="100" cy="35" rx="9" ry="13" fill="#EBA98A" transform="rotate(20 100 35)"/></g>
+    <circle cx="60" cy="58" r="38" fill="#C48A5A"/>
+    <path d="M52 21q4-7 8-1q4-6 8 1" fill="#C48A5A"/>
+    <ellipse cx="60" cy="76" rx="24" ry="17" fill="#E9C39D"/>
+    ${eye(42, 'l')}${eye(78, 'r')}
+    ${brow}<path d="M57 72h6l-3 3z" fill="#5A3520"/>${mouth}
+    <ellipse class="m-cheek" cx="32" cy="74" rx="5" ry="3" fill="#F08E7A" opacity=".45"/><ellipse class="m-cheek" cx="88" cy="74" rx="5" ry="3" fill="#F08E7A" opacity=".45"/>
+   </g>
+  </g>
 </svg>`;
 }
 const LOGO = `<svg viewBox="0 0 40 40"><rect width="40" height="40" rx="12" fill="#0E8C8F"/><circle cx="14" cy="19" r="7.5" fill="#F2A33A"/><circle cx="26" cy="19" r="7.5" fill="#F2A33A"/><circle cx="14" cy="20" r="3.6" fill="#1D120A"/><circle cx="26" cy="20" r="3.6" fill="#1D120A"/><circle cx="12.5" cy="17.5" r="1.4" fill="#fff"/><circle cx="24.5" cy="17.5" r="1.4" fill="#fff"/><path d="M15 30q5 4 10 0" stroke="#fff" stroke-width="2.4" fill="none" stroke-linecap="round"/></svg><span>tuon</span>`;
@@ -129,7 +154,7 @@ const canSpeak = cid => !!voiceFor(cid);
 function speak(text, cid, slow) {
   const v = voiceFor(cid);
   if (!v) return;
-  try { speechSynthesis.cancel(); const u = new SpeechSynthesisUtterance(text); u.voice = v; u.lang = v.lang; u.rate = slow ? 0.55 : 0.9; speechSynthesis.speak(u); } catch (e) { }
+  try { speechSynthesis.cancel(); const u = new SpeechSynthesisUtterance(text); u.voice = v; u.lang = v.lang; u.rate = slow ? 0.55 : 0.9; speechSynthesis.speak(u); mataAll('twitch', 520); } catch (e) { }
 }
 const sayBtn = (text, cid) => canSpeak(cid) ? `<button class="say" data-say="${esc(text)}" data-cid="${cid}" aria-label="Play audio">${ICON.speaker}</button>` : '';
 document.addEventListener('click', e => {
@@ -329,7 +354,7 @@ function obFrame(step, total, question, body, canGo, onNext, mood) {
 }
 function renderOnboard(step) {
   const T = 4, L = draft.course ? C[draft.course].name : 'it';
-  const set = (k, v) => { draft[k] = v; saveDraft(); sfx.tap(); renderOnboard(step); };
+  const set = (k, v) => { draft[k] = v; saveDraft(); sfx.tap(); renderOnboard(step); const m = $('.ask .mascot'); if (m && !mataReduce) mataCls(m, 'poke', 600); };
   window.obSet = set;
   if (step === 1) obFrame(1, T, 'What would you like to learn?',
     `<div class="choices grid">${COURSE_IDS.map(c => `<button class="choice course ${draft.course === c ? 'on' : ''}" onclick="obSet('course','${c}')">${flag(c, 1)}${C[c].name}</button>`).join('')}</div>`,
@@ -529,7 +554,7 @@ function renderLesson() {
       body = `${ex.isNew ? '<span class="new-word">✦ New word</span>' : ''}<h2>${esc(ex.prompt)}</h2><div class="cards">${ex.opts.map((o, i) => `<button class="pcard ${L.sel === i ? 'on' : ''}" onclick="LS(${i})" ${locked ? 'disabled' : ''}>${optKey(i)}<span class="pe">${o.i}</span><span>${wordLabel(o, cid)}</span></button>`).join('')}</div>`;
       break;
     case 'meaning':
-      body = `<h2>${esc(ex.prompt)}</h2><div class="prompt-row">${mascot('happy')}<div class="speech" style="display:flex;align-items:center;gap:10px">${sayBtn(ex.w.t, cid)}<span>${wordLabel(ex.w, cid)}</span></div></div>
+      body = `<h2>${esc(ex.prompt)}</h2><div class="prompt-row">${mascot(L.state === 'feedback' ? (L.ok ? 'cheer' : 'sad') : 'happy')}<div class="speech" style="display:flex;align-items:center;gap:10px">${sayBtn(ex.w.t, cid)}<span>${wordLabel(ex.w, cid)}</span></div></div>
         <div class="opts">${ex.opts.map((o, i) => `<button class="opt ${L.sel === i ? 'on' : ''}" onclick="LS(${i})" ${locked ? 'disabled' : ''}>${optKey(i)}${esc(o)}</button>`).join('')}</div>`;
       break;
     case 'listenPick':
@@ -543,7 +568,7 @@ function renderLesson() {
       const tile = (b, i, used) => `<button class="tile ${used ? 'used' : ''}" onclick="LT(${i})" ${locked ? 'disabled' : ''}>${esc(b.t)}${b.r ? `<span class="rom">${esc(b.r)}</span>` : ''}</button>`;
       const head = ex.type === 'listenTiles'
         ? `<div class="big-say"><button data-say="${esc(ex.s.t)}" data-cid="${cid}" aria-label="Play">${ICON.speaker}</button><button class="slow" data-say="${esc(ex.s.t)}" data-cid="${cid}" data-slow="1" aria-label="Play slowly">${ICON.snail}</button></div>`
-        : `<div class="prompt-row">${mascot('happy')}<div class="speech" style="display:flex;align-items:center;gap:10px">${ex.dir === 'en' ? sayBtn(ex.s.t, cid) + `<span>${esc(ex.s.t)}${ex.s.r ? `<span class="rom">${esc(ex.s.r)}</span>` : ''}</span>` : esc(ex.s.e)}</div></div>`;
+        : `<div class="prompt-row">${mascot(L.state === 'feedback' ? (L.ok ? 'cheer' : 'sad') : 'happy')}<div class="speech" style="display:flex;align-items:center;gap:10px">${ex.dir === 'en' ? sayBtn(ex.s.t, cid) + `<span>${esc(ex.s.t)}${ex.s.r ? `<span class="rom">${esc(ex.s.r)}</span>` : ''}</span>` : esc(ex.s.e)}</div></div>`;
       body = `<h2>${esc(ex.prompt)}</h2>${head}<div class="answer-line">${L.sel.map(i => `<button class="tile" onclick="LU(${i})" ${locked ? 'disabled' : ''}>${esc(ex.bank[i].t)}${ex.bank[i].r ? `<span class="rom">${esc(ex.bank[i].r)}</span>` : ''}</button>`).join('')}</div>
         <div class="bank">${ex.bank.map((b, i) => tile(b, i, L.sel.includes(i))).join('')}</div>`;
       break;
@@ -564,7 +589,7 @@ function renderLesson() {
   if (L.state === 'answer') foot = `<div class="lesson-foot"><div class="in"><button class="btn ghost skip" onclick="LSkip()">${ex.type.startsWith('listen') ? 'Can’t listen now' : 'Skip'}</button><button class="btn primary" id="checkBtn" onclick="LCheck()" ${canCheck ? '' : 'disabled'}>Check</button></div></div>`;
   else {
     const praise = pick(['Nice!', 'Great job!', 'Excellent!', 'You got it!', 'Ayos!', 'Correct!']);
-    foot = `<div class="lesson-foot ${L.ok ? 'ok' : 'bad'}"><div class="in"><div class="fb"><div class="badge">${L.ok ? ICON.check : ICON.x}</div><div><h3>${L.ok ? praise : 'Correct answer:'}</h3><p>${L.ok ? esc(L.note || '') : esc(ex.solution)}</p>${!L.ok && ex.type === 'tiles' && ex.dir === 'en' ? '' : ''}</div></div><button class="btn primary" id="checkBtn" onclick="LNext()">Continue</button></div></div>`;
+    foot = `<div class="lesson-foot ${L.ok ? 'ok' : 'bad'}"><div class="in"><div class="fb"><div class="badge">${mascot(L.ok ? 'cheer' : 'sad')}</div><div><h3>${L.ok ? praise : 'Correct answer:'}</h3><p>${L.ok ? esc(L.note || '') : esc(ex.solution)}</p>${!L.ok && ex.type === 'tiles' && ex.dir === 'en' ? '' : ''}</div></div><button class="btn primary" id="checkBtn" onclick="LNext()">Continue</button></div></div>`;
   }
   app.innerHTML = `<div class="lesson">
     <div class="lesson-top"><button class="icon-btn" onclick="LQuit()" aria-label="Quit lesson">${ICON.x}</button><div class="bar"><i style="width:${pct}%"></i></div>
@@ -664,7 +689,7 @@ function renderResult() {
   const s = steps[r.step];
   if (s === 'main') {
     const t = `${Math.floor(r.secs / 60)}:${pad(r.secs % 60)}`;
-    app.innerHTML = `<div class="lesson"><div class="result">${mascot(r.perfect ? 'wow' : 'happy')}
+    app.innerHTML = `${confetti()}<div class="lesson"><div class="result">${mascot('cheer')}
       <h1>${r.unitDone ? `Unit ${r.unit + 1} complete!` : r.perfect ? 'Perfect lesson!' : 'Lesson complete!'}</h1>
       <p class="muted">${r.goalHit ? 'You hit your daily goal — Mata is proud of you! 🎯' : r.perfect ? 'Zero mistakes. Impressive!' : 'Every lesson counts. Keep it up!'}</p>
       <div class="tiles3">
@@ -758,6 +783,41 @@ function renderProfile() {
       <div class="setrow"><button class="btn ghost" onclick="A.logout()">Log out</button><button class="link" style="color:var(--bad)" onclick="A.del()">Delete account</button></div>
     </div>
   </div>`);
+}
+
+/* ---------------- Mata's idle life: blinks, glances, ear twitches, head tilts, pointer tracking ---------------- */
+const mataReduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
+function mataCls(m, c, ms) { m.classList.add(c); setTimeout(() => m.classList.remove(c), ms); }
+function mataAll(c, ms) { if (!mataReduce) document.querySelectorAll('svg.mascot').forEach(m => mataCls(m, c, ms)); }
+function mataBlink(m) { mataCls(m, 'blink', 140); if (Math.random() < .25) setTimeout(() => mataCls(m, 'blink', 120), 260); }
+let mataPointer = 0;
+if (!mataReduce) {
+  (function tick() {
+    document.querySelectorAll('svg.mascot').forEach(m => {
+      if (Math.random() < .5) setTimeout(() => mataBlink(m), Math.random() * 900);
+      if (Date.now() - mataPointer > 2500 && Math.random() < .35) { m.style.setProperty('--lx', (Math.random() * 6 - 3).toFixed(1) + 'px'); m.style.setProperty('--ly', (Math.random() * 4 - 2).toFixed(1) + 'px'); }
+      if (Math.random() < .15) mataCls(m, 'twitch', 520);
+      if (Math.random() < .1 && !m.classList.contains('m-sad')) mataCls(m, Math.random() < .5 ? 'tilt-l' : 'tilt-r', 1500);
+    });
+    setTimeout(tick, 1300 + Math.random() * 1500);
+  })();
+  document.addEventListener('pointermove', e => {
+    mataPointer = Date.now();
+    document.querySelectorAll('svg.mascot').forEach(m => {
+      const b = m.getBoundingClientRect(); if (!b.width) return;
+      const dx = e.clientX - (b.left + b.width / 2), dy = e.clientY - (b.top + b.height * .42), d = Math.hypot(dx, dy) || 1, k = Math.min(1, d / 250);
+      m.style.setProperty('--lx', (dx / d * 3.2 * k).toFixed(2) + 'px'); m.style.setProperty('--ly', (dy / d * 2.6 * k).toFixed(2) + 'px');
+    });
+  }, { passive: true });
+}
+document.addEventListener('click', e => {
+  const m = e.target.closest('svg.mascot'); if (!m) return;
+  tone([[900, .06, 'sine', .07], [1400, .09, 'sine', .07]]);
+  if (!mataReduce) { mataCls(m, 'poke', 600); mataBlink(m); }
+});
+function confetti() {
+  const c = ['#0E8C8F', '#FF7F3F', '#FFB928', '#7A5AF8', '#2F80ED', '#F0465A'];
+  return `<div class="confetti" aria-hidden="true">${[...Array(36)].map((_, i) => `<i style="left:${(Math.random() * 100).toFixed(1)}%;background:${c[i % 6]};animation-delay:${(Math.random() * .8).toFixed(2)}s;animation-duration:${(1.8 + Math.random() * 1.4).toFixed(2)}s;--r:${Math.round(Math.random() * 720 - 360)}deg;--x:${Math.round(Math.random() * 120 - 60)}px"></i>`).join('')}</div>`;
 }
 
 if ('serviceWorker' in navigator && location.protocol.startsWith('http')) navigator.serviceWorker.register('sw.js').catch(() => { });

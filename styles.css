@@ -355,3 +355,62 @@ select.field{padding:10px 12px;width:auto}
 }
 .rail-mobile{display:none}
 @media (max-width:560px){.path .deco{display:none}}
+
+/* ---------- Mata the tarsier: animation ---------- */
+.mascot{overflow:visible;cursor:pointer;--lx:0px;--ly:0px;--ps:1;-webkit-user-select:none;user-select:none}
+.mascot *{transform-box:view-box}
+.mascot .m-all,.mascot .m-shadow{transform-origin:60px 126px}
+.mascot .m-body{transform-origin:60px 126px;animation:m-breathe 3.4s ease-in-out infinite}
+.mascot .m-tail{transform-origin:86px 117px;animation:m-tail 3s ease-in-out infinite}
+.mascot .m-head{transform-origin:60px 96px;transition:transform .55s cubic-bezier(.3,1.6,.6,1)}
+.mascot .m-ear-l{transform-origin:34px 46px;transition:transform .35s}
+.mascot .m-ear-r{transform-origin:86px 46px;transition:transform .35s}
+.mascot .m-lid{transform:scaleY(0);transition:transform .07s ease-in}
+.mascot .m-eye-l .m-lid{transform-origin:42px 36px}
+.mascot .m-eye-r .m-lid{transform-origin:78px 36px}
+.mascot .m-eye-l,.mascot .m-eye-l .m-look{transform-origin:42px 54px}
+.mascot .m-eye-r,.mascot .m-eye-r .m-look{transform-origin:78px 54px}
+.mascot .m-look{transform:translate(var(--lx),var(--ly)) scale(var(--ps));transition:transform .28s ease-out}
+.mascot .m-arm-r{transform-origin:87px 101px}
+.mascot .m-arm-l{transform-origin:33px 101px}
+.mascot.blink .m-lid{transform:scaleY(1)}
+.mascot.tilt-l .m-head{transform:rotate(-10deg)}
+.mascot.tilt-r .m-head{transform:rotate(10deg)}
+.mascot.twitch .m-ear-l{animation:m-ear-l .5s ease-out}
+.mascot.twitch .m-ear-r{animation:m-ear-r .5s ease-out .06s}
+.mascot.poke{--ps:1.25}
+.mascot.poke .m-all{animation:m-poke .6s cubic-bezier(.3,1.5,.5,1)}
+/* moods */
+.m-happy .m-all{animation:m-bob 2.6s ease-in-out infinite}
+.m-wave .m-arm-r{animation:m-wave 1.2s ease-in-out infinite}
+.m-wow{--ps:1.22}
+.m-wow .m-all{animation:m-hop 1.8s ease-in-out infinite}
+.m-cheer .m-all{animation:m-jump .75s ease-in-out 4}
+.m-cheer .m-shadow{animation:m-shadow .75s ease-in-out 4}
+.m-cheer .m-arm-r{animation:m-wave .38s ease-in-out infinite}
+.m-cheer .m-arm-l{animation:m-wave-l .38s ease-in-out infinite}
+.m-sad .m-head{transform:translateY(3px) rotate(-4deg)}
+.m-sad .m-ear-l{transform:rotate(-24deg)}
+.m-sad .m-ear-r{transform:rotate(24deg)}
+.m-sad .m-tail{animation-duration:6s}
+.m-sad .m-all{animation:m-sigh 2.4s ease-in-out}
+@keyframes m-breathe{50%{transform:scale(1.025,1.015)}}
+@keyframes m-tail{0%,100%{transform:rotate(0)}50%{transform:rotate(-14deg)}}
+@keyframes m-ear-l{30%{transform:rotate(-16deg)}60%{transform:rotate(6deg)}}
+@keyframes m-ear-r{30%{transform:rotate(16deg)}60%{transform:rotate(-6deg)}}
+@keyframes m-poke{20%{transform:scale(1.08,.88)}55%{transform:translateY(-12px) scale(.95,1.06)}}
+@keyframes m-bob{50%{transform:translateY(-3px)}}
+@keyframes m-wave{0%,100%{transform:rotate(0)}50%{transform:rotate(-24deg)}}
+@keyframes m-wave-l{0%,100%{transform:rotate(0)}50%{transform:rotate(24deg)}}
+@keyframes m-hop{0%,60%,100%{transform:none}70%{transform:scale(1.05,.94)}82%{transform:translateY(-8px)}}
+@keyframes m-jump{0%,100%{transform:scale(1.06,.93)}45%{transform:translateY(-16px) scale(.96,1.05)}}
+@keyframes m-shadow{45%{transform:scale(.65);opacity:.04}}
+@keyframes m-sigh{30%{transform:scale(1.02,1.04)}70%{transform:scale(1,.97)}}
+.path .deco{pointer-events:auto}
+.fb .badge{overflow:visible}
+.fb .badge:has(.mascot){background:none;width:74px;height:74px}
+.fb .badge .mascot{width:74px;height:auto;margin-top:-12px}
+.confetti{position:fixed;inset:0;pointer-events:none;overflow:hidden;z-index:40}
+.confetti i{position:absolute;top:-14px;width:9px;height:14px;border-radius:2px;animation:conf linear forwards}
+@keyframes conf{to{transform:translate(var(--x),105vh) rotate(var(--r))}}
+@media (prefers-reduced-motion:reduce){.mascot,.mascot *{animation:none!important;transition:none!important}.confetti{display:none}}
