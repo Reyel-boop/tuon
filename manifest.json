@@ -1,0 +1,9 @@
+{
+  "name": "Tuon — learn a language",
+  "short_name": "Tuon",
+  "start_url": "./",
+  "display": "standalone",
+  "background_color": "#FFF8EE",
+  "theme_color": "#0E8C8F",
+  "icons": [{ "src": "icon.svg", "sizes": "any", "type": "image/svg+xml", "purpose": "any maskable" }]
+}
