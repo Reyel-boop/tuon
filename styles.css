@@ -530,3 +530,22 @@ pre.code code{font:inherit;white-space:pre}
 pre.code,pre.code code,.opt code,.flag.ic.txt{font-variant-ligatures:none;font-feature-settings:"liga" 0,"calt" 0}
 
 @media (max-width:860px){.hero-art{padding:10px 0}.hero-art .blob{width:min(88%,260px)}}
+
+/* ---------- picture quizzes ---------- */
+figure.pic{margin:0 0 16px;border-radius:16px;overflow:hidden;background:var(--surface2)}
+figure.pic img{display:block;width:100%;max-height:300px;object-fit:contain;background:#111}
+figure.pic figcaption{font-size:11px;color:var(--muted);padding:6px 10px;line-height:1.4;word-break:break-word}
+figure.pic figcaption a{color:var(--brand)}
+.lesson-body > figure.pic img{max-height:260px}
+.picgrid{grid-template-columns:repeat(2,1fr)}
+.pcard.pic{padding:0;overflow:hidden;gap:0}
+.pcard.pic img{width:100%;aspect-ratio:4/3;object-fit:cover;display:block}
+.pcard.pic > span:not(.k){padding:6px 8px;font-size:13px}
+.pcard.pic .k{z-index:1;background:var(--surface)}
+.pcard.right{border-color:var(--ok);box-shadow:0 0 0 3px var(--ok-bg)}
+.pcard.wrong{border-color:var(--bad);box-shadow:0 0 0 3px var(--bad-bg)}
+.pcard.pic.on{box-shadow:0 0 0 3px var(--brand-l)}
+details.credits{margin-top:8px;font-size:12.5px;color:var(--muted)}
+details.credits summary{cursor:pointer;font-weight:600}
+details.credits ul{margin:8px 0 0 18px;display:grid;gap:4px}
+@media (min-width:700px){.picgrid{grid-template-columns:repeat(4,1fr)}}

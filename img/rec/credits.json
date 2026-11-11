@@ -1,0 +1,219 @@
+{
+ "everest": {
+  "file": "everest.jpg",
+  "subject": "Mount Everest",
+  "author": "Rdevany",
+  "license": "CC BY-SA 3.0",
+  "source": "https://commons.wikimedia.org/wiki/File:Mt._Everest_from_Gokyo_Ri_November_5,_2012.jpg"
+ },
+ "bluewhale": {
+  "file": "bluewhale.jpg",
+  "subject": "Blue whale",
+  "author": "NOAA Photo Library",
+  "license": "Public domain",
+  "source": "https://commons.wikimedia.org/wiki/File:Anim1754_-_Flickr_-_NOAA_Photo_Library.jpg"
+ },
+ "cheetah": {
+  "file": "cheetah.jpg",
+  "subject": "Cheetah",
+  "author": "AfricanConservation",
+  "license": "CC BY-SA 4.0",
+  "source": "https://commons.wikimedia.org/wiki/File:Male_cheetah_facing_left_in_South_Africa.jpg"
+ },
+ "falcon": {
+  "file": "falcon.jpg",
+  "subject": "Peregrine falcon",
+  "author": "Mykola Swarnyk",
+  "license": "CC BY-SA 3.0",
+  "source": "https://commons.wikimedia.org/wiki/File:Falco_peregrinus_m_Humber_Bay_Park_Toronto.jpg"
+ },
+ "giraffe": {
+  "file": "giraffe.jpg",
+  "subject": "Northern giraffe",
+  "author": "Thomas Fuhrmann",
+  "license": "CC BY-SA 4.0",
+  "source": "https://commons.wikimedia.org/wiki/File:Rothschild%27s_giraffe_(Giraffa_camelopardalis_rothschildi)_-_Murchison_Falls_National_Park.jpg"
+ },
+ "elephant": {
+  "file": "elephant.jpg",
+  "subject": "African bush elephant",
+  "author": "Giles Laurent",
+  "license": "CC BY-SA 4.0",
+  "source": "https://commons.wikimedia.org/wiki/File:178_Male_African_bush_elephant_in_Etosha_National_Park_Photo_by_Giles_Laurent.jpg"
+ },
+ "ostrich": {
+  "file": "ostrich.jpg",
+  "subject": "Common ostrich",
+  "author": "Yathin S Krishnappa",
+  "license": "CC BY-SA 4.0",
+  "source": "https://commons.wikimedia.org/wiki/File:Struthio_camelus_-_Etosha_2014_(3).jpg"
+ },
+ "hummingbird": {
+  "file": "hummingbird.jpg",
+  "subject": "Bee hummingbird",
+  "author": "Charles J. Sharp",
+  "license": "CC BY-SA 4.0",
+  "source": "https://commons.wikimedia.org/wiki/File:Bee_hummingbird_(Mellisuga_helenae)_adult_male_in_flight-cropped.jpg"
+ },
+ "redwood": {
+  "file": "redwood.jpg",
+  "subject": "Sequoia sempervirens",
+  "author": "Acroterion",
+  "license": "CC BY-SA 4.0",
+  "source": "https://commons.wikimedia.org/wiki/File:US_199_Redwood_Highway.jpg"
+ },
+ "rafflesia": {
+  "file": "rafflesia.jpg",
+  "subject": "Rafflesia arnoldii",
+  "author": "LukeTriton",
+  "license": "CC BY-SA 4.0",
+  "source": "https://commons.wikimedia.org/wiki/File:Rafflesia_arnoldii,_Sumatra.jpg"
+ },
+ "reef": {
+  "file": "reef.jpg",
+  "subject": "Great Barrier Reef",
+  "author": "NASA/Kjell Lindgren",
+  "license": "Public domain",
+  "source": "https://commons.wikimedia.org/wiki/File:ISS-45_StoryOfWater,_Great_Barrier_Reef,_Australia.jpg"
+ },
+ "angelfalls": {
+  "file": "angelfalls.jpg",
+  "subject": "Angel Falls",
+  "author": "Rich Childs",
+  "license": "CC BY 2.0",
+  "source": "https://commons.wikimedia.org/wiki/File:SaltoAngel1.jpg"
+ },
+ "croc": {
+  "file": "croc.jpg",
+  "subject": "Saltwater crocodile",
+  "author": "Obtained from Molly Ebersold of the St. Augustine Alligator Farm",
+  "license": "Public domain",
+  "source": "https://commons.wikimedia.org/wiki/File:SaltwaterCrocodile(%27Maximo%27).jpg"
+ },
+ "sahara": {
+  "file": "sahara.jpg",
+  "subject": "Sahara",
+  "author": "Project Apollo Archive",
+  "license": "Public domain",
+  "source": "https://commons.wikimedia.org/wiki/File:Sahara_real_color.jpg"
+ },
+ "burj": {
+  "file": "burj.jpg",
+  "subject": "Burj Khalifa",
+  "author": "imran shahabuddin",
+  "license": "CC BY 2.0",
+  "source": "https://commons.wikimedia.org/wiki/File:Burj_Khalifa_(worlds_tallest_building)_and_the_Dubai_skyline_(25781049892).jpg"
+ },
+ "greatwall": {
+  "file": "greatwall.jpg",
+  "subject": "Great Wall of China",
+  "author": "Severin.stalder",
+  "license": "CC BY-SA 3.0",
+  "source": "https://commons.wikimedia.org/wiki/File:The_Great_Wall_of_China_at_Jinshanling-edit.jpg"
+ },
+ "giza": {
+  "file": "giza.jpg",
+  "subject": "Great Pyramid of Giza",
+  "author": "Douwe C. van der Zee",
+  "license": "CC BY-SA 4.0",
+  "source": "https://commons.wikimedia.org/wiki/File:Great_Pyramid_of_Giza_-_Pyramid_of_Khufu.jpg"
+ },
+ "a380": {
+  "file": "a380.jpg",
+  "subject": "Airbus A380",
+  "author": "Maarten Visser from Capelle aan den IJssel, Nederland",
+  "license": "CC BY-SA 2.0",
+  "source": "https://commons.wikimedia.org/wiki/File:A6-EDY_A380_Emirates_31_jan_2013_jfk_(8442269364)_(cropped).jpg"
+ },
+ "unity": {
+  "file": "unity.jpg",
+  "subject": "Statue of Unity",
+  "author": "Snehrashmi",
+  "license": "CC BY-SA 4.0",
+  "source": "https://commons.wikimedia.org/wiki/File:Statue_of_Unity.jpg"
+ },
+ "danyang": {
+  "file": "danyang.jpg",
+  "subject": "Danyang–Kunshan Grand Bridge",
+  "author": "MNXANL",
+  "license": "CC BY-SA 4.0",
+  "source": "https://commons.wikimedia.org/wiki/File:201603_Danyang-Kunshan_grand_bridge_(wuxi)_(cropped).JPG"
+ },
+ "jupiter": {
+  "file": "jupiter.jpg",
+  "subject": "Jupiter",
+  "author": "NASA/STSCI (S.T.A.R.S)",
+  "license": "Public domain",
+  "source": "https://commons.wikimedia.org/wiki/File:Jupiter_OPAL_2024.png"
+ },
+ "venus": {
+  "file": "venus.jpg",
+  "subject": "Venus",
+  "author": "NASA/JPL-Caltech",
+  "license": "Public domain",
+  "source": "https://commons.wikimedia.org/wiki/File:Venus_from_Mariner_10.jpg"
+ },
+ "moon": {
+  "file": "moon.jpg",
+  "subject": "Moon",
+  "author": "Gregory H. Revera",
+  "license": "CC BY-SA 3.0",
+  "source": "https://commons.wikimedia.org/wiki/File:FullMoon2010.jpg"
+ },
+ "gagarin": {
+  "file": "gagarin.jpg",
+  "subject": "Yuri Gagarin",
+  "author": "Александр Моклецов / СовИнформБюро",
+  "license": "CC BY 4.0",
+  "source": "https://commons.wikimedia.org/wiki/File:Yuri_Gagarin_with_awards_(cropped)_2.jpg"
+ },
+ "armstrong": {
+  "file": "armstrong.jpg",
+  "subject": "Neil Armstrong",
+  "author": "Unknown author",
+  "license": "Public domain",
+  "source": "https://commons.wikimedia.org/wiki/File:Neil_Armstrong_pose.jpg"
+ },
+ "wadlow": {
+  "file": "wadlow.jpg",
+  "subject": "Robert Wadlow",
+  "author": "Unknown author",
+  "license": "Public domain",
+  "source": "https://commons.wikimedia.org/wiki/File:Robert_Wadlow_postcard.jpg"
+ },
+ "phelps": {
+  "file": "phelps.jpg",
+  "subject": "Michael Phelps",
+  "author": "Agência Brasil Fotografias",
+  "license": "CC BY 2.0",
+  "source": "https://commons.wikimedia.org/wiki/File:Michael_Phelps_Rio_Olympics_2016.jpg"
+ },
+ "pacquiao": {
+  "file": "pacquiao.jpg",
+  "subject": "Manny Pacquiao",
+  "author": "Robert Oswald P. Alfiler for the Philippine News Agency (state-owned publication)",
+  "license": "Public domain",
+  "source": "https://commons.wikimedia.org/wiki/File:Former_senator_Manny_Pacquiao_speaks_in_event_(10-01-2025)_(cropped).jpg"
+ },
+ "carlsen": {
+  "file": "carlsen.jpg",
+  "subject": "Magnus Carlsen",
+  "author": "Frans Peeters Photography",
+  "license": "CC BY-SA 2.0",
+  "source": "https://commons.wikimedia.org/wiki/File:Magnus_Carlsen_Tata_2023_-_71_(cropped_v4).jpg"
+ },
+ "calment": {
+  "file": "calment.jpg",
+  "subject": "Jeanne Calment",
+  "author": "Gustave Ouvière",
+  "license": "Public domain",
+  "source": "https://commons.wikimedia.org/wiki/File:JeanneCalmentaged40.jpg"
+ },
+ "messi": {
+  "file": "messi.jpg",
+  "subject": "Lionel Messi",
+  "author": "Bryan Berlin",
+  "license": "CC BY-SA 4.0",
+  "source": "https://commons.wikimedia.org/wiki/File:Leo_Messi_Argentina_v_Egypt_7_July_2026-1.jpg"
+ }
+}

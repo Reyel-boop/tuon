@@ -7,6 +7,7 @@ const REASONS = [['🧳', 'Travel'], ['💼', 'Work & career'], ['🧠', 'Train 
 const LEVELS = [['🌱', "I'm new to {L}", 'Start from the very beginning', 0], ['📖', 'I know some common words', 'Start at Unit 2', 5], ['💬', 'I can have basic conversations', 'Start at Unit 3', 10]];
 const SKILL_LEVELS = [['🌱', "I'm new to {L}", 'Start from the very beginning', 0], ['📖', 'I know the basics', 'Start at Unit 2', 5], ['🏆', 'I play regularly', 'Start at Unit 3', 10]];
 const CODE_LEVELS = [['🌱', "I'm new to {L}", 'Start from the very beginning', 0], ['💻', "I've written a little {L}", 'Start at Unit 2', 5], ['🚀', 'I use it regularly', 'Start at Unit 3', 10]];
+const TRIVIA_LEVELS = [['🌱', "I'm new to {L}", 'Start from the very beginning', 0], ['📖', 'I know some fun facts', 'Start at Unit 2', 5], ['🏆', 'I’m a trivia expert', 'Start at Unit 3', 10]];
 const LPU = 5, MAX_HEARTS = 5, HEART_MS = 30 * 60 * 1000, REFILL_COST = 100, FREEZE_COST = 50;
 const OFFS = [0, 52, 78, 52, 0];
 const LEAGUES = [['🌱', 'Seedling'], ['🌿', 'Sprout'], ['🌳', 'Grove'], ['🌲', 'Forest'], ['🏔️', 'Summit']];
@@ -316,13 +317,18 @@ function boardHtml(fen, o = {}) {
   }
   return h + '</div>';
 }
+function picHtml(cid, k, credit) {
+  const p = C[cid].pics[k];
+  return `<figure class="pic"><img src="${p.img}" alt="${esc(p.n)}" loading="lazy">${credit ? `<figcaption>Photo: ${esc(p.author)} · ${esc(p.license)} · <a href="${esc(p.source)}" target="_blank" rel="noopener">source</a></figcaption>` : ''}</figure>`;
+}
 const codeBlock = c => `<pre class="code"><code>${esc(c)}</code></pre>`;
 const skillRef = (cid, ui, t, qi) => `${cid}|q|${ui}|${t}|${qi}`;
 function skillQ(cid, ui, t, qi) {
   const q = C[cid].units[ui].topics[t].qs[qi], ref = skillRef(cid, ui, t, qi);
   if (q.from || q.sq) { const targets = q.sq || pieceMoves(q.fen, q.from); return { type: 'squares', cid, ref, prompt: q.q, fen: q.fen, from: q.from || null, targets, why: q.why, solution: targets.length <= 4 ? targets.join(', ') : 'Any of the highlighted squares' }; }
+  if (q.pics) { const opts = shuffle(q.pics); return { type: 'mc', pics: true, cid, ref, prompt: q.q, opts, answer: opts.indexOf(q.pics[q.a]), solution: C[cid].pics[q.pics[q.a]].n, why: q.why }; }
   const opts = q.keep ? q.o.slice() : shuffle(q.o);
-  return { type: 'mc', cid, ref, prompt: q.q, fen: q.fen, em: q.em, code: q.code, mono: q.mono, opts, answer: opts.indexOf(q.o[q.a]), solution: q.o[q.a], why: q.why };
+  return { type: 'mc', img: q.img, cid, ref, prompt: q.q, fen: q.fen, em: q.em, code: q.code, mono: q.mono, opts, answer: opts.indexOf(q.o[q.a]), solution: q.o[q.a], why: q.why };
 }
 function buildSkill(cid, ui, li) {
   const U = C[cid].units[ui];
@@ -344,7 +350,8 @@ function skillPractice(u, cid, unitsOpen) {
 function skillGuide(ui) {
   const cid = me().course, U = C[cid].units[ui];
   modal(`<h2>Unit ${ui + 1} guidebook · ${esc(U.title)}</h2><p class="muted" style="margin-bottom:16px">The key ideas in this unit.</p>
-    ${U.topics.map(T => `<div class="gcard"><h3>${esc(T.card.t)}</h3><p>${esc(T.card.x)}</p>${T.card.code ? codeBlock(T.card.code) : ''}${T.card.fen ? boardHtml(T.card.fen, { hl: T.card.hl, small: 1 }) : ''}${T.card.em ? `<div class="hint-em" style="font-size:34px;margin:8px 0 0">${T.card.em}</div>` : ''}</div>`).join('')}
+    ${U.topics.map(T => `<div class="gcard"><h3>${esc(T.card.t)}</h3>${T.card.img ? picHtml(cid, T.card.img, true) : ''}<p>${esc(T.card.x)}</p>${T.card.code ? codeBlock(T.card.code) : ''}${T.card.fen ? boardHtml(T.card.fen, { hl: T.card.hl, small: 1 }) : ''}${T.card.em ? `<div class="hint-em" style="font-size:34px;margin:8px 0 0">${T.card.em}</div>` : ''}</div>`).join('')}
+    ${C[cid].pics ? `<details class="credits"><summary>All photo credits</summary><ul>${Object.values(C[cid].pics).map(p => `<li><b>${esc(p.n)}</b> — ${esc(p.author)} · ${esc(p.license)} · <a href="${esc(p.source)}" target="_blank" rel="noopener">source</a></li>`).join('')}</ul></details>` : ''}
     <div class="acts"><button class="btn primary" onclick="closeModal()">Got it</button></div>`, true);
 }
 function buildLesson(cid, ui, li) {
@@ -445,13 +452,13 @@ function renderOnboard(step) {
   const set = (k, v) => { draft[k] = v; saveDraft(); sfx.tap(); renderOnboard(step); const m = $('.ask .mascot'); if (m && !mataReduce) mataCls(m, 'poke', 600); };
   window.obSet = set;
   if (step === 1) obFrame(1, T, 'What would you like to learn?',
-    [['Languages', COURSE_IDS.filter(c => !C[c].kind)], ['Programming', COURSE_IDS.filter(c => C[c].group === 'code')], ['Games & sports', COURSE_IDS.filter(c => C[c].kind && C[c].group !== 'code')]].map(([h, ids]) => `<h3 class="ob-sec">${h}</h3><div class="choices grid">${ids.map(c => `<button class="choice course ${draft.course === c ? 'on' : ''}" onclick="obSet('course','${c}')">${flag(c, 1)}${C[c].name}</button>`).join('')}</div>`).join(''),
+    [['Languages', COURSE_IDS.filter(c => !C[c].kind)], ['Programming', COURSE_IDS.filter(c => C[c].group === 'code')], ['Trivia', COURSE_IDS.filter(c => C[c].group === 'trivia')], ['Games & sports', COURSE_IDS.filter(c => C[c].kind && !C[c].group)]].map(([h, ids]) => `<h3 class="ob-sec">${h}</h3><div class="choices grid">${ids.map(c => `<button class="choice course ${draft.course === c ? 'on' : ''}" onclick="obSet('course','${c}')">${flag(c, 1)}${C[c].name}</button>`).join('')}</div>`).join(''),
     !!draft.course, () => go('#/start/2'), 'wave');
   else if (step === 2) obFrame(2, T, `Why are you learning ${L}?`,
     `<div class="choices grid">${REASONS.map((r, i) => `<button class="choice ${draft.reason === i ? 'on' : ''}" onclick="obSet('reason',${i})"><span class="em">${r[0]}</span>${r[1]}</button>`).join('')}</div>`,
     draft.reason != null, () => go('#/start/3'));
   else if (step === 3) obFrame(3, T, `How much ${L} do you know?`,
-    `<div class="choices">${(draft.course && C[draft.course].group === 'code' ? CODE_LEVELS : draft.course && C[draft.course].kind ? SKILL_LEVELS : LEVELS).map((r, i) => `<button class="choice ${draft.level === i ? 'on' : ''}" onclick="obSet('level',${i})"><span class="em">${r[0]}</span><span>${r[1].replace('{L}', L)}<small>${r[2]}</small></span></button>`).join('')}</div>`,
+    `<div class="choices">${(draft.course && C[draft.course].group === 'trivia' ? TRIVIA_LEVELS : draft.course && C[draft.course].group === 'code' ? CODE_LEVELS : draft.course && C[draft.course].kind ? SKILL_LEVELS : LEVELS).map((r, i) => `<button class="choice ${draft.level === i ? 'on' : ''}" onclick="obSet('level',${i})"><span class="em">${r[0]}</span><span>${r[1].replace('{L}', L)}<small>${r[2]}</small></span></button>`).join('')}</div>`,
     draft.level != null, () => go('#/start/4'), 'wow');
   else obFrame(4, T, 'What’s your daily learning goal?',
     `<div class="choices">${GOALS.map((g, i) => `<button class="choice ${draft.goal === i ? 'on' : ''}" onclick="obSet('goal',${i})"><span class="em">${['☕', '🚶', '🏃', '🔥'][i]}</span><span style="flex:1">${g.min} min / day</span><span class="muted">${g.label}</span></button>`).join('')}</div>`,
@@ -710,10 +717,11 @@ function renderLesson() {
       body = `<h2>${esc(ex.prompt)}</h2><div class="hint-em">${ex.w.i}</div><textarea class="typebox" id="typeIn" dir="auto" placeholder="Type in ${C[cid].name}${C[cid].romaji ? ` (${C[cid].romName || 'romaji'} is fine)` : ''}" autocomplete="off" autocapitalize="off" spellcheck="false" ${locked ? 'disabled' : ''}>${esc(L.typed || '')}</textarea>`;
       break;
     case 'card':
-      body = `<span class="new-word">✦ New lesson</span><div class="lcard"><h2>${esc(ex.t)}</h2><p>${esc(ex.x)}</p>${ex.code ? codeBlock(ex.code) : ''}${ex.fen ? boardHtml(ex.fen, { hl: ex.hl }) : ''}${ex.em ? `<div class="hint-em">${ex.em}</div>` : ''}</div>`;
+      body = `<span class="new-word">✦ New lesson</span><div class="lcard"><h2>${esc(ex.t)}</h2>${ex.img ? picHtml(cid, ex.img, true) : ''}<p>${esc(ex.x)}</p>${ex.code ? codeBlock(ex.code) : ''}${ex.fen ? boardHtml(ex.fen, { hl: ex.hl }) : ''}${ex.em ? `<div class="hint-em">${ex.em}</div>` : ''}</div>`;
       break;
     case 'mc':
-      body = `<h2>${esc(ex.prompt)}</h2>${ex.code ? codeBlock(ex.code) : ''}${ex.fen ? boardHtml(ex.fen, { small: 1 }) : ''}${ex.em ? `<div class="hint-em">${ex.em}</div>` : ''}<div class="opts">${ex.opts.map((o, i) => `<button class="opt ${L.sel === i ? 'on' : ''} ${locked && i === ex.answer ? 'right' : ''} ${locked && L.sel === i && i !== ex.answer ? 'wrong' : ''}" onclick="LS(${i})" ${locked ? 'disabled' : ''}>${optKey(i)}${ex.mono ? `<code>${esc(o)}</code>` : esc(o)}</button>`).join('')}</div>`;
+      if (ex.pics) { body = `<h2>${esc(ex.prompt)}</h2><div class="cards picgrid">${ex.opts.map((k, i) => `<button class="pcard pic ${L.sel === i ? 'on' : ''} ${locked && i === ex.answer ? 'right' : ''} ${locked && L.sel === i && i !== ex.answer ? 'wrong' : ''}" onclick="LS(${i})" ${locked ? 'disabled' : ''}>${optKey(i)}<img src="${C[cid].pics[k].img}" alt="Option ${i + 1}" loading="lazy">${locked ? `<span>${esc(C[cid].pics[k].n)}</span>` : ''}</button>`).join('')}</div>`; break; }
+      body = `<h2>${esc(ex.prompt)}</h2>${ex.img ? picHtml(cid, ex.img) : ''}${ex.code ? codeBlock(ex.code) : ''}${ex.fen ? boardHtml(ex.fen, { small: 1 }) : ''}${ex.em ? `<div class="hint-em">${ex.em}</div>` : ''}<div class="opts">${ex.opts.map((o, i) => `<button class="opt ${L.sel === i ? 'on' : ''} ${locked && i === ex.answer ? 'right' : ''} ${locked && L.sel === i && i !== ex.answer ? 'wrong' : ''}" onclick="LS(${i})" ${locked ? 'disabled' : ''}>${optKey(i)}${ex.mono ? `<code>${esc(o)}</code>` : esc(o)}</button>`).join('')}</div>`;
       break;
     case 'squares':
       body = `<h2>${esc(ex.prompt)}</h2>${boardHtml(ex.fen, { click: !locked, sel: L.sel, from: ex.from, good: locked ? ex.targets : null, bad: locked && !L.ok ? L.sel : null })}`;
