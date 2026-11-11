@@ -474,7 +474,6 @@ select.field{padding:10px 12px;width:auto}
   .sc4{--sky1:#3B1E30;--sky2:#1A1820;--hill1:#3A2F4F;--hill2:#2A4030;--leaf1:#2C6B48;--leaf2:#22573A;--leaf3:#3B8558}
 }
 .rom{direction:ltr;unicode-bidi:isolate;text-align:start}
-[dir="rtl"] .rom,[dir="auto"] .rom{text-align:right}
 
 /* ---------- game & sport courses ---------- */
 .flag.ic{display:grid;place-items:center;font-size:14px;line-height:1;color:#fff;box-shadow:none}

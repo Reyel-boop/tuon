@@ -88,7 +88,15 @@ const FLAGS = {
   il: '<svg viewBox="0 0 30 20"><rect width="30" height="20" fill="#fff"/><rect y="2" width="30" height="2.6" fill="#0038B8"/><rect y="15.4" width="30" height="2.6" fill="#0038B8"/><g fill="none" stroke="#0038B8" stroke-width=".9"><path d="M15 6.2l3.3 5.7h-6.6z"/><path d="M15 13.8l-3.3-5.7h6.6z"/></g></svg>',
   in: '<svg viewBox="0 0 30 20"><rect width="30" height="20" fill="#138808"/><rect width="30" height="13.33" fill="#fff"/><rect width="30" height="6.67" fill="#FF9933"/><circle cx="15" cy="10" r="2.6" fill="none" stroke="#000080" stroke-width=".6"/><circle cx="15" cy="10" r=".5" fill="#000080"/></svg>',
   th: '<svg viewBox="0 0 30 20"><rect width="30" height="20" fill="#A51931"/><rect y="3.33" width="30" height="13.33" fill="#F4F5F8"/><rect y="6.67" width="30" height="6.67" fill="#2D2A4A"/></svg>',
-  ke: '<svg viewBox="0 0 30 20"><rect width="30" height="20" fill="#006600"/><rect width="30" height="13.6" fill="#fff"/><rect width="30" height="6" fill="#000"/><rect y="7.2" width="30" height="5.6" fill="#BB0000"/><ellipse cx="15" cy="10" rx="2.6" ry="5" fill="#BB0000" stroke="#000" stroke-width=".5"/><path d="M15 5v10" stroke="#fff" stroke-width=".5"/></svg>'
+  ke: '<svg viewBox="0 0 30 20"><rect width="30" height="20" fill="#006600"/><rect width="30" height="13.6" fill="#fff"/><rect width="30" height="6" fill="#000"/><rect y="7.2" width="30" height="5.6" fill="#BB0000"/><ellipse cx="15" cy="10" rx="2.6" ry="5" fill="#BB0000" stroke="#000" stroke-width=".5"/><path d="M15 5v10" stroke="#fff" stroke-width=".5"/></svg>',
+  dk: '<svg viewBox="0 0 30 20"><rect width="30" height="20" fill="#C8102E"/><rect x="9" width="3" height="20" fill="#fff"/><rect y="8.5" width="30" height="3" fill="#fff"/></svg>',
+  no: '<svg viewBox="0 0 30 20"><rect width="30" height="20" fill="#BA0C2F"/><rect x="8" width="5" height="20" fill="#fff"/><rect y="7.5" width="30" height="5" fill="#fff"/><rect x="9.25" width="2.5" height="20" fill="#00205B"/><rect y="8.75" width="30" height="2.5" fill="#00205B"/></svg>',
+  fi: '<svg viewBox="0 0 30 20"><rect width="30" height="20" fill="#fff"/><rect x="8" width="5" height="20" fill="#003580"/><rect y="7.5" width="30" height="5" fill="#003580"/></svg>',
+  cz: '<svg viewBox="0 0 30 20"><rect width="30" height="20" fill="#D7141A"/><rect width="30" height="10" fill="#fff"/><path d="M0 0l15 10L0 20z" fill="#11457E"/></svg>',
+  sk: '<svg viewBox="0 0 30 20"><rect width="30" height="20" fill="#EE1C25"/><rect width="30" height="13.33" fill="#0B4EA2"/><rect width="30" height="6.67" fill="#fff"/><path d="M6.5 5h7v6.5c0 2.6-3.5 4-3.5 4s-3.5-1.4-3.5-4z" fill="#EE1C25" stroke="#fff" stroke-width=".6"/><path d="M10 6.5v7M8.4 8.6h3.2M8.8 10.4h2.4" stroke="#fff" stroke-width=".8"/><path d="M7.2 13.2q2.8-1.6 5.6 0" fill="#0B4EA2"/></svg>',
+  hu: '<svg viewBox="0 0 30 20"><rect width="30" height="20" fill="#477050"/><rect width="30" height="13.33" fill="#fff"/><rect width="30" height="6.67" fill="#CE2939"/></svg>',
+  hr: '<svg viewBox="0 0 30 20"><rect width="30" height="20" fill="#171796"/><rect width="30" height="13.33" fill="#fff"/><rect width="30" height="6.67" fill="#FF0000"/><path d="M12.5 5.5h5v5.2c0 1.8-2.5 2.8-2.5 2.8s-2.5-1-2.5-2.8z" fill="#fff" stroke="#FF0000" stroke-width=".3"/><path d="M12.5 5.5h1.25v1.25h-1.25zM15 5.5h1.25v1.25H15zM13.75 6.75H15V8h-1.25zM16.25 6.75h1.25V8h-1.25zM12.5 8h1.25v1.25h-1.25zM15 8h1.25v1.25H15zM13.75 9.25H15v1.25h-1.25zM16.25 9.25h1.25v1.25h-1.25z" fill="#FF0000"/></svg>',
+  rs: '<svg viewBox="0 0 30 20"><rect width="30" height="20" fill="#fff"/><rect width="30" height="13.33" fill="#0C4076"/><rect width="30" height="6.67" fill="#C6363C"/><path d="M8 5.5h4.5v4.5c0 1.6-2.25 2.6-2.25 2.6S8 11.6 8 10z" fill="#C6363C" stroke="#EDB92E" stroke-width=".5"/><path d="M10.25 6.5v4.6M8.9 8.4h2.7" stroke="#fff" stroke-width=".7"/></svg>'
 };
 const flag = (cid, lg) => C[cid].kind ? `<span class="flag ic ${lg ? 'lg' : ''}" style="background:${C[cid].iconBg}">${C[cid].icon}</span>` : `<span class="flag ${lg ? 'lg' : ''}">${FLAGS[C[cid].flag]}</span>`;
 // Mata the tarsier — layered SVG so each part can move (see .mascot rules in styles.css + mataLife below)
@@ -250,7 +258,7 @@ function unit(cid, ui) {
 function itemByRef(ref) { const [cid, k, ui, i] = ref.split('|'); const U = unit(cid, +ui); return { cid, ui: +ui, kind: k, item: k === 'w' ? U.W[+i] : U.S[+i], U }; }
 const totalLessons = cid => C[cid].units.length * LPU;
 const lessonTitle = (li, cid, ui) => cid && C[cid].kind ? (li < 4 ? C[cid].units[ui].topics[li].card.t : 'Unit review') : ['New words', 'More words', 'First phrases', 'More phrases', 'Unit review'][li];
-const stripArticle = t => t.replace(/^(el|la|los|las|un|una|le|les|une|der|die|das|il|lo|gli|i|o|a|os|as)\s+/i, '').replace(/^l'/i, '');
+const stripArticle = t => t.replace(/^(el|la|los|las|un|una|le|les|une|der|die|das|il|lo|gli|i|o|a|os|as|az|de|het)\s+/i, '').replace(/^l'/i, '');
 const wordLabel = (w, cid) => `<bdi>${esc(w.t)}</bdi>${C[cid].romaji && w.r ? `<span class="rom">${esc(w.r)}</span>` : ''}`;
 
 /* ---------------- exercise builders ---------------- */
@@ -259,7 +267,7 @@ function exPick(cid, w, W, isNew) { const opts = shuffle([w, ...others(W, w, 3)]
 function exMeaning(cid, w, W) { const opts = shuffle([w, ...others(W, w, 3)]); return { type: 'meaning', cid, ref: w.ref, w, prompt: 'What does this mean?', opts: opts.map(o => o.e), answer: opts.indexOf(w), solution: w.e }; }
 function exListenPick(cid, w, W) { const opts = shuffle([w, ...others(W, w, 3)]); return { type: 'listenPick', cid, ref: w.ref, w, prompt: 'Tap what you hear', opts, answer: opts.indexOf(w), solution: w.t }; }
 function exType(cid, w) {
-  const acc = [w.t, stripArticle(w.t), w.r, w.r && w.r.replace(/\s/g, '')].filter(Boolean);
+  const acc = [w.t, ['es','fr','de','it','pt','nl','hu'].includes(cid) ? stripArticle(w.t) : w.t, w.r, w.r && w.r.replace(/\s/g, '')].filter(Boolean);
   return { type: 'type', cid, ref: w.ref, w, prompt: `Write “${w.e}” in ${C[cid].name}`, accepts: [...new Set(acc)], solution: w.t };
 }
 function exMatch(cid, ws) { return { type: 'match', cid, prompt: 'Tap the matching pairs', left: shuffle(ws), right: shuffle(ws) }; }
