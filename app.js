@@ -427,7 +427,7 @@ function renderLanding() {
       </div>
     </div>
   </section>
-  <footer class="course-strip">${COURSE_IDS.map(c => `<span>${flag(c)}${C[c].name}</span>`).join('')}</footer>
+  <footer class="course-strip"><p>${COURSE_IDS.length} courses: languages, coding, games &amp; sports</p><div>${COURSE_IDS.map(c => `<span title="${esc(C[c].name)}" aria-label="${esc(C[c].name)}">${flag(c)}</span>`).join('')}</div></footer>
   </div>`;
 }
 function obFrame(step, total, question, body, canGo, onNext, mood) {
