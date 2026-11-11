@@ -436,7 +436,7 @@ function renderLanding() {
       </div>
     </div>
   </section>
-  <footer class="course-strip"><p>${COURSE_IDS.length} courses: languages, coding, games &amp; sports</p><div>${COURSE_IDS.map(c => `<span title="${esc(C[c].name)}" aria-label="${esc(C[c].name)}">${flag(c)}</span>`).join('')}</div></footer>
+  <footer class="course-strip"><p>${COURSE_IDS.length} courses: languages, school, career, money, AI, life skills &amp; more</p><div>${COURSE_IDS.map(c => `<span title="${esc(C[c].name)}" aria-label="${esc(C[c].name)}">${flag(c)}</span>`).join('')}</div></footer>
   </div>`;
 }
 function obFrame(step, total, question, body, canGo, onNext, mood) {
