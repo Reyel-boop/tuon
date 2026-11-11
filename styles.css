@@ -511,3 +511,14 @@ select.field{padding:10px 12px;width:auto}
 .gcard h3{margin-bottom:4px}
 .gcard p{color:var(--muted);margin-bottom:10px}
 .gcard .board{margin-bottom:4px}
+
+/* ---------- programming courses ---------- */
+.flag.ic.txt{font-family:ui-monospace,'Cascadia Code',Consolas,monospace;font-weight:800;font-size:10px;letter-spacing:-.3px}
+.flag.ic.txt.lg{font-size:19px}
+pre.code{background:#1E2530;color:#E8EDF2;border-radius:14px;padding:14px 16px;margin:0 0 18px;overflow-x:auto;font:14px/1.55 ui-monospace,'Cascadia Code',Consolas,'Courier New',monospace;tab-size:2;text-align:left;direction:ltr}
+pre.code code{font:inherit;white-space:pre}
+.opt code{font:15px ui-monospace,'Cascadia Code',Consolas,monospace;background:var(--surface2);padding:2px 8px;border-radius:6px;white-space:pre-wrap;word-break:break-word}
+.gcard pre.code{margin-bottom:6px;font-size:13px}
+@media (max-width:560px){pre.code{font-size:12.5px;padding:12px}}
+
+pre.code,pre.code code,.opt code,.flag.ic.txt{font-variant-ligatures:none;font-feature-settings:"liga" 0,"calt" 0}
