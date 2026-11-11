@@ -175,12 +175,28 @@ const sfx = {
 let voices = [];
 function loadVoices() { try { voices = speechSynthesis.getVoices(); } catch (e) { } }
 if ('speechSynthesis' in window) { loadVoices(); speechSynthesis.onvoiceschanged = () => { loadVoices(); }; }
-function voiceFor(cid) { for (const p of C[cid].voice) { const v = voices.find(v => v.lang.toLowerCase().replace('_', '-').startsWith(p)); if (v) return v; } return null; }
+function voiceFor(cid) {
+  // Rank every matching voice: preferred language first, then the most natural/human-sounding engines.
+  const prefs = C[cid].voice; let best = null, bestScore = -Infinity;
+  for (const v of voices) {
+    const lang = v.lang.toLowerCase().replace('_', '-'), pi = prefs.findIndex(p => lang.startsWith(p));
+    if (pi < 0) continue;
+    const n = v.name.toLowerCase(); let sc = (prefs.length - pi) * 100;
+    if (/natural|neural|wavenet|studio/.test(n)) sc += 40;
+    if (/premium|enhanced|siri/.test(n)) sc += 30;
+    if (/google/.test(n)) sc += 20;
+    if (/online/.test(n)) sc += 10;
+    if (/compact|espeak|eloquence|novelty|robot/.test(n)) sc -= 50;
+    if (v.default) sc += 1;
+    if (sc > bestScore) { bestScore = sc; best = v; }
+  }
+  return best;
+}
 const canSpeak = cid => !!voiceFor(cid);
 function speak(text, cid, slow) {
   const v = voiceFor(cid);
   if (!v) return;
-  try { speechSynthesis.cancel(); const u = new SpeechSynthesisUtterance(text); u.voice = v; u.lang = v.lang; u.rate = slow ? 0.55 : 0.9; speechSynthesis.speak(u); mataAll('twitch', 520); } catch (e) { }
+  try { speechSynthesis.cancel(); const u = new SpeechSynthesisUtterance(text); u.voice = v; u.lang = v.lang; u.rate = slow ? 0.6 : 0.95; u.pitch = 1; speechSynthesis.speak(u); mataAll('twitch', 520); } catch (e) { }
 }
 const sayBtn = (text, cid) => canSpeak(cid) ? `<button class="say" data-say="${esc(text)}" data-cid="${cid}" aria-label="Play audio">${ICON.speaker}</button>` : '';
 document.addEventListener('click', e => {
@@ -455,15 +471,24 @@ function greetFor(cid) {
   for (const U of c.units) for (const w of U.words || []) if (w[1] === 'hello') return { t: w[0], r: w[3] || '' };
   return null;
 }
+let helloAudio = null;
+function playHello(cid) {
+  const rec = window.HELLO_AUDIO && HELLO_AUDIO[cid], g = greetFor(cid);
+  try { if (helloAudio) { helloAudio.pause(); helloAudio = null; } speechSynthesis.cancel(); } catch (e) { }
+  if (rec) {
+    helloAudio = new Audio('audio/hello/' + rec.file);
+    helloAudio.play().then(() => mataAll('twitch', 520)).catch(() => { if (g) speak(g.t, cid); });
+  } else if (g) speak(g.t, cid);
+}
 function greetHtml(cid) {
   const g = greetFor(cid), n = esc(C[cid].name);
   if (!g) return `<span class="hello">${C[cid].iconText ? '👋' : esc(C[cid].icon || '👋')} Great choice!</span><small>Let’s learn ${n} together.</small>`;
   const word = g.t[0] !== g.t[0].toUpperCase() ? g.t[0].toUpperCase() + g.t.slice(1) : g.t;
-  return `<span class="hello" dir="auto">${cid === 'es' ? '¡' : ''}${esc(word)}!</span>${g.r ? `<span class="rom">${esc(g.r)}</span>` : ''}<small>That’s “hello” in ${n}.</small>`;
+  return `<span class="hello" dir="auto">${cid === 'es' ? '¡' : ''}${esc(word)}!</span>${g.r ? `<span class="rom">${esc(g.r)}</span>` : ''}<small>That’s “hello” in ${n}.</small>${window.HELLO_AUDIO && HELLO_AUDIO[cid] ? `<small class="rec">🎙️ Real recording · <a href="${esc(HELLO_AUDIO[cid].source)}" target="_blank" rel="noopener" title="${esc(HELLO_AUDIO[cid].author)} · ${esc(HELLO_AUDIO[cid].license)}">${esc(HELLO_AUDIO[cid].author.slice(0, 28))} · ${esc(HELLO_AUDIO[cid].license)}</a></small>` : ''}`;
 }
 function renderOnboard(step) {
   const T = 4, L = draft.course ? C[draft.course].name : 'it';
-  const set = (k, v) => { draft[k] = v; saveDraft(); sfx.tap(); if (k === 'course') { const g = greetFor(v); if (g) speak(g.t, v); } renderOnboard(step); const m = $('.ask .mascot'); if (m && !mataReduce) mataCls(m, 'poke', 600); const nb = $('#next'); if (nb && !nb.disabled) { nb.classList.remove('flash'); void nb.offsetWidth; nb.classList.add('flash'); } };
+  const set = (k, v) => { draft[k] = v; saveDraft(); sfx.tap(); if (k === 'course') playHello(v); renderOnboard(step); const m = $('.ask .mascot'); if (m && !mataReduce) mataCls(m, 'poke', 600); const nb = $('#next'); if (nb && !nb.disabled) { nb.classList.remove('flash'); void nb.offsetWidth; nb.classList.add('flash'); } };
   window.obSet = set;
   if (step === 1) obFrame(1, T, draft.course ? greetHtml(draft.course) : 'What would you like to learn?',
     [['Languages', COURSE_IDS.filter(c => !C[c].kind)], ...GROUPS.map(([h, g]) => [h, COURSE_IDS.filter(c => C[c].group === g)]), ['Games & sports', COURSE_IDS.filter(c => C[c].kind && !C[c].group)]].filter(([, ids]) => ids.length).map(([h, ids]) => `<h3 class="ob-sec">${h}</h3><div class="choices grid">${ids.map(c => `<button class="choice course ${draft.course === c ? 'on' : ''}" onclick="obSet('course','${c}')">${flag(c, 1)}${C[c].name}</button>`).join('')}</div>`).join(''),

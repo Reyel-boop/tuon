@@ -568,3 +568,6 @@ details.credits ul{margin:8px 0 0 18px;display:grid;gap:4px}
 .speech .hello{display:block;font-size:26px;line-height:1.15}
 .speech .rom{margin-top:2px}
 .speech small{display:block;font:500 13px/1.4 var(--font);color:var(--muted);margin-top:4px}
+
+.speech small.rec{font-size:11px;margin-top:6px}
+.speech small.rec a{color:var(--brand)}

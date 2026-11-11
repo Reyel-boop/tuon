@@ -1,0 +1,100 @@
+{
+ "es": {
+  "file": "es.mp3",
+  "word": "hola",
+  "source": "https://commons.wikimedia.org/wiki/File:Es-hola.oga",
+  "author": "No machine-readable author provided. Josemoya assumed (based on copyright claims).",
+  "license": "CC BY-SA 3.0"
+ },
+ "fr": {
+  "file": "fr.mp3",
+  "word": "bonjour",
+  "source": "https://commons.wikimedia.org/wiki/File:Fr-bonjour.ogg",
+  "author": "Vion Nicolas",
+  "license": "CC BY 2.0 fr"
+ },
+ "zh": {
+  "file": "zh.mp3",
+  "word": "你好",
+  "source": "https://commons.wikimedia.org/wiki/File:Zh_n%C7%90_h%C7%8Eo.ogg",
+  "author": "Sjors Provoost",
+  "license": "CC BY-SA 3.0"
+ },
+ "de": {
+  "file": "de.mp3",
+  "word": "hallo",
+  "source": "https://commons.wikimedia.org/wiki/File:De-hallo.ogg",
+  "author": "Jeuwre",
+  "license": "CC BY-SA 4.0"
+ },
+ "it": {
+  "file": "it.mp3",
+  "word": "ciao",
+  "source": "https://commons.wikimedia.org/wiki/File:It-ciao.ogg",
+  "author": "Unknown",
+  "license": "CC BY-SA 3.0"
+ },
+ "nl": {
+  "file": "nl.mp3",
+  "word": "hallo",
+  "source": "https://commons.wikimedia.org/wiki/File:Nl-hallo.ogg",
+  "author": "GerardM",
+  "license": "CC BY-SA 3.0"
+ },
+ "uk": {
+  "file": "uk.mp3",
+  "word": "привіт",
+  "source": "https://commons.wikimedia.org/wiki/File:Uk-%D0%BF%D1%80%D0%B8%D0%B2%D1%96%D1%82.ogg",
+  "author": "Галя Раптова, Nicolas Vion",
+  "license": "CC BY 3.0 us"
+ },
+ "sw": {
+  "file": "sw.mp3",
+  "word": "hujambo",
+  "source": "https://commons.wikimedia.org/wiki/File:Sw-ke-hujambo.flac",
+  "author": "Waithera Were",
+  "license": "CC BY-SA 4.0"
+ },
+ "da": {
+  "file": "da.mp3",
+  "word": "hej",
+  "source": "https://commons.wikimedia.org/wiki/File:Da-hej.ogg",
+  "author": "User:Thrane",
+  "license": "CC BY-SA 3.0"
+ },
+ "fi": {
+  "file": "fi.mp3",
+  "word": "hei",
+  "source": "https://commons.wikimedia.org/wiki/File:Fi-hei.ogg",
+  "author": "Vassilik",
+  "license": "CC BY-SA 3.0"
+ },
+ "cs": {
+  "file": "cs.mp3",
+  "word": "ahoj",
+  "source": "https://commons.wikimedia.org/wiki/File:Cs-ahoj.oga",
+  "author": "Ivana K, Nicolas Vion",
+  "license": "CC BY 2.0 fr"
+ },
+ "hu": {
+  "file": "hu.mp3",
+  "word": "szia",
+  "source": "https://commons.wikimedia.org/wiki/File:Hu-szia.ogg",
+  "author": "Panda10",
+  "license": "CC BY-SA 3.0"
+ },
+ "pt": {
+  "file": "pt.mp3",
+  "word": "olá",
+  "source": "https://commons.wikimedia.org/wiki/File:Pt-ol%C3%A1.oga",
+  "author": "Memie",
+  "license": "CC BY-SA 3.0"
+ },
+ "ru": {
+  "file": "ru.mp3",
+  "word": "привет",
+  "source": "https://commons.wikimedia.org/wiki/File:Ru-%D0%BF%D1%80%D0%B8%D0%B2%D0%B5%D1%82.ogg",
+  "author": "Unknown",
+  "license": "CC BY 2.0 fr"
+ }
+}
