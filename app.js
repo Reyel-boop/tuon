@@ -454,7 +454,7 @@ function renderOnboard(step) {
   const set = (k, v) => { draft[k] = v; saveDraft(); sfx.tap(); renderOnboard(step); const m = $('.ask .mascot'); if (m && !mataReduce) mataCls(m, 'poke', 600); };
   window.obSet = set;
   if (step === 1) obFrame(1, T, 'What would you like to learn?',
-    [['Languages', COURSE_IDS.filter(c => !C[c].kind)], ...GROUPS.map(([h, g]) => [h, COURSE_IDS.filter(c => C[c].group === g)]), ['Games & sports', COURSE_IDS.filter(c => C[c].kind && !C[c].group)]].map(([h, ids]) => `<h3 class="ob-sec">${h}</h3><div class="choices grid">${ids.map(c => `<button class="choice course ${draft.course === c ? 'on' : ''}" onclick="obSet('course','${c}')">${flag(c, 1)}${C[c].name}</button>`).join('')}</div>`).join(''),
+    [['Languages', COURSE_IDS.filter(c => !C[c].kind)], ...GROUPS.map(([h, g]) => [h, COURSE_IDS.filter(c => C[c].group === g)]), ['Games & sports', COURSE_IDS.filter(c => C[c].kind && !C[c].group)]].filter(([, ids]) => ids.length).map(([h, ids]) => `<h3 class="ob-sec">${h}</h3><div class="choices grid">${ids.map(c => `<button class="choice course ${draft.course === c ? 'on' : ''}" onclick="obSet('course','${c}')">${flag(c, 1)}${C[c].name}</button>`).join('')}</div>`).join(''),
     !!draft.course, () => go('#/start/2'), 'wave');
   else if (step === 2) obFrame(2, T, `Why are you learning ${L}?`,
     `<div class="choices grid">${REASONS.map((r, i) => `<button class="choice ${draft.reason === i ? 'on' : ''}" onclick="obSet('reason',${i})"><span class="em">${r[0]}</span>${r[1]}</button>`).join('')}</div>`,
@@ -977,5 +977,16 @@ function confetti() {
   return `<div class="confetti" aria-hidden="true">${[...Array(36)].map((_, i) => `<i style="left:${(Math.random() * 100).toFixed(1)}%;background:${c[i % 6]};animation-delay:${(Math.random() * .8).toFixed(2)}s;animation-duration:${(1.8 + Math.random() * 1.4).toFixed(2)}s;--r:${Math.round(Math.random() * 720 - 360)}deg;--x:${Math.round(Math.random() * 120 - 60)}px"></i>`).join('')}</div>`;
 }
 
+// Self-heal: if a stale cached copy left some course files out, clear caches and reload once with a cache-busting URL.
+(function selfHeal() {
+  const need = ['math', 'career', 'money', 'ai', 'health', 'records', 'html', 'chess', 'sw', 'hr'];
+  if (need.every(k => C[k])) { try { sessionStorage.removeItem('tuon.heal'); } catch (e) { } return; }
+  try { if (sessionStorage.getItem('tuon.heal')) return; sessionStorage.setItem('tuon.heal', '1'); } catch (e) { return; }
+  const reload = () => location.replace(location.pathname + '?r=' + Date.now() + location.hash);
+  const jobs = [];
+  if ('caches' in window) jobs.push(caches.keys().then(ks => Promise.all(ks.map(k => caches.delete(k)))));
+  if (navigator.serviceWorker) jobs.push(navigator.serviceWorker.getRegistrations().then(rs => Promise.all(rs.map(r => r.update()))));
+  Promise.all(jobs).catch(() => { }).finally(reload);
+})();
 if ('serviceWorker' in navigator && location.protocol.startsWith('http')) navigator.serviceWorker.register('sw.js').catch(() => { });
 render();
