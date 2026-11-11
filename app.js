@@ -461,7 +461,7 @@ const BRANCH = `<svg class="branch" viewBox="0 0 220 60" aria-hidden="true">
   <path d="M30 29q-6 20 8 30q4-18-8-30z" fill="var(--leaf3)"/>
 </svg>`;
 function sceneHtml(ui) {
-  const t = ui % 3, r = seeded('scene' + ui);
+  const t = ui % 5, r = seeded('scene' + ui);
   const dots = (n, cls) => [...Array(n)].map(() => `<i class="${cls}" style="left:${(4 + r() * 92).toFixed(1)}%;top:${(4 + r() * 80).toFixed(1)}%;animation-delay:${(r() * 4).toFixed(2)}s;animation-duration:${(3 + r() * 4).toFixed(2)}s"></i>`).join('');
   return `<div class="scene" aria-hidden="true">
     ${t === 2 ? `<div class="moon"></div>${dots(26, 'star')}` : `<div class="sun"></div>`}
@@ -496,11 +496,11 @@ function renderLearn() {
   const u = me(), cid = u.course, front = u.progress[cid] || 0;
   let html = '';
   C[cid].units.forEach((U, ui) => {
-    html += `<div class="unit-head u${ui % 3}"><div><p>Unit ${ui + 1}</p><h2>${esc(U.title)}</h2><p style="font-size:14px">${esc(U.desc)}</p></div><button class="guide" onclick="A.guide(${ui})">${ICON.book}<span>Guidebook</span></button></div><div class="path sc${ui % 3}">${sceneHtml(ui)}`;
+    html += `<div class="unit-head u${ui % 5}"><div><p>Unit ${ui + 1}</p><h2>${esc(U.title)}</h2><p style="font-size:14px">${esc(U.desc)}</p></div><button class="guide" onclick="A.guide(${ui})">${ICON.book}<span>Guidebook</span></button></div><div class="path sc${ui % 5}">${sceneHtml(ui)}`;
     for (let li = 0; li < LPU; li++) {
       const n = ui * LPU + li, st = n < front ? 'done' : n === front ? 'cur' : 'locked', trophy = li === LPU - 1;
       const ic = st === 'locked' ? (trophy ? ICON.cup : ICON.lock) : st === 'done' ? (trophy ? ICON.cup : ICON.check) : (trophy ? ICON.cup : ICON.star);
-      html += `<div class="node-wrap u${ui % 3}n" id="nw-${n}" style="transform:translateX(${(ui % 2 ? -1 : 1) * OFFS[li]}px)">${st === 'cur' ? '<div class="start-tag">START</div>' : ''}<button class="node ${st} ${trophy ? 'trophy' : ''}" onclick="A.node(${ui},${li},event)" aria-label="${lessonTitle(li)}">${ic}</button></div>`;
+      html += `<div class="node-wrap u${ui % 5}n" id="nw-${n}" style="transform:translateX(${(ui % 2 ? -1 : 1) * OFFS[li]}px)">${st === 'cur' ? '<div class="start-tag">START</div>' : ''}<button class="node ${st} ${trophy ? 'trophy' : ''}" onclick="A.node(${ui},${li},event)" aria-label="${lessonTitle(li)}">${ic}</button></div>`;
     }
     html += `<div class="deco ${ui % 2 ? 'right' : 'left'}" style="top:110px;${ui % 2 ? 'right' : 'left'}:6%">${BRANCH}${mascot(ui === 1 ? 'wow' : ui === 2 ? 'happy' : 'wave')}</div></div>`;
   });
@@ -804,7 +804,7 @@ function renderProfile() {
     ['🔥', 'Wildfire', 'Reach a 7-day streak', u.longest || 0, 7],
     ['⚡', 'Sage', 'Earn 500 XP', u.xp, 500],
     ['🎯', 'Sharpshooter', 'Finish 5 perfect lessons', u.perfect, 5],
-    ['📚', 'Scholar', 'Learn 24 words', u.words, 24],
+    ['📚', 'Scholar', 'Learn 80 words', u.words, 80],
     ['🏆', 'Champion', `Finish a whole course`, Math.max(...u.courses.map(c => (u.progress[c] || 0) / totalLessons(c) * 100)), 100]
   ];
   shell('profile', `<div class="stack">

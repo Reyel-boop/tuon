@@ -145,7 +145,7 @@ svg{display:block}
 .unit-head p{opacity:.9;font-weight:500}
 .unit-head .guide{display:flex;align-items:center;gap:8px;padding:10px 14px;border-radius:14px;background:rgba(255,255,255,.18);border:2px solid rgba(255,255,255,.3);font-weight:700;font-size:13px;letter-spacing:.3px;text-transform:uppercase;color:#fff;white-space:nowrap}
 .unit-head .guide svg{width:20px;height:20px}
-.u0{background:var(--brand)} .u1{background:var(--accent)} .u2{background:var(--violet)}
+.u0{background:var(--brand)} .u1{background:var(--accent)} .u2{background:var(--violet)} .u3{background:#2F80ED} .u4{background:#D9467A}
 .path{display:flex;flex-direction:column;align-items:center;gap:44px;padding:30px 0 50px;position:relative}
 .path .deco{position:absolute;width:120px;opacity:.95;pointer-events:none}
 .node-wrap{position:relative;display:flex;flex-direction:column;align-items:center}
@@ -156,7 +156,7 @@ svg{display:block}
 .node.cur{background:var(--c);box-shadow:0 7px 0 var(--cd),0 0 0 8px color-mix(in srgb,var(--c) 22%,transparent)}
 .node.locked{background:var(--lock);color:var(--lock-ink);box-shadow:0 7px 0 color-mix(in srgb,var(--lock) 70%,#000)}
 .node.trophy{border-radius:50%;width:84px;height:84px}
-.u0n{--c:var(--brand);--cd:var(--brand-d)} .u1n{--c:var(--accent);--cd:var(--accent-d)} .u2n{--c:var(--violet);--cd:var(--violet-d)}
+.u0n{--c:var(--brand);--cd:var(--brand-d)} .u1n{--c:var(--accent);--cd:var(--accent-d)} .u2n{--c:var(--violet);--cd:var(--violet-d)} .u3n{--c:#2F80ED;--cd:#1D5FBF} .u4n{--c:#D9467A;--cd:#AE2F5C}
 .start-tag{position:absolute;top:-44px;background:var(--surface);color:var(--c);border:2px solid var(--line);font-family:var(--display);font-weight:700;padding:6px 14px;border-radius:12px;letter-spacing:.5px;white-space:nowrap;animation:hop 1.6s ease-in-out infinite;z-index:2}
 .start-tag:after{content:"";position:absolute;left:50%;bottom:-8px;width:12px;height:12px;background:var(--surface);border-right:2px solid var(--line);border-bottom:2px solid var(--line);transform:translateX(-50%) rotate(45deg)}
 @keyframes hop{50%{transform:translateY(-5px)}}
@@ -464,3 +464,12 @@ select.field{padding:10px 12px;width:auto}
 .sc1 .sun{animation:none}
 @media (max-width:560px){.scene .leaf{width:100px;height:100px}.scene .leaf.bl{width:120px;height:120px}.scene .sun,.scene .moon{transform:scale(.75)}}
 @media (prefers-reduced-motion:reduce){.scene *{animation:none!important}.scene .fly{opacity:.7}}
+
+/* extra scenes: ocean day + pink dawn */
+.sc3{--sky1:#BFE6FA;--sky2:#F3FBFF;--hill1:#7CCBE6;--hill2:#F1DDAE;--leaf1:#3F9E6E;--leaf2:#2F8A5C;--leaf3:#62B985;--fly:#FFFFFF;--trail:#1D5FBF}
+.sc4{--sky1:#FBD3E2;--sky2:#FFF4E8;--hill1:#D9C6EE;--hill2:#A9CF9C;--leaf1:#4E9C66;--leaf2:#3D8656;--leaf3:#7DC08A;--fly:#FFD0E0;--trail:#AE2F5C}
+.sc4 .sun{top:auto;bottom:120px;left:14%;right:auto;background:radial-gradient(circle at 45% 40%,#FFF1D6,#FFB3A0 65%,#F58A9C);box-shadow:0 0 0 16px rgba(255,170,170,.18),0 0 70px 24px rgba(255,150,170,.35)}
+@media (prefers-color-scheme:dark){
+  .sc3{--sky1:#0F2D40;--sky2:#131C24;--hill1:#1B4A5E;--hill2:#4A4030;--leaf1:#2C6B48;--leaf2:#22573A;--leaf3:#3B8558}
+  .sc4{--sky1:#3B1E30;--sky2:#1A1820;--hill1:#3A2F4F;--hill2:#2A4030;--leaf1:#2C6B48;--leaf2:#22573A;--leaf3:#3B8558}
+}
