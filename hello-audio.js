@@ -1,4 +1,4 @@
-// Native-speaker recordings of "hello" from Wikimedia Commons / Wiktionary (free licenses; credits below).
+// Native-speaker recordings of "hello" from Wikimedia Commons / Wiktionary / Lingua Libre (free licenses; credits below).
 window.HELLO_AUDIO = {
  "es": {
   "file": "es.mp3",
@@ -97,5 +97,64 @@ window.HELLO_AUDIO = {
   "source": "https://commons.wikimedia.org/wiki/File:Ru-%D0%BF%D1%80%D0%B8%D0%B2%D0%B5%D1%82.ogg",
   "author": "Unknown",
   "license": "CC BY 2.0 fr"
+ },
+ "tl": {
+  "file": "tl.mp3",
+  "word": "kumusta",
+  "source": "https://commons.wikimedia.org/wiki/File:LL-Q34057_(tgl)-Wu_Xielong-Kumusta!.wav",
+  "author": "Wu Xielong",
+  "license": "CC BY-SA 4.0"
+ },
+ "ceb": {
+  "file": "ceb.mp3",
+  "word": "kumusta",
+  "source": "https://commons.wikimedia.org/wiki/File:LL-Q34057_(tgl)-Wu_Xielong-Kumusta!.wav",
+  "author": "Wu Xielong",
+  "license": "CC BY-SA 4.0",
+  "note": "Recorded by a Tagalog speaker — it’s the same word in Cebuano."
+ },
+ "ar": {
+  "file": "ar.mp3",
+  "word": "مرحبا",
+  "source": "https://commons.wikimedia.org/wiki/File:LL-Q13955_(ara)-Zinou2go-%D9%85%D8%B1%D8%AD%D8%A8%D8%A7.wav",
+  "author": "Zinou2go",
+  "license": "CC BY-SA 3.0"
+ },
+ "he": {
+  "file": "he.mp3",
+  "word": "שלום",
+  "source": "https://commons.wikimedia.org/wiki/File:LL-Q9288_(heb)-YaronSh-%D7%A9%D7%9C%D7%95%D7%9D.wav",
+  "author": "YaronSh",
+  "license": "CC0"
+ },
+ "no": {
+  "file": "no.mp3",
+  "word": "hallo",
+  "source": "https://commons.wikimedia.org/wiki/File:LL-Q9043_(nor)-Telaneo-hallo.wav",
+  "author": "Telaneo",
+  "license": "CC0",
+  "note": "“Hei!” is also very common."
+ },
+ "sk": {
+  "file": "sk.mp3",
+  "word": "ahoj",
+  "source": "https://commons.wikimedia.org/wiki/File:LL-Q9058_(slk)-Tom%C3%A1%C5%A1Polonec-ahoj.wav",
+  "author": "TomášPolonec",
+  "license": "CC BY 4.0"
+ },
+ "sr": {
+  "file": "sr.mp3",
+  "word": "здраво",
+  "source": "https://commons.wikimedia.org/wiki/File:Sr-%D0%B7%D0%B4%D1%80%D0%B0%D0%B2%D0%BE!.flac",
+  "author": "Saša Vićentijević",
+  "license": "CC BY 3.0 us"
+ },
+ "hr": {
+  "file": "hr.mp3",
+  "word": "zdravo",
+  "source": "https://commons.wikimedia.org/wiki/File:Sr-%D0%B7%D0%B4%D1%80%D0%B0%D0%B2%D0%BE!.flac",
+  "author": "Saša Vićentijević",
+  "license": "CC BY 3.0 us",
+  "note": "Recorded by a Serbian speaker — said the same way in Croatia. “Bok!” is the casual hi."
  }
 };
