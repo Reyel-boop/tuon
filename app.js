@@ -456,7 +456,7 @@ function renderLanding() {
   </div>`;
 }
 function obFrame(step, total, question, body, canGo, onNext, mood) {
-  app.innerHTML = `<div class="ob">
+  app.innerHTML = `<div class="ob ${step === 1 ? 'ob-tree' : ''}">
     <div class="ob-top"><button class="icon-btn" onclick="history.length>1?history.back():go('#/')" aria-label="Back">${ICON.back}</button>
       <div class="bar"><i style="width:${(step / total) * 100}%"></i></div></div>
     <div class="ask">${mascot(mood || 'happy')}<div class="speech">${question}</div></div>
@@ -464,10 +464,21 @@ function obFrame(step, total, question, body, canGo, onNext, mood) {
     <div class="ob-foot"><button class="btn primary ${canGo ? 'ready' : ''}" id="next" ${canGo ? '' : 'disabled'}>Continue</button></div>
   </div>`;
   $('#next').onclick = onNext;
+  // Step 1: Mata stays in view and "climbs" down the tree trunk while you scroll.
+  let lastY = window.scrollY, t = 0;
+  window.onscroll = step !== 1 ? null : () => {
+    const m = $('.ob-tree .ask .mascot'); if (!m) { window.onscroll = null; return; }
+    const y = window.scrollY, down = y > lastY; lastY = y;
+    if (mataReduce || t) return;
+    m.classList.remove('climb-up', 'climb-down'); void m.getBBox();
+    m.classList.add(down ? 'climb-down' : 'climb-up');
+    t = setTimeout(() => { t = 0; m.classList.remove('climb-up', 'climb-down'); }, 380);
+  };
 }
 // Mata greets you in the language you pick (the course's own word for "hello").
+const NO_HELLO = ['th']; // no free native recording yet — show a plain welcome instead
 function greetFor(cid) {
-  const c = C[cid]; if (!c || c.kind) return null;
+  const c = C[cid]; if (!c || c.kind || NO_HELLO.includes(cid)) return null;
   for (const U of c.units) for (const w of U.words || []) if (w[1] === 'hello') return { t: w[0], r: w[3] || '' };
   return null;
 }

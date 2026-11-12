@@ -575,3 +575,28 @@ details.credits ul{margin:8px 0 0 18px;display:grid;gap:4px}
 /* YouTube hello clip inside Mata's bubble (YouTube requires the player to be at least 200×200) */
 .speech .ytbox{width:min(356px,62vw);min-width:200px;aspect-ratio:16/9;min-height:200px;margin-top:8px;border-radius:12px;overflow:hidden;background:#000}
 .speech .ytbox iframe{width:100%;height:100%;border:0;display:block}
+
+/* ---------- Step 1: Mata climbs down a tree while you scroll ---------- */
+.ob.ob-tree{position:relative}
+.ob.ob-tree .ask{position:sticky;top:0;z-index:12;margin:0 -16px 14px;padding:10px 16px 14px;background:linear-gradient(var(--bg) 78%,transparent)}
+.ob.ob-tree .ask .mascot{width:86px;position:relative;z-index:2}
+.ob.ob-tree::before{content:"";position:absolute;left:43px;top:96px;bottom:0;width:18px;z-index:0;border-radius:9px;
+  background:repeating-linear-gradient(180deg,#8B5A33 0 14px,#7A4E2B 14px 17px,#946238 17px 34px),#8B5A33;box-shadow:inset -4px 0 0 rgba(0,0,0,.15),inset 3px 0 0 rgba(255,255,255,.08)}
+.ob.ob-tree::after{content:"";position:absolute;left:22px;top:150px;bottom:40px;width:60px;z-index:1;pointer-events:none;background:url("data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%2060%20240%22%3E%3Cg%20fill%3D%22%234FA36A%22%3E%3Cpath%20d%3D%22M30%2040q-26-4-30%2018%2022%206%2030-18z%22%2F%3E%3Cpath%20d%3D%22M30%20150q28-6%2030%2016-22%208-30-16z%22%20fill%3D%22%233E8F5A%22%2F%3E%3C%2Fg%3E%3Cpath%20d%3D%22M30%2040q-14%206-24%2014M30%20150q14%204%2024%2013%22%20stroke%3D%22%232F6E47%22%20stroke-width%3D%221.5%22%20fill%3D%22none%22%2F%3E%3C%2Fsvg%3E") repeat-y 0 0/60px 240px}
+.ob.ob-tree .ob-sec,.ob.ob-tree .choices{margin-left:100px;position:relative;z-index:2}
+.mascot.climb-down .m-all{animation:m-climb-down .38s ease-in-out}
+.mascot.climb-up .m-all{animation:m-climb-up .38s ease-in-out}
+.mascot.climb-down .m-arm-l,.mascot.climb-up .m-arm-l{animation:m-grab .38s ease-in-out}
+.mascot.climb-down .m-arm-r,.mascot.climb-up .m-arm-r{animation:m-grab .38s ease-in-out .19s}
+@keyframes m-climb-down{0%,100%{transform:none}40%{transform:translateY(5px) rotate(-3deg)}75%{transform:translateY(-2px) rotate(2deg)}}
+@keyframes m-climb-up{0%,100%{transform:none}40%{transform:translateY(-5px) rotate(3deg)}75%{transform:translateY(2px) rotate(-2deg)}}
+@keyframes m-grab{50%{transform:rotate(-18deg)}}
+@media (max-width:560px){
+  .ob.ob-tree .ask .mascot{width:64px}
+  .ob.ob-tree::before{left:30px;top:84px;width:12px}
+  .ob.ob-tree::after{left:12px;width:48px;background-size:48px 192px}
+  .ob.ob-tree .ob-sec,.ob.ob-tree .choices{margin-left:62px}
+  .ob.ob-tree .speech{font-size:17px}
+  .ob.ob-tree .speech .hello{font-size:22px}
+}
+@media (prefers-reduced-motion:reduce){.mascot.climb-down .m-all,.mascot.climb-up .m-all{animation:none}}

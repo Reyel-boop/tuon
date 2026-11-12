@@ -4,7 +4,7 @@ window.HELLO_AUDIO = {
   "file": "es.mp3",
   "word": "hola",
   "source": "https://commons.wikimedia.org/wiki/File:Es-hola.oga",
-  "author": "No machine-readable author provided. Josemoya assumed (based on copyright claims).",
+  "author": "Josemoya",
   "license": "CC BY-SA 3.0"
  },
  "fr": {
@@ -32,7 +32,7 @@ window.HELLO_AUDIO = {
   "file": "it.mp3",
   "word": "ciao",
   "source": "https://commons.wikimedia.org/wiki/File:It-ciao.ogg",
-  "author": "Unknown",
+  "author": "Wikimedia Commons contributor",
   "license": "CC BY-SA 3.0"
  },
  "nl": {
@@ -95,7 +95,7 @@ window.HELLO_AUDIO = {
   "file": "ru.mp3",
   "word": "привет",
   "source": "https://commons.wikimedia.org/wiki/File:Ru-%D0%BF%D1%80%D0%B8%D0%B2%D0%B5%D1%82.ogg",
-  "author": "Unknown",
+  "author": "Wikimedia Commons contributor",
   "license": "CC BY 2.0 fr"
  },
  "tl": {
