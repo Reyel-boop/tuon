@@ -480,13 +480,18 @@ function playHello(cid) {
     helloAudio.play().then(() => mataAll('twitch', 520)).catch(() => { if (g) speak(rec.word || g.t, cid); });
   } else if (g) speak(g.t, cid);
 }
+function helloVideoHtml(cid) {
+  const v = HELLO_VIDEO[cid], q = ['rel=0', 'modestbranding=1', 'playsinline=1'];
+  if (v.start != null) q.push('start=' + v.start); if (v.end != null) q.push('end=' + v.end);
+  return `<div class="ytbox"><iframe src="https://www.youtube-nocookie.com/embed/${v.id}?${q.join('&')}" title="${esc(v.title)}" allow="encrypted-media; picture-in-picture" allowfullscreen loading="lazy"></iframe></div><small class="rec">▶️ Tap play to hear a native speaker · ${esc(v.author)} on YouTube</small>`;
+}
 function greetHtml(cid) {
   const g = greetFor(cid), n = esc(C[cid].name);
   if (!g) return `<span class="hello">${C[cid].iconText ? '👋' : esc(C[cid].icon || '👋')} Great choice!</span><small>Let’s learn ${n} together.</small>`;
   const rec = window.HELLO_AUDIO && HELLO_AUDIO[cid];
   const same = !rec || !rec.word || norm(rec.word) === norm(g.t), shown = same ? g.t : rec.word;
   const word = shown[0] !== shown[0].toUpperCase() ? shown[0].toUpperCase() + shown.slice(1) : shown;
-  return `<span class="hello" dir="auto">${cid === 'es' ? '¡' : ''}${esc(word)}!</span>${same && g.r ? `<span class="rom">${esc(g.r)}</span>` : ''}<small>That’s “hello” in ${n}.</small>${rec && rec.note ? `<small>${esc(rec.note)}</small>` : ''}${!rec && !canSpeak(cid) ? `<small class="rec">🔇 No ${n} voice on this device yet</small>` : ''}${window.HELLO_AUDIO && HELLO_AUDIO[cid] ? `<small class="rec">🎙️ Real recording · <a href="${esc(HELLO_AUDIO[cid].source)}" target="_blank" rel="noopener" title="${esc(HELLO_AUDIO[cid].author)} · ${esc(HELLO_AUDIO[cid].license)}">${esc(HELLO_AUDIO[cid].author.slice(0, 28))} · ${esc(HELLO_AUDIO[cid].license)}</a></small>` : ''}`;
+  return `<span class="hello" dir="auto">${cid === 'es' ? '¡' : ''}${esc(word)}!</span>${same && g.r ? `<span class="rom">${esc(g.r)}</span>` : ''}<small>That’s “hello” in ${n}.</small>${rec && rec.note ? `<small>${esc(rec.note)}</small>` : ''}${!rec && window.HELLO_VIDEO && HELLO_VIDEO[cid] ? helloVideoHtml(cid) : !rec && !canSpeak(cid) ? `<small class="rec">🔇 No ${n} voice on this device yet</small>` : ''}${window.HELLO_AUDIO && HELLO_AUDIO[cid] ? `<small class="rec">🎙️ Real recording · <a href="${esc(HELLO_AUDIO[cid].source)}" target="_blank" rel="noopener" title="${esc(HELLO_AUDIO[cid].author)} · ${esc(HELLO_AUDIO[cid].license)}">${esc(HELLO_AUDIO[cid].author.slice(0, 28))} · ${esc(HELLO_AUDIO[cid].license)}</a></small>` : ''}`;
 }
 function renderOnboard(step) {
   const T = 4, L = draft.course ? C[draft.course].name : 'it';
