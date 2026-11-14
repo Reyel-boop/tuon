@@ -111,19 +111,35 @@ let mataN = 0;
 function mascot(mood = 'happy') {
   const n = ++mataN, im = k => { const [x, y, w, h] = MATA_L[k]; return `<image href="img/mata/${k}.webp" x="${x}" y="${y}" width="${w}" height="${h}"/>`; };
   const lid = (side, cx, cy) => `<g class="m-lid m-lid-${side}"><rect x="${cx - 70}" y="${cy - 80}" width="140" height="160" fill="#C99247"/><path d="M${cx - 62} ${cy + 46}q62 34 124 0" stroke="#3A2414" stroke-width="7" fill="none" stroke-linecap="round"/></g>`;
+  const defs = `<clipPath id="mEL${n}"><ellipse cx="218" cy="298" rx="63" ry="77"/></clipPath><clipPath id="mER${n}"><ellipse cx="418" cy="305" rx="66" ry="75"/></clipPath><clipPath id="mLN${n}"><circle cx="425" cy="338" r="54"/></clipPath>`;
+  const head = `<g class="m-head">
+    <g class="m-ear-l">${im('earL')}</g><g class="m-ear-r">${im('earR')}</g>
+    ${im('head')}
+    <g clip-path="url(#mEL${n})">${lid('l', 218, 298)}</g><g clip-path="url(#mER${n})">${lid('r', 418, 305)}</g>
+    <g class="m-hand"><g class="m-lens">${im('lens')}<g clip-path="url(#mLN${n})"><g clip-path="url(#mER${n})">${lid('r', 418, 305)}</g></g></g></g>
+   </g>`;
+  if (mood === 'climb') {
+    // Onboarding tree: Mata clings to the side of the trunk. The trunk runs in front of the body and behind
+    // the head; the left hand wraps around it. The trunk stays still while Mata (.m-mv) slides up and down it.
+    // Trunk x 323..513 lines up with the CSS trunk below (.ob-tree::before).
+    const fingers = [536, 580, 624].map(y => `<rect x="292" y="${y - 21}" width="${y === 580 ? 92 : 80}" height="42" rx="21"/>`).join('');
+    return `<svg class="mascot m-climb" viewBox="-130 -20 906 981" aria-hidden="true">
+  <defs>${defs}<pattern id="mBark${n}" patternUnits="userSpaceOnUse" x="323" y="0" width="190" height="358"><rect width="190" height="147" fill="#8B5A33"/><rect y="147" width="190" height="32" fill="#7A4E2B"/><rect y="179" width="190" height="179" fill="#946238"/></pattern></defs>
+  <g class="m-mv"><g class="m-tail">${im('tail')}</g><g class="m-hand">${im('arm')}</g>${im('body')}</g>
+  <g class="m-trunk"><rect x="323" y="-330" width="190" height="2000" fill="url(#mBark${n})"/><ellipse cx="418" cy="-330" rx="95" ry="95" fill="url(#mBark${n})"/><rect x="471" y="-330" width="42" height="1960" fill="#000" opacity=".15"/><rect x="323" y="-330" width="30" height="1960" fill="#fff" opacity=".08"/></g>
+  <g class="m-mv">${head}
+   <g class="m-paw"><ellipse cx="276" cy="580" rx="52" ry="66" fill="#E4A27A" stroke="#3A2414" stroke-width="8"/><g fill="#E4A27A" stroke="#3A2414" stroke-width="8">${fingers}</g></g>
+  </g>
+</svg>`;
+  }
   return `<svg class="mascot m-${mood}" viewBox="-130 -20 906 981" aria-hidden="true">
-  <defs><clipPath id="mEL${n}"><ellipse cx="218" cy="298" rx="63" ry="77"/></clipPath><clipPath id="mER${n}"><ellipse cx="418" cy="305" rx="66" ry="75"/></clipPath><clipPath id="mLN${n}"><circle cx="425" cy="338" r="54"/></clipPath></defs>
+  <defs>${defs}</defs>
   <ellipse class="m-shadow" cx="323" cy="936" rx="230" ry="26" fill="#000" opacity=".1"/>
   <g class="m-all"><g class="m-body">
    <g class="m-tail">${im('tail')}</g>
    <g class="m-hand">${im('arm')}</g>
    ${im('body')}
-   <g class="m-head">
-    <g class="m-ear-l">${im('earL')}</g><g class="m-ear-r">${im('earR')}</g>
-    ${im('head')}
-    <g clip-path="url(#mEL${n})">${lid('l', 218, 298)}</g><g clip-path="url(#mER${n})">${lid('r', 418, 305)}</g>
-    <g class="m-hand"><g class="m-lens">${im('lens')}<g clip-path="url(#mLN${n})"><g clip-path="url(#mER${n})">${lid('r', 418, 305)}</g></g></g></g>
-   </g>
+   ${head}
   </g></g>
 </svg>`;
 }
@@ -441,7 +457,7 @@ function obFrame(step, total, question, body, canGo, onNext, mood) {
   app.innerHTML = `<div class="ob ${step === 1 ? 'ob-tree' : ''}">
     <div class="ob-top"><button class="icon-btn" onclick="history.length>1?history.back():go('#/')" aria-label="Back">${ICON.back}</button>
       <div class="bar"><i style="width:${(step / total) * 100}%"></i></div></div>
-    <div class="ask">${mascot(mood || 'happy')}<div class="speech">${question}</div></div>
+    <div class="ask">${mascot(step === 1 ? 'climb' : mood || 'happy')}<div class="speech">${question}</div></div>
     ${body}
     <div class="ob-foot"><button class="btn primary ${canGo ? 'ready' : ''}" id="next" ${canGo ? '' : 'disabled'}>Continue</button></div>
   </div>`;
