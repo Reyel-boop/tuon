@@ -600,3 +600,24 @@ details.credits ul{margin:8px 0 0 18px;display:grid;gap:4px}
   .ob.ob-tree .speech .hello{font-size:22px}
 }
 @media (prefers-reduced-motion:reduce){.mascot.climb-down .m-all,.mascot.climb-up .m-all{animation:none}}
+
+/* ---------- horizontal stages: lessons on platforms, Mata jumps between them ---------- */
+.path.hz{display:block;padding:0;gap:0;min-height:270px}
+.path.hz .track{position:relative;z-index:1;display:flex;justify-content:space-around;align-items:flex-end;height:270px;padding:0 4px 54px}
+.path.hz .stage{transform:translateY(var(--y));display:flex;flex-direction:column;align-items:center}
+.path.hz .node{width:clamp(48px,13vw,68px);height:clamp(46px,12vw,62px);border-radius:clamp(16px,4vw,22px);z-index:1}
+.path.hz .node.trophy{width:clamp(54px,14.5vw,76px);height:clamp(54px,14.5vw,76px)}
+.path.hz .node svg{width:clamp(22px,6vw,30px);height:clamp(22px,6vw,30px)}
+/* a small grassy log under each lesson */
+.path.hz .plat{width:clamp(56px,15vw,84px);height:clamp(16px,4vw,22px);margin-top:4px;border-radius:12px 12px 45% 45%/8px 8px 100% 100%;position:relative;
+  background:linear-gradient(180deg,var(--leaf3) 0 34%,var(--leaf2) 34% 46%,#8B5A33 46%,#6E4526);box-shadow:0 8px 14px -8px rgba(0,0,0,.45)}
+.path.hz .plat:after{content:"";position:absolute;left:50%;top:100%;width:5px;height:18px;margin-left:-2px;background:linear-gradient(#6E4526,transparent);border-radius:0 0 3px 3px;opacity:.6}
+.path.hz .start-tag{top:auto;bottom:-46px;font-size:12px;padding:3px 9px;border-radius:10px}
+.path.hz .start-tag:after{bottom:auto;top:-8px;border:0;border-left:2px solid var(--line);border-top:2px solid var(--line)}
+.path.hz .pop{top:calc(100% + 8px)}
+.hop-arc{fill:none;stroke:var(--trail);stroke-width:3;stroke-linecap:round;stroke-dasharray:1 10;opacity:.35}
+.hop-arc.done{opacity:.85;stroke-width:3.5}
+.sc2 .hop-arc{stroke:#C9BCFF}
+.mata-hop{position:absolute;left:0;top:0;width:clamp(46px,12vw,64px);z-index:3;pointer-events:none;will-change:transform}
+.mata-hop .mascot{width:100%;height:auto;display:block;filter:drop-shadow(0 6px 4px rgba(0,0,0,.18))}
+@media (max-width:560px){.path.hz,.path.hz .track{height:236px;min-height:236px}.path.hz .track{padding-bottom:50px}}

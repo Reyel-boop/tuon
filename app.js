@@ -627,38 +627,80 @@ function sceneHtml(ui) {
     <svg class="trail"></svg>
   </div>`;
 }
+// dotted jump arcs between the platforms (instead of a winding vine)
+const STAGE_Y = [0, -34, 6, -40, -10];
+function nodeTop(path, el){ const b = path.getBoundingClientRect(), n = el.getBoundingClientRect(); return [n.left + n.width / 2 - b.left, n.top - b.top, n.width, n.height]; }
 function drawTrails() {
-  document.querySelectorAll('.path').forEach(p => {
+  document.querySelectorAll('.path.hz').forEach(p => {
     const svg = p.querySelector('.trail'); if (!svg) return;
     const box = p.getBoundingClientRect(); if (!box.width) return;
-    const pts = [...p.querySelectorAll('.node')].map(n => { const b = n.getBoundingClientRect(); return [b.left + b.width / 2 - box.left, b.top + b.height / 2 - box.top]; });
-    if (pts.length < 2) return;
-    let d = `M${pts[0][0]} ${pts[0][1] - 60}L${pts[0][0]} ${pts[0][1]}`;
-    for (let i = 1; i < pts.length; i++) { const [x0, y0] = pts[i - 1], [x1, y1] = pts[i], my = (y0 + y1) / 2; d += `C${x0} ${my} ${x1} ${my} ${x1} ${y1}`; }
-    const last = pts[pts.length - 1]; d += `L${last[0]} ${box.height}`;
+    const nodes = [...p.querySelectorAll('.node')], pts = nodes.map(n => nodeTop(p, n));
+    let out = '';
+    for (let i = 1; i < pts.length; i++) {
+      const [x0, y0] = pts[i - 1], [x1, y1] = pts[i], peak = Math.min(y0, y1) - 34 - Math.abs(x1 - x0) * .12;
+      const reached = !nodes[i].classList.contains('locked');
+      out += `<path d="M${x0 + 10} ${y0 + 4}Q${(x0 + x1) / 2} ${peak} ${x1 - 10} ${y1 + 4}" class="hop-arc ${reached ? 'done' : ''}"/>`;
+    }
     svg.setAttribute('viewBox', `0 0 ${box.width} ${box.height}`);
-    svg.innerHTML = `<path d="${d}" class="trail-bed"/><path d="${d}" class="trail-dash"/>`;
+    svg.innerHTML = out;
   });
 }
+// where Mata stands on a lesson node (relative to the unit's track)
+function mataSpot(n){
+  const el = document.getElementById('nw-' + n), m = document.getElementById('mataHop'); if (!el || !m) return null;
+  const tr = m.parentElement.getBoundingClientRect(), b = el.querySelector('.node').getBoundingClientRect(), w = m.offsetWidth, h = m.offsetHeight;
+  return [b.left + b.width / 2 - tr.left - w / 2, b.top - tr.top - h * .86];
+}
+function placeMata(){ const m = document.getElementById('mataHop'); if (!m) return; const p = mataSpot(+m.dataset.at); if (p) m.style.transform = `translate(${p[0]}px,${p[1]}px)`; }
+let mataBusy = null;
+function mataJump(to, done){
+  const m = document.getElementById('mataHop'); if (!m) return done && done();
+  const from = +m.dataset.at, a = mataSpot(from), b = mataSpot(to); m.dataset.at = to;
+  if (!a || !b || mataReduce || !m.animate) { placeMata(); return done && done(); }
+  const H = Math.max(14, Math.min(34 + Math.abs(b[0] - a[0]) * .12, Math.min(a[1], b[1]) + 6)), frames = []; // stay inside the scene
+  frames.push({transform: `translate(${a[0]}px,${a[1]}px) scale(1.08,.86)`, offset: 0});
+  for (let k = 1; k < 12; k++) { const t = k / 12, x = a[0] + (b[0] - a[0]) * t, y = a[1] + (b[1] - a[1]) * t - H * 4 * t * (1 - t);
+    frames.push({transform: `translate(${x}px,${y}px) rotate(${(b[0] > a[0] ? 1 : -1) * Math.sin(t * Math.PI) * 10}deg) scale(.96,1.05)`, offset: .12 + t * .74}); }
+  frames.push({transform: `translate(${b[0]}px,${b[1]}px) scale(1.1,.84)`, offset: .9}, {transform: `translate(${b[0]}px,${b[1]}px)`, offset: 1});
+  const svg = m.querySelector('svg.mascot'); if (svg) mataCls(svg, 'twitch', 520);
+  mataBusy = m.animate(frames, {duration: 620 + Math.abs(b[0] - a[0]) * .6, easing: 'ease-in-out'});
+  mataBusy.onfinish = () => { mataBusy = null; m.style.transform = `translate(${b[0]}px,${b[1]}px)`; done && done(); };
+}
+// after finishing lessons, Mata jumps from where it was to the new lesson
+function mataArrive(cid, front){
+  const m = document.getElementById('mataHop'), key = 'tuon-mata-' + cid; let prev = null;
+  try { prev = localStorage.getItem(key); localStorage.setItem(key, String(front)); } catch (e) {}
+  if (!m) return; prev = prev == null ? front : +prev;
+  const start = Math.floor(front / LPU) * LPU;
+  if (prev >= front || prev < start) {   // first visit, or a new unit: drop in from above
+    m.dataset.at = front; placeMata();
+    if (prev < start && !mataReduce && m.animate) { const p = mataSpot(front); m.animate([{transform: `translate(${p[0]}px,${p[1] - 120}px)`, opacity: 0}, {transform: `translate(${p[0]}px,${p[1]}px) scale(1.1,.85)`, opacity: 1, offset: .8}, {transform: `translate(${p[0]}px,${p[1]}px)`}], {duration: 700, easing: 'ease-in'}); }
+    return;
+  }
+  m.dataset.at = prev; placeMata();
+  const hopTo = n => n > front ? null : setTimeout(() => mataJump(n, () => hopTo(n + 1)), n === prev + 1 ? 450 : 60);
+  hopTo(prev + 1);
+}
 let trailTimer;
-window.addEventListener('resize', () => { clearTimeout(trailTimer); trailTimer = setTimeout(drawTrails, 120); });
+window.addEventListener('resize', () => { clearTimeout(trailTimer); trailTimer = setTimeout(() => { drawTrails(); placeMata(); }, 120); });
 
 /* ---------------- learn page ---------------- */
 function renderLearn() {
   const u = me(), cid = u.course, front = u.progress[cid] || 0;
   let html = '';
   C[cid].units.forEach((U, ui) => {
-    html += `<div class="unit-head u${ui % 5}"><div><p>Unit ${ui + 1}</p><h2>${esc(U.title)}</h2><p style="font-size:14px">${esc(U.desc)}</p></div><button class="guide" onclick="A.guide(${ui})">${ICON.book}<span>Guidebook</span></button></div><div class="path sc${ui % 5}">${sceneHtml(ui)}`;
+    html += `<div class="unit-head u${ui % 5}"><div><p>Unit ${ui + 1}</p><h2>${esc(U.title)}</h2><p style="font-size:14px">${esc(U.desc)}</p></div><button class="guide" onclick="A.guide(${ui})">${ICON.book}<span>Guidebook</span></button></div><div class="path hz sc${ui % 5}">${sceneHtml(ui)}<div class="track">`;
     for (let li = 0; li < LPU; li++) {
       const n = ui * LPU + li, st = n < front ? 'done' : n === front ? 'cur' : 'locked', trophy = li === LPU - 1;
       const ic = st === 'locked' ? (trophy ? ICON.cup : ICON.lock) : st === 'done' ? (trophy ? ICON.cup : ICON.check) : (trophy ? ICON.cup : ICON.star);
-      html += `<div class="node-wrap u${ui % 5}n" id="nw-${n}" style="transform:translateX(${(ui % 2 ? -1 : 1) * OFFS[li]}px)">${st === 'cur' ? '<div class="start-tag">START</div>' : ''}<button class="node ${st} ${trophy ? 'trophy' : ''}" onclick="A.node(${ui},${li},event)" aria-label="${lessonTitle(li, cid, ui)}">${ic}</button></div>`;
+      html += `<div class="node-wrap stage u${ui % 5}n" id="nw-${n}" style="--y:${STAGE_Y[li]}px">${st === 'cur' ? '<div class="start-tag">START</div>' : ''}<button class="node ${st} ${trophy ? 'trophy' : ''}" onclick="A.node(${ui},${li},event)" aria-label="${lessonTitle(li, cid, ui)}">${ic}</button><div class="plat"></div></div>`;
     }
-    html += `<div class="deco ${ui % 2 ? 'right' : 'left'}" style="top:110px;${ui % 2 ? 'right' : 'left'}:6%">${BRANCH}${mascot(ui === 1 ? 'wow' : ui === 2 ? 'happy' : 'wave')}</div></div>`;
+    // Mata stands on the lesson you're on and jumps from platform to platform
+    html += `${Math.floor(front / LPU) === ui && front < totalLessons(cid) ? `<div class="mata-hop" id="mataHop" data-at="${front}">${mascot('happy')}</div>` : ''}</div></div>`;
   });
   if (front >= totalLessons(cid)) html += `<div class="card" style="text-align:center">${mascot('wow')}<h3>Course complete! 🎉</h3><p class="muted">You finished every lesson in ${C[cid].name}. Keep practicing to stay sharp, or start another course from your profile.</p></div>`;
   shell('learn', `<div style="max-width:600px;margin:0 auto">${html}</div>`);
-  requestAnimationFrame(drawTrails); if (document.fonts) document.fonts.ready.then(drawTrails);
+  requestAnimationFrame(() => { drawTrails(); mataArrive(cid, front); }); if (document.fonts) document.fonts.ready.then(() => { drawTrails(); placeMata(); });
   if (welcome) { welcome = false; modal(`${mascot('wave')}<h2>Welcome, ${esc(u.name)}!</h2><p class="muted">I’m Mata the tarsier. Tap the glowing lesson to start your first ${C[cid].name} lesson.</p><div class="acts"><button class="btn primary" onclick="closeModal()">Let’s go!</button></div>`); }
   const cur = document.getElementById('nw-' + front);
   if (cur && front > 0) setTimeout(() => cur.scrollIntoView({ block: 'center' }), 30);
@@ -676,10 +718,16 @@ const A = window.A = {
     const words = U.topics ? (li < 4 ? 'Learn it, then answer a quick quiz' : 'Review everything in this unit') : li < 2 ? U.words.slice(li * 4, li * 4 + 4).map(w => w[0]).join(', ') : li < 4 ? 'Build sentences with what you know' : 'Prove your skills to finish the unit';
     const pop = document.createElement('div');
     pop.className = 'pop' + (locked ? ' locked' : '');
-    pop.innerHTML = `<h4>${lessonTitle(li, cid, ui)}</h4><p>${locked ? 'Complete all lessons above to unlock this.' : `Lesson ${li + 1} of ${LPU} · ${esc(words)}`}</p>
+    pop.innerHTML = `<h4>${lessonTitle(li, cid, ui)}</h4><p>${locked ? 'Finish the lessons before this one to unlock it.' : `Lesson ${li + 1} of ${LPU} · ${esc(words)}`}</p>
       ${locked ? '' : `<button class="btn" onclick="A.start(${ui},${li})">${n < front ? 'Practice +5 XP' : `Start +${li === LPU - 1 ? 15 : 10} XP`}</button>`}`;
     pop.onclick = e => e.stopPropagation();
     wrap.style.zIndex = 6; wrap.appendChild(pop);
+    const path = wrap.closest('.path.hz');
+    if (path) { const pr = path.getBoundingClientRect(), wr = wrap.getBoundingClientRect(), w = Math.min(280, pr.width - 16);
+      pop.style.width = w + 'px'; pop.style.marginLeft = '0';
+      pop.style.left = Math.max(pr.left - wr.left + 8, Math.min(pr.right - wr.left - w - 8, wr.width / 2 - w / 2)) + 'px'; }
+    const mh = document.getElementById('mataHop');
+    if (mh && mh.parentElement.contains(wrap)) { if (locked) { const sv = mh.querySelector('svg.mascot'); if (sv) mataCls(sv, 'tilt-l', 700); } else if (+mh.dataset.at !== n && !mataBusy) mataJump(n); }
     document.addEventListener('click', () => { pop.remove(); wrap.style.zIndex = ''; }, { once: true });
   },
   start(ui, li) {
