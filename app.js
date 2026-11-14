@@ -103,15 +103,28 @@ const FLAGS = {
   rs: '<svg viewBox="0 0 30 20"><rect width="30" height="20" fill="#fff"/><rect width="30" height="13.33" fill="#0C4076"/><rect width="30" height="6.67" fill="#C6363C"/><path d="M8 5.5h4.5v4.5c0 1.6-2.25 2.6-2.25 2.6S8 11.6 8 10z" fill="#C6363C" stroke="#EDB92E" stroke-width=".5"/><path d="M10.25 6.5v4.6M8.9 8.4h2.7" stroke="#fff" stroke-width=".7"/></svg>'
 };
 const flag = (cid, lg) => C[cid].kind ? `<span class="flag ic ${lg ? 'lg' : ''} ${C[cid].iconText ? 'txt' : ''}" style="background:${C[cid].iconBg};${C[cid].iconFg ? `color:${C[cid].iconFg}` : ''}">${esc(C[cid].icon)}</span>` : `<span class="flag ${lg ? 'lg' : ''}">${FLAGS[C[cid].flag]}</span>`;
-// Mata the tarsier — hand-drawn artwork (img/mata.webp) inside the same layered SVG frame as before,
-// so the whole-body moves still work: bob, breathe, tilt, poke, hop, jump, sigh, climb (see .mascot rules in styles.css).
-// The picture is one piece, so per-part moves (blinks, eye tracking, arm waves) are done as whole-body moves instead.
+// Mata the tarsier — the hand-drawn artwork cut into moving layers (img/mata/*.webp, coordinates in the
+// 646x944 artwork's pixels). The head tilts and turns toward the pointer, the ears twitch, the eyes blink,
+// the hand lifts the magnifying glass, and the tail sways. Motion rules: .mascot in styles.css + mataLife below.
+const MATA_L = { tail: [0, 600, 200, 260], arm: [440, 455, 143, 145], body: [90, 422, 446, 522], earL: [9, 74, 163, 314], earR: [480, 83, 166, 314], head: [125, 0, 399, 475], lens: [363, 276, 124, 220] };
+let mataN = 0;
 function mascot(mood = 'happy') {
-  return `<svg class="mascot m-${mood}" viewBox="0 0 120 130" aria-hidden="true">
-  <ellipse class="m-shadow" cx="60" cy="126" rx="30" ry="4" fill="#000" opacity=".1"/>
-  <g class="m-all"><g class="m-body"><g class="m-sway"><g class="m-head">
-   <image class="m-art" href="img/mata.webp" x="15.5" y="-1" width="89" height="130" preserveAspectRatio="xMidYMax meet"/>
-  </g></g></g></g>
+  const n = ++mataN, im = k => { const [x, y, w, h] = MATA_L[k]; return `<image href="img/mata/${k}.webp" x="${x}" y="${y}" width="${w}" height="${h}"/>`; };
+  const lid = (side, cx, cy) => `<g class="m-lid m-lid-${side}"><rect x="${cx - 70}" y="${cy - 80}" width="140" height="160" fill="#C99247"/><path d="M${cx - 62} ${cy + 46}q62 34 124 0" stroke="#3A2414" stroke-width="7" fill="none" stroke-linecap="round"/></g>`;
+  return `<svg class="mascot m-${mood}" viewBox="-130 -20 906 981" aria-hidden="true">
+  <defs><clipPath id="mEL${n}"><ellipse cx="218" cy="298" rx="63" ry="77"/></clipPath><clipPath id="mER${n}"><ellipse cx="418" cy="305" rx="66" ry="75"/></clipPath><clipPath id="mLN${n}"><circle cx="425" cy="338" r="54"/></clipPath></defs>
+  <ellipse class="m-shadow" cx="323" cy="936" rx="230" ry="26" fill="#000" opacity=".1"/>
+  <g class="m-all"><g class="m-body">
+   <g class="m-tail">${im('tail')}</g>
+   <g class="m-hand">${im('arm')}</g>
+   ${im('body')}
+   <g class="m-head">
+    <g class="m-ear-l">${im('earL')}</g><g class="m-ear-r">${im('earR')}</g>
+    ${im('head')}
+    <g clip-path="url(#mEL${n})">${lid('l', 218, 298)}</g><g clip-path="url(#mER${n})">${lid('r', 418, 305)}</g>
+    <g class="m-hand"><g class="m-lens">${im('lens')}<g clip-path="url(#mLN${n})"><g clip-path="url(#mER${n})">${lid('r', 418, 305)}</g></g></g></g>
+   </g>
+  </g></g>
 </svg>`;
 }
 const LOGO = `<svg viewBox="0 0 40 40"><rect width="40" height="40" rx="12" fill="#0E8C8F"/><circle cx="14" cy="19" r="7.5" fill="#F2A33A"/><circle cx="26" cy="19" r="7.5" fill="#F2A33A"/><circle cx="14" cy="20" r="3.6" fill="#1D120A"/><circle cx="26" cy="20" r="3.6" fill="#1D120A"/><circle cx="12.5" cy="17.5" r="1.4" fill="#fff"/><circle cx="24.5" cy="17.5" r="1.4" fill="#fff"/><path d="M15 30q5 4 10 0" stroke="#fff" stroke-width="2.4" fill="none" stroke-linecap="round"/></svg><span>tuon</span>`;
@@ -1030,6 +1043,7 @@ if (!mataReduce) {
       if (Date.now() - mataPointer > 2500 && Math.random() < .35) { m.style.setProperty('--lx', (Math.random() * 6 - 3).toFixed(1) + 'px'); m.style.setProperty('--ly', (Math.random() * 4 - 2).toFixed(1) + 'px'); }
       if (Math.random() < .15) mataCls(m, 'twitch', 520);
       if (Math.random() < .1 && !m.classList.contains('m-sad')) mataCls(m, Math.random() < .5 ? 'tilt-l' : 'tilt-r', 1500);
+      if (Math.random() < .1 && !m.classList.contains('m-sad')) mataCls(m, 'peek', 1300); // a closer look through the magnifying glass
     });
     setTimeout(tick, 1300 + Math.random() * 1500);
   })();

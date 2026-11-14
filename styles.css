@@ -362,62 +362,64 @@ select.field{padding:10px 12px;width:auto}
 .rail-mobile{display:none}
 @media (max-width:560px){.path .deco{display:none}}
 
-/* ---------- Mata the tarsier: animation ---------- */
-.mascot{overflow:visible;cursor:pointer;--lx:0px;--ly:0px;--ps:1;-webkit-user-select:none;user-select:none}
+/* ---------- Mata the tarsier: animation ----------
+   Units are the artwork's own pixels (646x944, viewBox -130 -20 906 981). Pivots:
+   feet 323 936 · neck 390 470 · ears 150/500 260 · shoulder (glass hand) 485 565 · lens 425 338 · tail 160 835 */
+.mascot{overflow:visible;cursor:pointer;--lx:0px;--ly:0px;-webkit-user-select:none;user-select:none}
 .mascot *{transform-box:view-box}
-.mascot .m-all,.mascot .m-shadow{transform-origin:60px 126px}
-.mascot .m-body{transform-origin:60px 126px;animation:m-breathe 3.4s ease-in-out infinite}
-.mascot .m-tail{transform-origin:86px 117px;animation:m-tail 3s ease-in-out infinite}
-.mascot .m-head{transform-origin:60px 126px;transition:transform .55s cubic-bezier(.3,1.6,.6,1)}
-/* the artwork is one picture: these whole-body moves stand in for ear twitches and arm waves */
-.mascot .m-sway{transform-origin:60px 126px}
-.mascot.twitch .m-sway{animation:m-twitch .5s ease-out}
-.m-wave .m-sway{animation:m-rock 1.6s ease-in-out infinite}
-.m-cheer .m-sway{animation:m-rock .38s ease-in-out infinite}
-.m-sad .m-art{filter:saturate(.7) brightness(.95)}
-@keyframes m-twitch{25%{transform:rotate(-2.5deg)}60%{transform:rotate(2deg)}}
-@keyframes m-rock{0%,100%{transform:rotate(0)}50%{transform:rotate(-5deg)}}
-.mascot .m-ear-l{transform-origin:34px 46px;transition:transform .35s}
-.mascot .m-ear-r{transform-origin:86px 46px;transition:transform .35s}
+.mascot .m-all,.mascot .m-shadow,.mascot .m-body{transform-origin:323px 936px}
+.mascot .m-body{animation:m-breathe 3.4s ease-in-out infinite}
+.mascot .m-tail{transform-origin:160px 835px;animation:m-tail 3.2s ease-in-out infinite}
+/* the head tilts (--tilt), droops (--hy) and turns a little toward the pointer (--lx/--ly from mataLife) */
+.mascot .m-head{transform-origin:390px 470px;transform:translate(calc(var(--lx) * 2.2),calc(var(--ly) * 2.2 + var(--hy,0px))) rotate(var(--tilt,0deg));transition:transform .55s cubic-bezier(.3,1.6,.6,1)}
+.mascot .m-ear-l{transform-origin:150px 260px;transition:transform .35s}
+.mascot .m-ear-r{transform-origin:500px 260px;transition:transform .35s}
+.mascot .m-hand{transform-origin:485px 565px;transition:transform .45s cubic-bezier(.3,1.4,.6,1)}
+.mascot .m-lens{transform-origin:425px 338px;transition:transform .35s}
 .mascot .m-lid{transform:scaleY(0);transition:transform .07s ease-in}
-.mascot .m-eye-l .m-lid{transform-origin:42px 36px}
-.mascot .m-eye-r .m-lid{transform-origin:78px 36px}
-.mascot .m-eye-l,.mascot .m-eye-l .m-look{transform-origin:42px 54px}
-.mascot .m-eye-r,.mascot .m-eye-r .m-look{transform-origin:78px 54px}
-.mascot .m-look{transform:translate(var(--lx),var(--ly)) scale(var(--ps));transition:transform .28s ease-out}
-.mascot .m-arm-r{transform-origin:87px 101px}
-.mascot .m-arm-l{transform-origin:33px 101px}
+.mascot .m-lid-l{transform-origin:218px 221px}
+.mascot .m-lid-r{transform-origin:418px 230px}
 .mascot.blink .m-lid{transform:scaleY(1)}
-.mascot.tilt-l .m-head{transform:rotate(-10deg)}
-.mascot.tilt-r .m-head{transform:rotate(10deg)}
+.mascot.tilt-l{--tilt:-7deg}
+.mascot.tilt-r{--tilt:7deg}
 .mascot.twitch .m-ear-l{animation:m-ear-l .5s ease-out}
 .mascot.twitch .m-ear-r{animation:m-ear-r .5s ease-out .06s}
-.mascot.poke{--ps:1.25}
+/* Mata lifts the magnifying glass for a closer look */
+.mascot.peek .m-hand{transform:rotate(-4deg)}
+.mascot.peek .m-lens{transform:scale(1.1)}
 .mascot.poke .m-all{animation:m-poke .6s cubic-bezier(.3,1.5,.5,1)}
+.mascot.poke .m-lens{animation:m-zoom .6s ease-out}
 /* moods */
 .m-happy .m-all{animation:m-bob 2.6s ease-in-out infinite}
-.m-wave .m-arm-r{animation:m-wave 1.2s ease-in-out infinite}
-.m-wow{--ps:1.22}
+.m-wave .m-hand{animation:m-peek 1.6s ease-in-out infinite}
+.m-wave .m-lens{animation:m-zoom 1.6s ease-in-out infinite}
 .m-wow .m-all{animation:m-hop 1.8s ease-in-out infinite}
+.m-wow .m-lens{animation:m-zoom 1.8s ease-in-out infinite}
+.m-wow .m-ear-l{transform:rotate(-8deg)}
+.m-wow .m-ear-r{transform:rotate(8deg)}
 .m-cheer .m-all{animation:m-jump .75s ease-in-out 4}
 .m-cheer .m-shadow{animation:m-shadow .75s ease-in-out 4}
-.m-cheer .m-arm-r{animation:m-wave .38s ease-in-out infinite}
-.m-cheer .m-arm-l{animation:m-wave-l .38s ease-in-out infinite}
-.m-sad .m-head{transform:translateY(3px) rotate(-4deg)}
-.m-sad .m-ear-l{transform:rotate(-24deg)}
-.m-sad .m-ear-r{transform:rotate(24deg)}
+.m-cheer .m-hand{animation:m-wiggle .38s ease-in-out infinite}
+.m-cheer .m-ear-l{animation:m-ear-l .75s ease-in-out 4}
+.m-cheer .m-ear-r{animation:m-ear-r .75s ease-in-out 4}
+.m-sad{--tilt:-5deg;--hy:20px}
+.m-sad .m-ear-l{transform:rotate(-20deg)}
+.m-sad .m-ear-r{transform:rotate(20deg)}
+.m-sad .m-hand{transform:rotate(3deg)}
 .m-sad .m-tail{animation-duration:6s}
 .m-sad .m-all{animation:m-sigh 2.4s ease-in-out}
-@keyframes m-breathe{50%{transform:scale(1.025,1.015)}}
-@keyframes m-tail{0%,100%{transform:rotate(0)}50%{transform:rotate(-14deg)}}
-@keyframes m-ear-l{30%{transform:rotate(-16deg)}60%{transform:rotate(6deg)}}
-@keyframes m-ear-r{30%{transform:rotate(16deg)}60%{transform:rotate(-6deg)}}
-@keyframes m-poke{20%{transform:scale(1.08,.88)}55%{transform:translateY(-12px) scale(.95,1.06)}}
-@keyframes m-bob{50%{transform:translateY(-3px)}}
-@keyframes m-wave{0%,100%{transform:rotate(0)}50%{transform:rotate(-24deg)}}
-@keyframes m-wave-l{0%,100%{transform:rotate(0)}50%{transform:rotate(24deg)}}
-@keyframes m-hop{0%,60%,100%{transform:none}70%{transform:scale(1.05,.94)}82%{transform:translateY(-8px)}}
-@keyframes m-jump{0%,100%{transform:scale(1.06,.93)}45%{transform:translateY(-16px) scale(.96,1.05)}}
+.m-sad image{filter:saturate(.72) brightness(.96)}
+@keyframes m-breathe{50%{transform:scale(1.02,1.012)}}
+@keyframes m-tail{0%,100%{transform:rotate(0)}50%{transform:rotate(6deg)}}
+@keyframes m-ear-l{30%{transform:rotate(-14deg)}60%{transform:rotate(5deg)}}
+@keyframes m-ear-r{30%{transform:rotate(14deg)}60%{transform:rotate(-5deg)}}
+@keyframes m-peek{0%,100%{transform:rotate(0)}50%{transform:rotate(-4deg)}}
+@keyframes m-zoom{0%,100%{transform:scale(1)}50%{transform:scale(1.1)}}
+@keyframes m-wiggle{0%,100%{transform:rotate(0)}50%{transform:rotate(-3.5deg)}}
+@keyframes m-poke{20%{transform:scale(1.08,.88)}55%{transform:translateY(-90px) scale(.95,1.06)}}
+@keyframes m-bob{50%{transform:translateY(-22px)}}
+@keyframes m-hop{0%,60%,100%{transform:none}70%{transform:scale(1.05,.94)}82%{transform:translateY(-60px)}}
+@keyframes m-jump{0%,100%{transform:scale(1.06,.93)}45%{transform:translateY(-120px) scale(.96,1.05)}}
 @keyframes m-shadow{45%{transform:scale(.65);opacity:.04}}
 @keyframes m-sigh{30%{transform:scale(1.02,1.04)}70%{transform:scale(1,.97)}}
 .path .deco{pointer-events:auto}
@@ -594,11 +596,10 @@ details.credits ul{margin:8px 0 0 18px;display:grid;gap:4px}
 .ob.ob-tree .ob-sec,.ob.ob-tree .choices{margin-left:100px;position:relative;z-index:2}
 .mascot.climb-down .m-all{animation:m-climb-down .38s ease-in-out}
 .mascot.climb-up .m-all{animation:m-climb-up .38s ease-in-out}
-.mascot.climb-down .m-arm-l,.mascot.climb-up .m-arm-l{animation:m-grab .38s ease-in-out}
-.mascot.climb-down .m-arm-r,.mascot.climb-up .m-arm-r{animation:m-grab .38s ease-in-out .19s}
-@keyframes m-climb-down{0%,100%{transform:none}40%{transform:translateY(5px) rotate(-3deg)}75%{transform:translateY(-2px) rotate(2deg)}}
-@keyframes m-climb-up{0%,100%{transform:none}40%{transform:translateY(-5px) rotate(3deg)}75%{transform:translateY(2px) rotate(-2deg)}}
-@keyframes m-grab{50%{transform:rotate(-18deg)}}
+.mascot.climb-down .m-hand,.mascot.climb-up .m-hand{animation:m-grab .38s ease-in-out}
+@keyframes m-climb-down{0%,100%{transform:none}40%{transform:translateY(38px) rotate(-3deg)}75%{transform:translateY(-15px) rotate(2deg)}}
+@keyframes m-climb-up{0%,100%{transform:none}40%{transform:translateY(-38px) rotate(3deg)}75%{transform:translateY(15px) rotate(-2deg)}}
+@keyframes m-grab{50%{transform:rotate(-5deg)}}
 @media (max-width:560px){
   .ob.ob-tree .ask .mascot{width:64px}
   .ob.ob-tree::before{left:30px;top:84px;width:12px}
