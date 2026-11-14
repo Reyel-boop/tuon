@@ -368,7 +368,15 @@ select.field{padding:10px 12px;width:auto}
 .mascot .m-all,.mascot .m-shadow{transform-origin:60px 126px}
 .mascot .m-body{transform-origin:60px 126px;animation:m-breathe 3.4s ease-in-out infinite}
 .mascot .m-tail{transform-origin:86px 117px;animation:m-tail 3s ease-in-out infinite}
-.mascot .m-head{transform-origin:60px 96px;transition:transform .55s cubic-bezier(.3,1.6,.6,1)}
+.mascot .m-head{transform-origin:60px 126px;transition:transform .55s cubic-bezier(.3,1.6,.6,1)}
+/* the artwork is one picture: these whole-body moves stand in for ear twitches and arm waves */
+.mascot .m-sway{transform-origin:60px 126px}
+.mascot.twitch .m-sway{animation:m-twitch .5s ease-out}
+.m-wave .m-sway{animation:m-rock 1.6s ease-in-out infinite}
+.m-cheer .m-sway{animation:m-rock .38s ease-in-out infinite}
+.m-sad .m-art{filter:saturate(.7) brightness(.95)}
+@keyframes m-twitch{25%{transform:rotate(-2.5deg)}60%{transform:rotate(2deg)}}
+@keyframes m-rock{0%,100%{transform:rotate(0)}50%{transform:rotate(-5deg)}}
 .mascot .m-ear-l{transform-origin:34px 46px;transition:transform .35s}
 .mascot .m-ear-r{transform-origin:86px 46px;transition:transform .35s}
 .mascot .m-lid{transform:scaleY(0);transition:transform .07s ease-in}

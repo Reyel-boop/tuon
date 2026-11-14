@@ -103,51 +103,15 @@ const FLAGS = {
   rs: '<svg viewBox="0 0 30 20"><rect width="30" height="20" fill="#fff"/><rect width="30" height="13.33" fill="#0C4076"/><rect width="30" height="6.67" fill="#C6363C"/><path d="M8 5.5h4.5v4.5c0 1.6-2.25 2.6-2.25 2.6S8 11.6 8 10z" fill="#C6363C" stroke="#EDB92E" stroke-width=".5"/><path d="M10.25 6.5v4.6M8.9 8.4h2.7" stroke="#fff" stroke-width=".7"/></svg>'
 };
 const flag = (cid, lg) => C[cid].kind ? `<span class="flag ic ${lg ? 'lg' : ''} ${C[cid].iconText ? 'txt' : ''}" style="background:${C[cid].iconBg};${C[cid].iconFg ? `color:${C[cid].iconFg}` : ''}">${esc(C[cid].icon)}</span>` : `<span class="flag ${lg ? 'lg' : ''}">${FLAGS[C[cid].flag]}</span>`;
-// Mata the tarsier — layered SVG so each part can move (see .mascot rules in styles.css + mataLife below)
+// Mata the tarsier — hand-drawn artwork (img/mata.webp) inside the same layered SVG frame as before,
+// so the whole-body moves still work: bob, breathe, tilt, poke, hop, jump, sigh, climb (see .mascot rules in styles.css).
+// The picture is one piece, so per-part moves (blinks, eye tracking, arm waves) are done as whole-body moves instead.
 function mascot(mood = 'happy') {
-  const S = 'stroke-linecap="round" fill="none"';
-  const mouth = {
-    happy: `<path d="M52 82q8 7 16 0" stroke="#5A3520" stroke-width="3" ${S}/>`,
-    wave: `<path d="M52 82q8 7 16 0" stroke="#5A3520" stroke-width="3" ${S}/>`,
-    cheer: '<path d="M50 80q10 13 20 0z" fill="#5A3520"/><path d="M54.5 85.5q5.5 3.5 11 0" fill="#F08E7A"/>',
-    wow: '<ellipse cx="60" cy="84" rx="4.5" ry="5.5" fill="#5A3520"/>',
-    sad: `<path d="M52 87q8-6 16 0" stroke="#5A3520" stroke-width="3" ${S}/>`
-  }[mood] || '';
-  const brow = mood === 'sad' ? `<path d="M29 37l14 4M91 37l-14 4" stroke="#7A4B2A" stroke-width="3" ${S}/>` : '';
-  const pads = (x, y) => `<circle cx="${x - 4}" cy="${y - 3}" r="2.2" fill="#F3C9A6"/><circle cx="${x}" cy="${y - 5}" r="2.2" fill="#F3C9A6"/><circle cx="${x + 4}" cy="${y - 3}" r="2.2" fill="#F3C9A6"/>`;
-  const up = side => side === 'r'
-    ? `<g class="m-arm-r"><path d="M86 102q16-6 18-26" stroke="#A86F43" stroke-width="9" ${S}/><circle cx="104" cy="75" r="5.5" fill="#E9B28C"/>${pads(104, 72)}</g>`
-    : `<g class="m-arm-l"><path d="M34 102q-16-6-18-26" stroke="#A86F43" stroke-width="9" ${S}/><circle cx="16" cy="75" r="5.5" fill="#E9B28C"/>${pads(16, 72)}</g>`;
-  const down = side => side === 'r'
-    ? `<g class="m-arm-r"><path d="M86 103q10 4 10 13" stroke="#A86F43" stroke-width="9" ${S}/><circle cx="96" cy="117" r="4.5" fill="#E9B28C"/></g>`
-    : `<g class="m-arm-l"><path d="M34 103q-10 4-10 13" stroke="#A86F43" stroke-width="9" ${S}/><circle cx="24" cy="117" r="4.5" fill="#E9B28C"/></g>`;
-  const armR = ['wave', 'wow', 'cheer'].includes(mood) ? up('r') : down('r');
-  const armL = mood === 'cheer' ? up('l') : down('l');
-  const eye = (cx, side) => `<g class="m-eye m-eye-${side}"><circle cx="${cx}" cy="54" r="16.5" fill="#3A2414"/><circle cx="${cx}" cy="54" r="13.2" fill="#F2A33A"/>
-    <circle cx="${cx}" cy="54" r="10.5" fill="none" stroke="#DB8420" stroke-width="1.4" opacity=".7"/>
-    <g class="m-look"><circle cx="${cx}" cy="55" r="7.5" fill="#1D120A"/><circle cx="${cx - 4}" cy="50.5" r="3.4" fill="#fff"/><circle cx="${cx + 3.5}" cy="58.5" r="1.5" fill="#fff" opacity=".8"/></g>
-    <g class="m-lid"><circle cx="${cx}" cy="54" r="17.4" fill="#C48A5A"/><path d="M${cx - 12} 60q12 6 24 0" stroke="#7A4B2A" stroke-width="2.6" fill="none" stroke-linecap="round"/></g></g>`;
   return `<svg class="mascot m-${mood}" viewBox="0 0 120 130" aria-hidden="true">
-  <ellipse class="m-shadow" cx="60" cy="126" rx="30" ry="4" fill="#000" opacity=".08"/>
-  <g class="m-all">
-   <g class="m-tail"><path d="M84 117q26 3 27-17q1-14-6-24" stroke="#8C5A35" stroke-width="3.5" ${S}/><path d="M105 76q-3-9 3-15q4 7 1 15z" fill="#8C5A35"/></g>
-   <g class="m-body">
-    <ellipse cx="60" cy="106" rx="28" ry="20" fill="#A86F43"/><ellipse cx="60" cy="110" rx="16" ry="12" fill="#D9A47A"/>
-    <ellipse cx="44" cy="124" rx="9" ry="4" fill="#A86F43"/><ellipse cx="76" cy="124" rx="9" ry="4" fill="#A86F43"/>
-    <circle cx="37" cy="124" r="2" fill="#F3C9A6"/><circle cx="83" cy="124" r="2" fill="#F3C9A6"/>
-    ${armL}${armR}
-   </g>
-   <g class="m-head">
-    <g class="m-ear-l"><ellipse cx="20" cy="34" rx="16" ry="20" fill="#B57A4C" transform="rotate(-20 20 34)"/><ellipse cx="20" cy="35" rx="9" ry="13" fill="#EBA98A" transform="rotate(-20 20 35)"/></g>
-    <g class="m-ear-r"><ellipse cx="100" cy="34" rx="16" ry="20" fill="#B57A4C" transform="rotate(20 100 34)"/><ellipse cx="100" cy="35" rx="9" ry="13" fill="#EBA98A" transform="rotate(20 100 35)"/></g>
-    <circle cx="60" cy="58" r="38" fill="#C48A5A"/>
-    <path d="M52 21q4-7 8-1q4-6 8 1" fill="#C48A5A"/>
-    <ellipse cx="60" cy="76" rx="24" ry="17" fill="#E9C39D"/>
-    ${eye(42, 'l')}${eye(78, 'r')}
-    ${brow}<path d="M57 72h6l-3 3z" fill="#5A3520"/>${mouth}
-    <ellipse class="m-cheek" cx="32" cy="74" rx="5" ry="3" fill="#F08E7A" opacity=".45"/><ellipse class="m-cheek" cx="88" cy="74" rx="5" ry="3" fill="#F08E7A" opacity=".45"/>
-   </g>
-  </g>
+  <ellipse class="m-shadow" cx="60" cy="126" rx="30" ry="4" fill="#000" opacity=".1"/>
+  <g class="m-all"><g class="m-body"><g class="m-sway"><g class="m-head">
+   <image class="m-art" href="img/mata.webp" x="15.5" y="-1" width="89" height="130" preserveAspectRatio="xMidYMax meet"/>
+  </g></g></g></g>
 </svg>`;
 }
 const LOGO = `<svg viewBox="0 0 40 40"><rect width="40" height="40" rx="12" fill="#0E8C8F"/><circle cx="14" cy="19" r="7.5" fill="#F2A33A"/><circle cx="26" cy="19" r="7.5" fill="#F2A33A"/><circle cx="14" cy="20" r="3.6" fill="#1D120A"/><circle cx="26" cy="20" r="3.6" fill="#1D120A"/><circle cx="12.5" cy="17.5" r="1.4" fill="#fff"/><circle cx="24.5" cy="17.5" r="1.4" fill="#fff"/><path d="M15 30q5 4 10 0" stroke="#fff" stroke-width="2.4" fill="none" stroke-linecap="round"/></svg><span>tuon</span>`;
@@ -175,13 +139,18 @@ const sfx = {
 let voices = [];
 function loadVoices() { try { voices = speechSynthesis.getVoices(); } catch (e) { } }
 if ('speechSynthesis' in window) { loadVoices(); speechSynthesis.onvoiceschanged = () => { loadVoices(); }; }
+// Tuon talks like a kid. Real child voices are used when the device has one (e.g. Edge's
+// "Microsoft Ana" for English, "Xiaoyou"/"Xiaoshuang" for Chinese); any other voice is pitched up.
+const KID_VOICE = /\b(child|kid|kids|junior|ana|xiaoyou|xiaoshuang|ivy|justin)\b/;
+const isKidVoice = v => !!v && KID_VOICE.test(v.name.toLowerCase());
 function voiceFor(cid) {
-  // Rank every matching voice: preferred language first, then the most natural/human-sounding engines.
+  // Rank every matching voice: preferred language first, then child voices, then the most natural/human-sounding engines.
   const prefs = C[cid].voice; let best = null, bestScore = -Infinity;
   for (const v of voices) {
     const lang = v.lang.toLowerCase().replace('_', '-'), pi = prefs.findIndex(p => lang.startsWith(p));
     if (pi < 0) continue;
     const n = v.name.toLowerCase(); let sc = (prefs.length - pi) * 100;
+    if (isKidVoice(v)) sc += 60;
     if (/natural|neural|wavenet|studio/.test(n)) sc += 40;
     if (/premium|enhanced|siri/.test(n)) sc += 30;
     if (/google/.test(n)) sc += 20;
@@ -196,7 +165,7 @@ const canSpeak = cid => !!voiceFor(cid);
 function speak(text, cid, slow) {
   const v = voiceFor(cid);
   if (!v) return;
-  try { speechSynthesis.cancel(); const u = new SpeechSynthesisUtterance(text); u.voice = v; u.lang = v.lang; u.rate = slow ? 0.6 : 0.95; u.pitch = 1; speechSynthesis.speak(u); mataAll('twitch', 520); } catch (e) { }
+  try { speechSynthesis.cancel(); const u = new SpeechSynthesisUtterance(text); u.voice = v; u.lang = v.lang; const kid = isKidVoice(v); u.rate = slow ? 0.65 : kid ? 0.95 : 1.02; u.pitch = kid ? 1.1 : 1.55; speechSynthesis.speak(u); mataAll('twitch', 520); } catch (e) { }
 }
 const sayBtn = (text, cid) => canSpeak(cid) ? `<button class="say" data-say="${esc(text)}" data-cid="${cid}" aria-label="Play audio">${ICON.speaker}</button>` : '';
 document.addEventListener('click', e => {
@@ -488,6 +457,9 @@ function playHello(cid) {
   try { if (helloAudio) { helloAudio.pause(); helloAudio = null; } speechSynthesis.cancel(); } catch (e) { }
   if (rec) {
     helloAudio = new Audio('audio/hello/' + rec.file);
+    // the recordings are grown-ups: play them a little faster without keeping the pitch, so they sound like a kid
+    helloAudio.preservesPitch = false; helloAudio.mozPreservesPitch = false; helloAudio.webkitPreservesPitch = false;
+    helloAudio.playbackRate = 1.25;
     helloAudio.play().then(() => mataAll('twitch', 520)).catch(() => { if (g) speak(rec.word || g.t, cid); });
   } else if (g) speak(g.t, cid);
 }
