@@ -118,20 +118,6 @@ function mascot(mood = 'happy') {
     <g clip-path="url(#mEL${n})">${lid('l', 218, 298)}</g><g clip-path="url(#mER${n})">${lid('r', 418, 305)}</g>
     <g class="m-hand"><g class="m-lens">${im('lens')}<g clip-path="url(#mLN${n})"><g clip-path="url(#mER${n})">${lid('r', 418, 305)}</g></g></g></g>
    </g>`;
-  if (mood === 'climb') {
-    // Onboarding tree: Mata clings to the side of the trunk. The trunk runs in front of the body and behind
-    // the head; the left hand wraps around it. The trunk stays still while Mata (.m-mv) slides up and down it.
-    // Trunk x 323..513 lines up with the CSS trunk below (.ob-tree::before).
-    const fingers = [536, 580, 624].map(y => `<rect x="292" y="${y - 21}" width="${y === 580 ? 92 : 80}" height="42" rx="21"/>`).join('');
-    return `<svg class="mascot m-climb" viewBox="-130 -20 906 981" aria-hidden="true">
-  <defs>${defs}<pattern id="mBark${n}" patternUnits="userSpaceOnUse" x="323" y="0" width="190" height="358"><rect width="190" height="147" fill="#8B5A33"/><rect y="147" width="190" height="32" fill="#7A4E2B"/><rect y="179" width="190" height="179" fill="#946238"/></pattern></defs>
-  <g class="m-mv"><g class="m-tail">${im('tail')}</g><g class="m-hand">${im('arm')}</g>${im('body')}</g>
-  <g class="m-trunk"><rect x="323" y="-330" width="190" height="2000" fill="url(#mBark${n})"/><ellipse cx="418" cy="-330" rx="95" ry="95" fill="url(#mBark${n})"/><rect x="471" y="-330" width="42" height="1960" fill="#000" opacity=".15"/><rect x="323" y="-330" width="30" height="1960" fill="#fff" opacity=".08"/></g>
-  <g class="m-mv">${head}
-   <g class="m-paw"><ellipse cx="276" cy="580" rx="52" ry="66" fill="#E4A27A" stroke="#3A2414" stroke-width="8"/><g fill="#E4A27A" stroke="#3A2414" stroke-width="8">${fingers}</g></g>
-  </g>
-</svg>`;
-  }
   return `<svg class="mascot m-${mood}" viewBox="-130 -20 906 981" aria-hidden="true">
   <defs>${defs}</defs>
   <ellipse class="m-shadow" cx="323" cy="936" rx="230" ry="26" fill="#000" opacity=".1"/>
@@ -454,24 +440,15 @@ function renderLanding() {
   </div>`;
 }
 function obFrame(step, total, question, body, canGo, onNext, mood) {
-  app.innerHTML = `<div class="ob ${step === 1 ? 'ob-tree' : ''}">
+  app.innerHTML = `<div class="ob ${step === 1 ? 'ob-sticky' : ''}">
     <div class="ob-top"><button class="icon-btn" onclick="history.length>1?history.back():go('#/')" aria-label="Back">${ICON.back}</button>
       <div class="bar"><i style="width:${(step / total) * 100}%"></i></div></div>
-    <div class="ask">${mascot(step === 1 ? 'climb' : mood || 'happy')}<div class="speech">${question}</div></div>
+    <div class="ask">${mascot(mood || 'happy')}<div class="speech">${question}</div></div>
     ${body}
     <div class="ob-foot"><button class="btn primary ${canGo ? 'ready' : ''}" id="next" ${canGo ? '' : 'disabled'}>Continue</button></div>
   </div>`;
   $('#next').onclick = onNext;
-  // Step 1: Mata stays in view and "climbs" down the tree trunk while you scroll.
-  let lastY = window.scrollY, t = 0;
-  window.onscroll = step !== 1 ? null : () => {
-    const m = $('.ob-tree .ask .mascot'); if (!m) { window.onscroll = null; return; }
-    const y = window.scrollY, down = y > lastY; lastY = y;
-    if (mataReduce || t) return;
-    m.classList.remove('climb-up', 'climb-down'); void m.getBBox();
-    m.classList.add(down ? 'climb-down' : 'climb-up');
-    t = setTimeout(() => { t = 0; m.classList.remove('climb-up', 'climb-down'); }, 380);
-  };
+  window.onscroll = null;
 }
 // Mata greets you in the language you pick (the course's own word for "hello").
 const NO_HELLO = ['th']; // no free native recording yet — show a plain welcome instead
