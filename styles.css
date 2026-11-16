@@ -362,66 +362,27 @@ select.field{padding:10px 12px;width:auto}
 .rail-mobile{display:none}
 @media (max-width:560px){.path .deco{display:none}}
 
-/* ---------- Mata the tarsier: animation ----------
-   Units are the artwork's own pixels (646x944, viewBox -130 -20 906 981). Pivots:
-   feet 323 936 · neck 390 470 · ears 150/500 260 · shoulder (glass hand) 485 565 · lens 425 338 · tail 160 835 */
-.mascot{overflow:visible;cursor:pointer;--lx:0px;--ly:0px;-webkit-user-select:none;user-select:none}
-.mascot *{transform-box:view-box}
-.mascot .m-all,.mascot .m-shadow,.mascot .m-body{transform-origin:323px 936px}
-.mascot .m-body{animation:m-breathe 3.4s ease-in-out infinite}
-.mascot .m-tail{transform-origin:160px 835px;animation:m-tail 3.2s ease-in-out infinite}
-/* the head tilts (--tilt), droops (--hy) and turns a little toward the pointer (--lx/--ly from mataLife) */
-.mascot .m-head{transform-origin:390px 470px;transform:translate(calc(var(--lx) * 2.2),calc(var(--ly) * 2.2 + var(--hy,0px))) rotate(var(--tilt,0deg));transition:transform .55s cubic-bezier(.3,1.6,.6,1)}
-.mascot .m-ear-l{transform-origin:150px 260px;transition:transform .35s}
-.mascot .m-ear-r{transform-origin:500px 260px;transition:transform .35s}
-.mascot .m-hand{transform-origin:485px 565px;transition:transform .45s cubic-bezier(.3,1.4,.6,1)}
-.mascot .m-lens{transform-origin:425px 338px;transition:transform .35s}
-.mascot .m-lid{transform:scaleY(0);transition:transform .07s ease-in}
-.mascot .m-lid-l{transform-origin:218px 221px}
-.mascot .m-lid-r{transform-origin:418px 230px}
-.mascot.blink .m-lid{transform:scaleY(1)}
-.mascot.tilt-l{--tilt:-7deg}
-.mascot.tilt-r{--tilt:7deg}
-.mascot.twitch .m-ear-l{animation:m-ear-l .5s ease-out}
-.mascot.twitch .m-ear-r{animation:m-ear-r .5s ease-out .06s}
-/* Mata lifts the magnifying glass for a closer look */
-.mascot.peek .m-hand{transform:rotate(-4deg)}
-.mascot.peek .m-lens{transform:scale(1.1)}
-.mascot.poke .m-all{animation:m-poke .6s cubic-bezier(.3,1.5,.5,1)}
-.mascot.poke .m-lens{animation:m-zoom .6s ease-out}
-/* moods */
-.m-happy .m-all{animation:m-bob 2.6s ease-in-out infinite}
-.m-wave .m-hand{animation:m-peek 1.6s ease-in-out infinite}
-.m-wave .m-lens{animation:m-zoom 1.6s ease-in-out infinite}
-.m-wow .m-all{animation:m-hop 1.8s ease-in-out infinite}
-.m-wow .m-lens{animation:m-zoom 1.8s ease-in-out infinite}
-.m-wow .m-ear-l{transform:rotate(-8deg)}
-.m-wow .m-ear-r{transform:rotate(8deg)}
-.m-cheer .m-all{animation:m-jump .75s ease-in-out 4}
-.m-cheer .m-shadow{animation:m-shadow .75s ease-in-out 4}
-.m-cheer .m-hand{animation:m-wiggle .38s ease-in-out infinite}
-.m-cheer .m-ear-l{animation:m-ear-l .75s ease-in-out 4}
-.m-cheer .m-ear-r{animation:m-ear-r .75s ease-in-out 4}
-.m-sad{--tilt:-5deg;--hy:20px}
-.m-sad .m-ear-l{transform:rotate(-20deg)}
-.m-sad .m-ear-r{transform:rotate(20deg)}
-.m-sad .m-hand{transform:rotate(3deg)}
-.m-sad .m-tail{animation-duration:6s}
-.m-sad .m-all{animation:m-sigh 2.4s ease-in-out}
-.m-sad image{filter:saturate(.72) brightness(.96)}
-@keyframes m-breathe{50%{transform:scale(1.02,1.012)}}
-@keyframes m-tail{0%,100%{transform:rotate(0)}50%{transform:rotate(6deg)}}
-@keyframes m-ear-l{30%{transform:rotate(-14deg)}60%{transform:rotate(5deg)}}
-@keyframes m-ear-r{30%{transform:rotate(14deg)}60%{transform:rotate(-5deg)}}
-@keyframes m-peek{0%,100%{transform:rotate(0)}50%{transform:rotate(-4deg)}}
-@keyframes m-zoom{0%,100%{transform:scale(1)}50%{transform:scale(1.1)}}
-@keyframes m-wiggle{0%,100%{transform:rotate(0)}50%{transform:rotate(-3.5deg)}}
-@keyframes m-poke{20%{transform:scale(1.08,.88)}55%{transform:translateY(-90px) scale(.95,1.06)}}
-@keyframes m-bob{50%{transform:translateY(-22px)}}
-@keyframes m-hop{0%,60%,100%{transform:none}70%{transform:scale(1.05,.94)}82%{transform:translateY(-60px)}}
-@keyframes m-jump{0%,100%{transform:scale(1.06,.93)}45%{transform:translateY(-120px) scale(.96,1.05)}}
-@keyframes m-shadow{45%{transform:scale(.65);opacity:.04}}
-@keyframes m-sigh{30%{transform:scale(1.02,1.04)}70%{transform:scale(1,.97)}}
+/* ---------- Mata, the girl with the magnifying glass (live Rive character, see girl.js) ----------
+   The canvas sits in a square span; moods move the whole figure a little (her face, blinks and the glass are
+   animated by the Rive file). --lx/--ly lean toward the pointer, --tilt/--hy tilt or droop her. */
+.mascot.girl{display:block;position:relative;aspect-ratio:1;height:auto;cursor:pointer;--lx:0px;--ly:0px;--tilt:0deg;--hy:0px;-webkit-user-select:none;user-select:none;background:url(rive/look.png) center/100% 100% no-repeat}
+.mascot.girl.live{background:none}
+.mascot.girl canvas{position:absolute;inset:0;width:100%;height:100%;display:block;transform-origin:50% 100%;transform:translate(var(--lx),calc(var(--ly) + var(--hy))) rotate(var(--tilt));transition:transform .55s cubic-bezier(.3,1.6,.6,1);-webkit-mask-image:linear-gradient(#000 90%,transparent);mask-image:linear-gradient(#000 90%,transparent)}
+.mascot.girl.tilt-l{--tilt:-5deg}
+.mascot.girl.tilt-r{--tilt:5deg}
+.m-happy.girl{animation:g-bob 2.6s ease-in-out infinite}
+.m-wave.girl{animation:g-sway 2.2s ease-in-out infinite;transform-origin:50% 100%}
+.m-wow.girl{animation:g-hop 1.8s ease-in-out infinite;transform-origin:50% 100%}
+.m-cheer.girl{animation:g-jump .75s ease-in-out 4;transform-origin:50% 100%}
+.m-sad.girl{--tilt:-4deg;--hy:4%;animation:g-sigh 2.4s ease-in-out}
+.m-sad.girl canvas{filter:saturate(.6) brightness(.97)}
+.mascot.girl.poke{animation:g-poke .6s cubic-bezier(.3,1.5,.5,1)}
+@keyframes g-bob{50%{transform:translateY(-3%)}}
+@keyframes g-sway{0%,100%{transform:rotate(0)}50%{transform:rotate(-2.5deg)}}
+@keyframes g-hop{0%,60%,100%{transform:none}70%{transform:scale(1.04,.95)}82%{transform:translateY(-7%)}}
+@keyframes g-jump{0%,100%{transform:scale(1.05,.94)}45%{transform:translateY(-13%) scale(.97,1.04)}}
+@keyframes g-sigh{30%{transform:scale(1.01,1.03)}70%{transform:scale(1,.98)}}
+@keyframes g-poke{20%{transform:scale(1.06,.9)}55%{transform:translateY(-9%) scale(.96,1.05)}}
 .path .deco{pointer-events:auto}
 .fb .badge{overflow:visible}
 .fb .badge:has(.mascot){background:none;width:74px;height:74px}
@@ -623,3 +584,4 @@ details.credits ul{margin:8px 0 0 18px;display:grid;gap:4px}
 .heropickgrid button{border:0;background:#f1f5f9;border-radius:14px;padding:4px;font:700 11px inherit;cursor:pointer;color:#334155}
 .heropickgrid button.on{background:#facc15}.heropickgrid img{width:100%;aspect-ratio:1;border-radius:10px;display:block}
 .heropickgrid span{display:block;margin-top:2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.credit-line{text-align:center;font-size:12px;color:var(--muted);margin:6px 16px 10px}.credit-line a{color:inherit}

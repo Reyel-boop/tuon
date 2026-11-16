@@ -103,31 +103,10 @@ const FLAGS = {
   rs: '<svg viewBox="0 0 30 20"><rect width="30" height="20" fill="#fff"/><rect width="30" height="13.33" fill="#0C4076"/><rect width="30" height="6.67" fill="#C6363C"/><path d="M8 5.5h4.5v4.5c0 1.6-2.25 2.6-2.25 2.6S8 11.6 8 10z" fill="#C6363C" stroke="#EDB92E" stroke-width=".5"/><path d="M10.25 6.5v4.6M8.9 8.4h2.7" stroke="#fff" stroke-width=".7"/></svg>'
 };
 const flag = (cid, lg) => C[cid].kind ? `<span class="flag ic ${lg ? 'lg' : ''} ${C[cid].iconText ? 'txt' : ''}" style="background:${C[cid].iconBg};${C[cid].iconFg ? `color:${C[cid].iconFg}` : ''}">${esc(C[cid].icon)}</span>` : `<span class="flag ${lg ? 'lg' : ''}">${FLAGS[C[cid].flag]}</span>`;
-// Mata the tarsier — the hand-drawn artwork cut into moving layers (img/mata/*.webp, coordinates in the
-// 646x944 artwork's pixels). The head tilts and turns toward the pointer, the ears twitch, the eyes blink,
-// the hand lifts the magnifying glass, and the tail sways. Motion rules: .mascot in styles.css + mataLife below.
-const MATA_L = { tail: [0, 600, 200, 260], arm: [440, 455, 143, 145], body: [90, 422, 446, 522], earL: [9, 74, 163, 314], earR: [480, 83, 166, 314], head: [125, 0, 399, 475], lens: [363, 276, 124, 220] };
-let mataN = 0;
+// Mata, the girl with the magnifying glass: a live Rive character ("Look" by ChienPham, CC BY 4.0).
+// girl.js plays her inside this span; moods add a little whole-body motion (.mascot.girl in styles.css).
 function mascot(mood = 'happy') {
-  const n = ++mataN, im = k => { const [x, y, w, h] = MATA_L[k]; return `<image href="img/mata/${k}.webp" x="${x}" y="${y}" width="${w}" height="${h}"/>`; };
-  const lid = (side, cx, cy) => `<g class="m-lid m-lid-${side}"><rect x="${cx - 70}" y="${cy - 80}" width="140" height="160" fill="#C99247"/><path d="M${cx - 62} ${cy + 46}q62 34 124 0" stroke="#3A2414" stroke-width="7" fill="none" stroke-linecap="round"/></g>`;
-  const defs = `<clipPath id="mEL${n}"><ellipse cx="218" cy="298" rx="63" ry="77"/></clipPath><clipPath id="mER${n}"><ellipse cx="418" cy="305" rx="66" ry="75"/></clipPath><clipPath id="mLN${n}"><circle cx="425" cy="338" r="54"/></clipPath>`;
-  const head = `<g class="m-head">
-    <g class="m-ear-l">${im('earL')}</g><g class="m-ear-r">${im('earR')}</g>
-    ${im('head')}
-    <g clip-path="url(#mEL${n})">${lid('l', 218, 298)}</g><g clip-path="url(#mER${n})">${lid('r', 418, 305)}</g>
-    <g class="m-hand"><g class="m-lens">${im('lens')}<g clip-path="url(#mLN${n})"><g clip-path="url(#mER${n})">${lid('r', 418, 305)}</g></g></g></g>
-   </g>`;
-  return `<svg class="mascot m-${mood}" viewBox="-130 -20 906 981" aria-hidden="true">
-  <defs>${defs}</defs>
-  <ellipse class="m-shadow" cx="323" cy="936" rx="230" ry="26" fill="#000" opacity=".1"/>
-  <g class="m-all"><g class="m-body">
-   <g class="m-tail">${im('tail')}</g>
-   <g class="m-hand">${im('arm')}</g>
-   ${im('body')}
-   ${head}
-  </g></g>
-</svg>`;
+  return `<span class="mascot girl m-${mood}" data-mood="${mood}" aria-hidden="true"><canvas></canvas></span>`;
 }
 const LOGO = `<svg viewBox="0 0 40 40"><rect width="40" height="40" rx="12" fill="#0E8C8F"/><circle cx="14" cy="19" r="7.5" fill="#F2A33A"/><circle cx="26" cy="19" r="7.5" fill="#F2A33A"/><circle cx="14" cy="20" r="3.6" fill="#1D120A"/><circle cx="26" cy="20" r="3.6" fill="#1D120A"/><circle cx="12.5" cy="17.5" r="1.4" fill="#fff"/><circle cx="24.5" cy="17.5" r="1.4" fill="#fff"/><path d="M15 30q5 4 10 0" stroke="#fff" stroke-width="2.4" fill="none" stroke-linecap="round"/></svg><span>tuon</span>`;
 
@@ -429,13 +408,14 @@ function renderLanding() {
       <span class="bubble-word" style="bottom:16%;left:0">Bonjour</span><span class="bubble-word" style="bottom:6%;right:8%">Maayong buntag</span></div>
     <div>
       <h1>Learn languages and life skills in <em>five-minute</em> bites.</h1>
-      <p>Meet Mata, the wide-eyed tarsier who keeps you on track. Languages, school subjects, money, career, AI and more — short lessons, daily streaks and friendly competition, free in your browser.</p>
+      <p>Meet Mata, the sharp-eyed girl with the magnifying glass who keeps you on track. Languages, school subjects, money, career, AI and more — short lessons, daily streaks and friendly competition, free in your browser.</p>
       <div class="ctas">
         <a class="btn primary" href="#/start/1">Get started</a>
         <a class="btn ghost" href="#/login">I already have an account</a>
       </div>
     </div>
   </section>
+  <p class="credit-line">Mata is “Look” by <a href="https://rive.app/community/files/22487-42095-look/" target="_blank" rel="noopener">ChienPham</a> (CC BY 4.0) · Heroes from <a href="https://rive.app/community/files/26133-49002-studiorun-a-cosmic-game-by-thelittlelabs/" target="_blank" rel="noopener">StudioRun by thelittlelabs</a> (CC BY 4.0)</p>
   <footer class="course-strip"><p>${COURSE_IDS.length} courses: languages, school, career, money, AI, life skills &amp; more</p><div>${COURSE_IDS.map(c => `<span title="${esc(C[c].name)}" aria-label="${esc(C[c].name)}">${flag(c)}</span>`).join('')}</div></footer>
   </div>`;
 }
@@ -640,7 +620,7 @@ function mataJump(to, done){
   for (let k = 1; k < 12; k++) { const t = k / 12, x = a[0] + (b[0] - a[0]) * t, y = a[1] + (b[1] - a[1]) * t - H * 4 * t * (1 - t);
     frames.push({transform: `translate(${x}px,${y}px) rotate(${(b[0] > a[0] ? 1 : -1) * Math.sin(t * Math.PI) * 10}deg) scale(.96,1.05)`, offset: .12 + t * .74}); }
   frames.push({transform: `translate(${b[0]}px,${b[1]}px) scale(1.1,.84)`, offset: .9}, {transform: `translate(${b[0]}px,${b[1]}px)`, offset: 1});
-  const svg = m.querySelector('svg.mascot'); if (svg) mataCls(svg, 'twitch', 520);
+  const svg = m.querySelector('.mascot'); if (svg) mataCls(svg, 'twitch', 520);
   mataBusy = m.animate(frames, {duration: 620 + Math.abs(b[0] - a[0]) * .6, easing: 'ease-in-out'});
   mataBusy.onfinish = () => { mataBusy = null; m.style.transform = `translate(${b[0]}px,${b[1]}px)`; done && done(); };
 }
@@ -679,7 +659,7 @@ function renderLearn() {
   if (front >= totalLessons(cid)) html += `<div class="card" style="text-align:center">${mascot('wow')}<h3>Course complete! 🎉</h3><p class="muted">You finished every lesson in ${C[cid].name}. Keep practicing to stay sharp, or start another course from your profile.</p></div>`;
   shell('learn', `<div style="max-width:600px;margin:0 auto">${html}</div>`);
   heroMount(document.getElementById('mataHop')); requestAnimationFrame(() => { drawTrails(); mataArrive(cid, front); }); if (document.fonts) document.fonts.ready.then(() => { drawTrails(); placeMata(); });
-  if (welcome) { welcome = false; modal(`${mascot('wave')}<h2>Welcome, ${esc(u.name)}!</h2><p class="muted">I’m Mata the tarsier. Tap the glowing lesson to start your first ${C[cid].name} lesson.</p><div class="acts"><button class="btn primary" onclick="closeModal()">Let’s go!</button></div>`); }
+  if (welcome) { welcome = false; modal(`${mascot('wave')}<h2>Welcome, ${esc(u.name)}!</h2><p class="muted">I’m Mata. Tap the glowing lesson to start your first ${C[cid].name} lesson.</p><div class="acts"><button class="btn primary" onclick="closeModal()">Let’s go!</button></div>`); }
   const cur = document.getElementById('nw-' + front);
   if (cur && front > 0) setTimeout(() => cur.scrollIntoView({ block: 'center' }), 30);
 }
@@ -705,7 +685,7 @@ const A = window.A = {
       pop.style.width = w + 'px'; pop.style.marginLeft = '0';
       pop.style.left = Math.max(pr.left - wr.left + 8, Math.min(pr.right - wr.left - w - 8, wr.width / 2 - w / 2)) + 'px'; }
     const mh = document.getElementById('mataHop');
-    if (mh && mh.parentElement.contains(wrap)) { if (locked) { const sv = mh.querySelector('svg.mascot'); if (sv) mataCls(sv, 'tilt-l', 700); } else if (+mh.dataset.at !== n && !mataBusy) mataJump(n); }
+    if (mh && mh.parentElement.contains(wrap)) { if (locked) { const sv = mh.querySelector('.mascot'); if (sv) mataCls(sv, 'tilt-l', 700); } else if (+mh.dataset.at !== n && !mataBusy) mataJump(n); }
     document.addEventListener('click', () => { pop.remove(); wrap.style.zIndex = ''; }, { once: true });
   },
   start(ui, li) {
@@ -1025,13 +1005,16 @@ function renderProfile() {
 
 /* ---------------- Mata's idle life: blinks, glances, ear twitches, head tilts, pointer tracking ---------------- */
 const mataReduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
-function mataCls(m, c, ms) { m.classList.add(c); setTimeout(() => m.classList.remove(c), ms); }
-function mataAll(c, ms) { if (!mataReduce) document.querySelectorAll('svg.mascot').forEach(m => mataCls(m, c, ms)); }
+function mataCls(m, c, ms) {
+  m.classList.add(c); setTimeout(() => m.classList.remove(c), ms);
+  if (m.classList.contains('girl') && typeof girlPulse === 'function') { if (c === 'poke' || c === 'peek') girlPulse(m, 'press', Math.max(ms, 900)); else if (c === 'twitch') girlPulse(m, 'hover', 700); }
+}
+function mataAll(c, ms) { if (!mataReduce) document.querySelectorAll('.mascot').forEach(m => mataCls(m, c, ms)); }
 function mataBlink(m) { mataCls(m, 'blink', 140); if (Math.random() < .25) setTimeout(() => mataCls(m, 'blink', 120), 260); }
 let mataPointer = 0;
 if (!mataReduce) {
   (function tick() {
-    document.querySelectorAll('svg.mascot').forEach(m => {
+    document.querySelectorAll('.mascot').forEach(m => {
       if (Math.random() < .5) setTimeout(() => mataBlink(m), Math.random() * 900);
       if (Date.now() - mataPointer > 2500 && Math.random() < .35) { m.style.setProperty('--lx', (Math.random() * 6 - 3).toFixed(1) + 'px'); m.style.setProperty('--ly', (Math.random() * 4 - 2).toFixed(1) + 'px'); }
       if (Math.random() < .15) mataCls(m, 'twitch', 520);
@@ -1042,7 +1025,7 @@ if (!mataReduce) {
   })();
   document.addEventListener('pointermove', e => {
     mataPointer = Date.now();
-    document.querySelectorAll('svg.mascot').forEach(m => {
+    document.querySelectorAll('.mascot').forEach(m => {
       const b = m.getBoundingClientRect(); if (!b.width) return;
       const dx = e.clientX - (b.left + b.width / 2), dy = e.clientY - (b.top + b.height * .42), d = Math.hypot(dx, dy) || 1, k = Math.min(1, d / 250);
       m.style.setProperty('--lx', (dx / d * 3.2 * k).toFixed(2) + 'px'); m.style.setProperty('--ly', (dy / d * 2.6 * k).toFixed(2) + 'px');
@@ -1050,7 +1033,7 @@ if (!mataReduce) {
   }, { passive: true });
 }
 document.addEventListener('click', e => {
-  const m = e.target.closest('svg.mascot'); if (!m) return;
+  const m = e.target.closest('.mascot'); if (!m) return;
   tone([[900, .06, 'sine', .07], [1400, .09, 'sine', .07]]);
   if (!mataReduce) { mataCls(m, 'poke', 600); mataBlink(m); }
 });
