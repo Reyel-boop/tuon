@@ -2,7 +2,7 @@
    "StudioRun" by thelittlelabs (rive/studiorun.riv, Rive Marketplace, CC BY 4.0). The file draws them inside
    its own night-sky scene, so the hero is a framed portrait: Rive's layout bounds draw only the hero's
    380-unit square of the 1920x1080 game artboard into a small canvas. Tap the hero to choose another.
-   Mata (girl.js) stays as Tuon's guide everywhere else. */
+   Mata (guide.js) stays as Tuon's guide everywhere else. */
 const HEROES = ['Painter', 'Planner', 'Coder', 'Designer', '3D Maker', 'Dreamweaver', 'Builder', 'Writer', 'Chef', 'Santa'];
 const HERO_CROP = {x: 370, y: 630, size: 380, w: 1920, h: 1080};
 let HERO = null, HERO_EL = null, heroRiveP = null;

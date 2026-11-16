@@ -103,10 +103,10 @@ const FLAGS = {
   rs: '<svg viewBox="0 0 30 20"><rect width="30" height="20" fill="#fff"/><rect width="30" height="13.33" fill="#0C4076"/><rect width="30" height="6.67" fill="#C6363C"/><path d="M8 5.5h4.5v4.5c0 1.6-2.25 2.6-2.25 2.6S8 11.6 8 10z" fill="#C6363C" stroke="#EDB92E" stroke-width=".5"/><path d="M10.25 6.5v4.6M8.9 8.4h2.7" stroke="#fff" stroke-width=".7"/></svg>'
 };
 const flag = (cid, lg) => C[cid].kind ? `<span class="flag ic ${lg ? 'lg' : ''} ${C[cid].iconText ? 'txt' : ''}" style="background:${C[cid].iconBg};${C[cid].iconFg ? `color:${C[cid].iconFg}` : ''}">${esc(C[cid].icon)}</span>` : `<span class="flag ${lg ? 'lg' : ''}">${FLAGS[C[cid].flag]}</span>`;
-// Mata, the girl with the magnifying glass: a live Rive character ("Look" by ChienPham, CC BY 4.0).
-// girl.js plays her inside this span; moods add a little whole-body motion (.mascot.girl in styles.css).
+// Mata, the man with the magnifying glass: a live Rive character ("Look" by ChienPham, CC BY 4.0).
+// guide.js plays him inside this span; moods add a little whole-body motion (.mascot.guide in styles.css).
 function mascot(mood = 'happy') {
-  return `<span class="mascot girl m-${mood}" data-mood="${mood}" aria-hidden="true"><canvas></canvas></span>`;
+  return `<span class="mascot guide m-${mood}" data-mood="${mood}" aria-hidden="true"><canvas></canvas></span>`;
 }
 const LOGO = `<svg viewBox="0 0 40 40"><rect width="40" height="40" rx="12" fill="#0E8C8F"/><circle cx="14" cy="19" r="7.5" fill="#F2A33A"/><circle cx="26" cy="19" r="7.5" fill="#F2A33A"/><circle cx="14" cy="20" r="3.6" fill="#1D120A"/><circle cx="26" cy="20" r="3.6" fill="#1D120A"/><circle cx="12.5" cy="17.5" r="1.4" fill="#fff"/><circle cx="24.5" cy="17.5" r="1.4" fill="#fff"/><path d="M15 30q5 4 10 0" stroke="#fff" stroke-width="2.4" fill="none" stroke-linecap="round"/></svg><span>tuon</span>`;
 
@@ -408,14 +408,14 @@ function renderLanding() {
       <span class="bubble-word" style="bottom:16%;left:0">Bonjour</span><span class="bubble-word" style="bottom:6%;right:8%">Maayong buntag</span></div>
     <div>
       <h1>Learn languages and life skills in <em>five-minute</em> bites.</h1>
-      <p>Meet Mata, the sharp-eyed girl with the magnifying glass who keeps you on track. Languages, school subjects, money, career, AI and more — short lessons, daily streaks and friendly competition, free in your browser.</p>
+      <p>Meet Mata, the sharp-eyed guy with the magnifying glass who keeps you on track. Languages, school subjects, money, career, AI and more — short lessons, daily streaks and friendly competition, free in your browser.</p>
       <div class="ctas">
         <a class="btn primary" href="#/start/1">Get started</a>
         <a class="btn ghost" href="#/login">I already have an account</a>
       </div>
     </div>
   </section>
-  <p class="credit-line">Mata is “Look” by <a href="https://rive.app/community/files/22487-42095-look/" target="_blank" rel="noopener">ChienPham</a> (CC BY 4.0) · Heroes from <a href="https://rive.app/community/files/26133-49002-studiorun-a-cosmic-game-by-thelittlelabs/" target="_blank" rel="noopener">StudioRun by thelittlelabs</a> (CC BY 4.0)</p>
+  <p class="credit-line">Mata is based on “Look” by <a href="https://rive.app/community/files/22487-42095-look/" target="_blank" rel="noopener">ChienPham</a> (CC BY 4.0) · Heroes from <a href="https://rive.app/community/files/26133-49002-studiorun-a-cosmic-game-by-thelittlelabs/" target="_blank" rel="noopener">StudioRun by thelittlelabs</a> (CC BY 4.0)</p>
   <footer class="course-strip"><p>${COURSE_IDS.length} courses: languages, school, career, money, AI, life skills &amp; more</p><div>${COURSE_IDS.map(c => `<span title="${esc(C[c].name)}" aria-label="${esc(C[c].name)}">${flag(c)}</span>`).join('')}</div></footer>
   </div>`;
 }
@@ -1007,7 +1007,7 @@ function renderProfile() {
 const mataReduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
 function mataCls(m, c, ms) {
   m.classList.add(c); setTimeout(() => m.classList.remove(c), ms);
-  if (m.classList.contains('girl') && typeof girlPulse === 'function') { if (c === 'poke' || c === 'peek') girlPulse(m, 'press', Math.max(ms, 900)); else if (c === 'twitch') girlPulse(m, 'hover', 700); }
+  if (m.classList.contains('guide') && typeof guidePulse === 'function') { if (c === 'poke' || c === 'peek') guidePulse(m, 'press', Math.max(ms, 900)); else if (c === 'twitch') guidePulse(m, 'hover', 700); }
 }
 function mataAll(c, ms) { if (!mataReduce) document.querySelectorAll('.mascot').forEach(m => mataCls(m, c, ms)); }
 function mataBlink(m) { mataCls(m, 'blink', 140); if (Math.random() < .25) setTimeout(() => mataCls(m, 'blink', 120), 260); }

@@ -362,21 +362,21 @@ select.field{padding:10px 12px;width:auto}
 .rail-mobile{display:none}
 @media (max-width:560px){.path .deco{display:none}}
 
-/* ---------- Mata, the girl with the magnifying glass (live Rive character, see girl.js) ----------
-   The canvas sits in a square span; moods move the whole figure a little (her face, blinks and the glass are
+/* ---------- Mata, the man with the magnifying glass (live Rive character, see guide.js) ----------
+   The canvas sits in a square span; moods move the whole figure a little (his face, blinks and the glass are
    animated by the Rive file). --lx/--ly lean toward the pointer, --tilt/--hy tilt or droop her. */
-.mascot.girl{display:block;position:relative;aspect-ratio:1;height:auto;cursor:pointer;--lx:0px;--ly:0px;--tilt:0deg;--hy:0px;-webkit-user-select:none;user-select:none;background:url(rive/look.png) center/100% 100% no-repeat}
-.mascot.girl.live{background:none}
-.mascot.girl canvas{position:absolute;inset:0;width:100%;height:100%;display:block;transform-origin:50% 100%;transform:translate(var(--lx),calc(var(--ly) + var(--hy))) rotate(var(--tilt));transition:transform .55s cubic-bezier(.3,1.6,.6,1);-webkit-mask-image:linear-gradient(#000 90%,transparent);mask-image:linear-gradient(#000 90%,transparent)}
-.mascot.girl.tilt-l{--tilt:-5deg}
-.mascot.girl.tilt-r{--tilt:5deg}
-.m-happy.girl{animation:g-bob 2.6s ease-in-out infinite}
-.m-wave.girl{animation:g-sway 2.2s ease-in-out infinite;transform-origin:50% 100%}
-.m-wow.girl{animation:g-hop 1.8s ease-in-out infinite;transform-origin:50% 100%}
-.m-cheer.girl{animation:g-jump .75s ease-in-out 4;transform-origin:50% 100%}
-.m-sad.girl{--tilt:-4deg;--hy:4%;animation:g-sigh 2.4s ease-in-out}
-.m-sad.girl canvas{filter:saturate(.6) brightness(.97)}
-.mascot.girl.poke{animation:g-poke .6s cubic-bezier(.3,1.5,.5,1)}
+.mascot.guide{display:block;position:relative;aspect-ratio:1;height:auto;cursor:pointer;--lx:0px;--ly:0px;--tilt:0deg;--hy:0px;-webkit-user-select:none;user-select:none;background:url(rive/look.png) center/100% 100% no-repeat}
+.mascot.guide.live{background:none}
+.mascot.guide canvas{position:absolute;inset:0;width:100%;height:100%;display:block;transform-origin:50% 100%;transform:translate(var(--lx),calc(var(--ly) + var(--hy))) rotate(var(--tilt));transition:transform .55s cubic-bezier(.3,1.6,.6,1);-webkit-mask-image:linear-gradient(#000 90%,transparent);mask-image:linear-gradient(#000 90%,transparent)}
+.mascot.guide.tilt-l{--tilt:-5deg}
+.mascot.guide.tilt-r{--tilt:5deg}
+.m-happy.guide{animation:g-bob 2.6s ease-in-out infinite}
+.m-wave.guide{animation:g-sway 2.2s ease-in-out infinite;transform-origin:50% 100%}
+.m-wow.guide{animation:g-hop 1.8s ease-in-out infinite;transform-origin:50% 100%}
+.m-cheer.guide{animation:g-jump .75s ease-in-out 4;transform-origin:50% 100%}
+.m-sad.guide{--tilt:-4deg;--hy:4%;animation:g-sigh 2.4s ease-in-out}
+.m-sad.guide canvas{filter:saturate(.6) brightness(.97)}
+.mascot.guide.poke{animation:g-poke .6s cubic-bezier(.3,1.5,.5,1)}
 @keyframes g-bob{50%{transform:translateY(-3%)}}
 @keyframes g-sway{0%,100%{transform:rotate(0)}50%{transform:rotate(-2.5deg)}}
 @keyframes g-hop{0%,60%,100%{transform:none}70%{transform:scale(1.04,.95)}82%{transform:translateY(-7%)}}
