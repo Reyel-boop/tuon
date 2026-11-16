@@ -15,10 +15,10 @@ function heroLoadRive(){
 }
 function heroPick(){ try { const i = HERO && HERO.stateMachineInputs('STATE MACHINE').find(x => x.name === 'CHHH Selected'); if (i) i.value = heroNo(); } catch (e) {} }
 function heroFit(){
-  if (!HERO || !HERO_EL) return; const cv = HERO_EL.querySelector('canvas'), n = cv.clientWidth; if (!n) return;
+  if (!HERO || !HERO_EL) return; const cv = HERO_EL.querySelector('canvas'), n = cv.clientWidth; if (!n) { if (cv.isConnected) setTimeout(heroFit, 200); return; }
   const N = Math.round(n * Math.min(2, window.devicePixelRatio || 1)); if (cv.width !== N) cv.width = cv.height = N;
   const k = N / HERO_CROP.size, x0 = -HERO_CROP.x * k, y0 = -HERO_CROP.y * k;
-  HERO.layout = new rive.Layout({fit: rive.Fit.Fill, minX: x0, minY: y0, maxX: x0 + HERO_CROP.w * k, maxY: y0 + HERO_CROP.h * k});
+  HERO.layout = new rive.Layout({fit: rive.Fit.Fill, minX: x0, minY: y0, maxX: x0 + HERO_CROP.w * k, maxY: y0 + HERO_CROP.h * k}); HERO_EL.classList.add('live');
 }
 function heroMount(slot){
   if (!slot) return;
@@ -27,7 +27,7 @@ function heroMount(slot){
     HERO_EL.innerHTML = `<img src="rive/heroes/${heroNo()}.jpg" alt=""><canvas></canvas>`; HERO_EL.onclick = heroChooser;
     const cv = HERO_EL.querySelector('canvas'); slot.appendChild(HERO_EL);
     heroLoadRive().then(() => { HERO = new rive.Rive({src: 'rive/studiorun.riv', canvas: cv, artboard: 'Artboard', stateMachines: 'STATE MACHINE', autoplay: true,
-      onLoad: () => { heroPick(); heroFit(); HERO_EL && HERO_EL.classList.add('live'); }}); }).catch(() => {});
+      onLoad: () => { heroPick(); heroFit(); try { new ResizeObserver(() => heroFit()).observe(cv); } catch (e) {} }}); }).catch(() => {});
   } else { slot.appendChild(HERO_EL); requestAnimationFrame(heroFit); }
 }
 function heroSet(n){ try { localStorage.setItem('tuon-hero', String(n)); } catch (e) {} heroPick(); const img = HERO_EL && HERO_EL.querySelector('img'); if (img) img.src = 'rive/heroes/' + n + '.jpg'; }
