@@ -751,7 +751,7 @@ const A = window.A = {
   setCourse(c) { const u = me(); u.course = c; if (u.progress[c] == null) u.progress[c] = 0; if (!u.courses.includes(c)) u.courses.push(c); save(); toast(`Switched to ${C[c].name}`); go('#/learn'); },
   setGoal(i) { me().goal = +i; save(); render(); },
   sound() { prefs.sound = !prefs.sound; store.set('tuon.prefs', prefs); render(); },
-  logout() { session = null; store.set('tuon.session', null); L = null; go('#/'); },
+  logout() { session = null; store.set('tuon.session', null); L = null; try { if (window.parent !== window) window.parent.postMessage({hub: 'signout'}, '*'); } catch (e) {} go('#/'); }, // inside the School Hub: return to Reyel
   del() {
     modal(`${mascot('sad')}<h2>Delete your account?</h2><p class="muted">This removes ${esc(me().name)}’s profile and all progress from this browser. It can’t be undone.</p><div class="acts"><button class="btn danger" onclick="A.reallyDel()">Delete account</button><button class="btn ghost" onclick="closeModal()">Cancel</button></div>`);
   },
