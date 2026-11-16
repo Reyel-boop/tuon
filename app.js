@@ -627,7 +627,7 @@ function drawTrails() {
 function mataSpot(n){
   const el = document.getElementById('nw-' + n), m = document.getElementById('mataHop'); if (!el || !m) return null;
   const tr = m.parentElement.getBoundingClientRect(), b = el.querySelector('.node').getBoundingClientRect(), w = m.offsetWidth, h = m.offsetHeight;
-  return [b.left + b.width / 2 - tr.left - w / 2, b.top - tr.top - h * .86];
+  return [b.left + b.width / 2 - tr.left - w / 2, b.top - tr.top - h * (m.classList.contains('hero-hop') ? 1.04 : .86)];
 }
 function placeMata(){ const m = document.getElementById('mataHop'); if (!m) return; const p = mataSpot(+m.dataset.at); if (p) m.style.transform = `translate(${p[0]}px,${p[1]}px)`; }
 let mataBusy = null;
@@ -673,12 +673,12 @@ function renderLearn() {
       const ic = st === 'locked' ? (trophy ? ICON.cup : ICON.lock) : st === 'done' ? (trophy ? ICON.cup : ICON.check) : (trophy ? ICON.cup : ICON.star);
       html += `<div class="node-wrap stage u${ui % 5}n" id="nw-${n}" style="--y:${STAGE_Y[li]}px">${st === 'cur' ? '<div class="start-tag">START</div>' : ''}<button class="node ${st} ${trophy ? 'trophy' : ''}" onclick="A.node(${ui},${li},event)" aria-label="${lessonTitle(li, cid, ui)}">${ic}</button><div class="plat"></div></div>`;
     }
-    // Mata stands on the lesson you're on and jumps from platform to platform
-    html += `${Math.floor(front / LPU) === ui && front < totalLessons(cid) ? `<div class="mata-hop" id="mataHop" data-at="${front}">${mascot('happy')}</div>` : ''}</div></div>`;
+    // your hero (hero.js) stands on the lesson you're on and jumps from platform to platform
+    html += `${Math.floor(front / LPU) === ui && front < totalLessons(cid) ? `<div class="mata-hop hero-hop" id="mataHop" data-at="${front}"></div>` : ''}</div></div>`;
   });
   if (front >= totalLessons(cid)) html += `<div class="card" style="text-align:center">${mascot('wow')}<h3>Course complete! 🎉</h3><p class="muted">You finished every lesson in ${C[cid].name}. Keep practicing to stay sharp, or start another course from your profile.</p></div>`;
   shell('learn', `<div style="max-width:600px;margin:0 auto">${html}</div>`);
-  requestAnimationFrame(() => { drawTrails(); mataArrive(cid, front); }); if (document.fonts) document.fonts.ready.then(() => { drawTrails(); placeMata(); });
+  heroMount(document.getElementById('mataHop')); requestAnimationFrame(() => { drawTrails(); mataArrive(cid, front); }); if (document.fonts) document.fonts.ready.then(() => { drawTrails(); placeMata(); });
   if (welcome) { welcome = false; modal(`${mascot('wave')}<h2>Welcome, ${esc(u.name)}!</h2><p class="muted">I’m Mata the tarsier. Tap the glowing lesson to start your first ${C[cid].name} lesson.</p><div class="acts"><button class="btn primary" onclick="closeModal()">Let’s go!</button></div>`); }
   const cur = document.getElementById('nw-' + front);
   if (cur && front > 0) setTimeout(() => cur.scrollIntoView({ block: 'center' }), 30);
