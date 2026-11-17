@@ -813,12 +813,12 @@ function renderLesson() {
   if (ex.type === 'type' && !locked) { const t = $('#typeIn'); t.focus(); t.setSelectionRange(t.value.length, t.value.length); t.oninput = () => { L.typed = t.value; $('#checkBtn').disabled = !t.value.trim(); }; t.onkeydown = e => { if (e.key === 'Enter') { e.preventDefault(); if (t.value.trim()) LCheck(); } }; }
   if (L.state === 'answer' && !L.played && (ex.type === 'listenPick' || ex.type === 'listenTiles')) { L.played = true; setTimeout(() => speak(ex.type === 'listenPick' ? ex.w.t : ex.s.t, cid), 250); }
 }
-window.LS = i => { if (L.state !== 'answer' || Array.isArray(L.sel) || !cur().opts) return; L.sel = i; sfx.tap(); const ex = cur(); if (ex.type === 'pick' || ex.type === 'listenPick') speak(ex.opts[i].t, L.cid); renderLesson(); };
-window.LQ = sq => { if (L.state !== 'answer') return; L.sel = sq; sfx.tap(); renderLesson(); };
-window.LCard = () => { if (L.state !== 'answer') return; L.done++; L.state = 'feedback'; L.ok = true; LNext(); };
-window.LT = i => { if (L.state !== 'answer' || L.sel.includes(i)) return; L.sel.push(i); sfx.tap(); const ex = cur(); if (ex.dir !== 'en') speak(ex.bank[i].t, L.cid); renderLesson(); };
-window.LU = i => { if (L.state !== 'answer') return; L.sel = L.sel.filter(x => x !== i); renderLesson(); };
-window.LM = (side, ref) => {
+window.LS = i => { if (!L) return; if (L.state !== 'answer' || Array.isArray(L.sel) || !cur().opts) return; L.sel = i; sfx.tap(); const ex = cur(); if (ex.type === 'pick' || ex.type === 'listenPick') speak(ex.opts[i].t, L.cid); renderLesson(); };
+window.LQ = sq => { if (!L) return; if (L.state !== 'answer') return; L.sel = sq; sfx.tap(); renderLesson(); };
+window.LCard = () => { if (!L) return; if (L.state !== 'answer') return; L.done++; L.state = 'feedback'; L.ok = true; LNext(); };
+window.LT = i => { if (!L) return; if (L.state !== 'answer' || L.sel.includes(i)) return; L.sel.push(i); sfx.tap(); const ex = cur(); if (ex.dir !== 'en') speak(ex.bank[i].t, L.cid); renderLesson(); };
+window.LU = i => { if (!L) return; if (L.state !== 'answer') return; L.sel = L.sel.filter(x => x !== i); renderLesson(); };
+window.LM = (side, ref) => { if (!L) return;
   const m = L.sel, ex = cur();
   if (m.ok.includes(ref)) return;
   m.bad = null; m[side] = m[side] === ref ? null : ref;
@@ -838,7 +838,7 @@ function checkTyped(v, accepts) {
   for (const a of accepts) { const b = norm(a); if (b.length > 4 && lev(n, b) <= 1) return { ok: true, note: `Small typo — it’s “${accepts[0]}”` }; }
   return { ok: false };
 }
-window.LCheck = () => {
+window.LCheck = () => { if (!L) return;
   if (L.state !== 'answer') return LNext();
   const ex = cur(), u = me();
   let ok = false; L.note = '';
@@ -861,8 +861,8 @@ window.LCheck = () => {
   }
   save(); renderLesson();
 };
-window.LSkip = () => { if (L.state !== 'answer') return; const ex = cur(); L.state = 'feedback'; L.ok = false; L.combo = 0; L.queue.push({ ...ex }); renderLesson(); };
-window.LNext = () => {
+window.LSkip = () => { if (!L) return; if (L.state !== 'answer') return; const ex = cur(); L.state = 'feedback'; L.ok = false; L.combo = 0; L.queue.push({ ...ex }); renderLesson(); };
+window.LNext = () => { if (!L) return;
   if (L.state === 'answer') return LCheck();
   const u = me();
   L.i++; L.state = 'answer'; L.sel = null; L.typed = ''; L.played = false;
