@@ -659,6 +659,7 @@ function renderLearn() {
   if (front >= totalLessons(cid)) html += `<div class="card" style="text-align:center">${mascot('wow')}<h3>Course complete! 🎉</h3><p class="muted">You finished every lesson in ${C[cid].name}. Keep practicing to stay sharp, or start another course from your profile.</p></div>`;
   shell('learn', `<div style="max-width:600px;margin:0 auto">${html}</div>`);
   heroMount(document.getElementById('mataHop')); requestAnimationFrame(() => { drawTrails(); mataArrive(cid, front); }); if (document.fonts) document.fonts.ready.then(() => { drawTrails(); placeMata(); });
+  whatsNewCheck(welcome); // the update post, once per update (not on a learner's first visit)
   if (welcome) { welcome = false; modal(`${mascot('wave')}<h2>Welcome, ${esc(u.name)}!</h2><p class="muted">I’m Mata. Tap the glowing lesson to start your first ${C[cid].name} lesson.</p><div class="acts"><button class="btn primary" onclick="closeModal()">Let’s go!</button></div>`); }
   const cur = document.getElementById('nw-' + front);
   if (cur && front > 0) setTimeout(() => cur.scrollIntoView({ block: 'center' }), 30);
@@ -998,6 +999,7 @@ function renderProfile() {
       <div class="setrow"><span>Daily goal</span><select class="field" onchange="A.setGoal(this.value)">${GOALS.map((g, i) => `<option value="${i}" ${u.goal === i ? 'selected' : ''}>${g.label} · ${g.xp} XP</option>`).join('')}</select></div>
       <div class="setrow"><span>Sound effects</span><button class="switch ${prefs.sound ? 'on' : ''}" onclick="A.sound()" aria-label="Toggle sound"></button></div>
       <div class="setrow"><span>Email</span><span class="muted">${esc(u.email)}</span></div>
+      <div class="setrow"><span>What's new</span><button class="btn ghost" onclick="showWhatsNew()">🎉 What's new</button></div>
       <div class="setrow"><button class="btn ghost" onclick="A.logout()">Log out</button><button class="link" style="color:var(--bad)" onclick="A.del()">Delete account</button></div>
     </div>
   </div>`);

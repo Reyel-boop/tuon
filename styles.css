@@ -585,3 +585,21 @@ details.credits ul{margin:8px 0 0 18px;display:grid;gap:4px}
 .heropickgrid button.on{background:#facc15}.heropickgrid img{width:100%;aspect-ratio:1;border-radius:10px;display:block}
 .heropickgrid span{display:block;margin-top:2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .credit-line{text-align:center;font-size:12px;color:var(--muted);margin:6px 16px 10px}.credit-line a{color:inherit}
+/* ---------- "What's new in Tuon" (whatsnew.js) ---------- */
+#tnews{position:fixed;inset:0;z-index:200;overflow-y:auto;background:var(--bg);color:var(--ink);font-family:var(--font);animation:tnIn .25s ease-out}
+@keyframes tnIn{from{opacity:0;transform:scale(.98)}to{opacity:1;transform:none}}
+#tnews .tnx{position:fixed;top:14px;right:14px;z-index:2;width:48px;height:48px;border-radius:50%;border:0;background:var(--surface);color:var(--ink);font-size:22px;font-weight:700;cursor:pointer;box-shadow:var(--shadow)}
+#tnews .tnhead{padding:56px 20px 92px;text-align:center;color:#fff;background:linear-gradient(135deg,var(--brand-d),var(--brand) 55%,var(--accent))}
+#tnews .tnpop{font-size:46px;line-height:1}
+#tnews .tnhead small{display:block;margin-top:12px;font-size:12px;font-weight:700;letter-spacing:.22em;text-transform:uppercase;color:#FFE29A}
+#tnews .tnhead h1{margin:8px 0 0;font-family:var(--display);font-size:clamp(28px,5vw,40px)}
+#tnews .tnhead p{margin:8px auto 0;max-width:36rem;font-size:15px;opacity:.9}
+#tnews .tngrid{max-width:60rem;margin:-64px auto 0;padding:0 16px 28px;display:grid;gap:14px;grid-template-columns:repeat(auto-fit,minmax(270px,1fr))}
+#tnews .tncard{display:flex;gap:14px;background:var(--surface);border:1px solid var(--line);border-radius:var(--r);padding:18px;box-shadow:var(--shadow)}
+#tnews .tnico{flex:none;width:48px;height:48px;border-radius:14px;background:var(--brand-l);display:flex;align-items:center;justify-content:center;font-size:24px}
+#tnews .tncard h2{margin:0;font-family:var(--display);font-size:18px}
+#tnews .tncard p{margin:4px 0 0;font-size:14px;line-height:1.55;color:var(--muted)}
+#tnews .tngo{margin-top:8px;padding:0;border:0;background:none;font:inherit;font-size:14px;font-weight:700;color:var(--brand);cursor:pointer}
+#tnews .tnfoot{text-align:center;padding:4px 16px 48px}
+#tnews .tnfoot .btn{min-width:200px}
+#tnews .tnfoot small{display:block;margin-top:12px;font-size:12px;color:var(--muted)}
