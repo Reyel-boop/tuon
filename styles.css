@@ -603,3 +603,12 @@ details.credits ul{margin:8px 0 0 18px;display:grid;gap:4px}
 #tnews .tnfoot{text-align:center;padding:4px 16px 48px}
 #tnews .tnfoot .btn{min-width:200px}
 #tnews .tnfoot small{display:block;margin-top:12px;font-size:12px;color:var(--muted)}
+#tnews .tnrem{max-width:60rem;margin:-64px auto 0;padding:0 16px}
+#tnews .tnrem>div{background:var(--surface);border:1px solid var(--line);border-radius:var(--r);padding:18px;box-shadow:var(--shadow)}
+#tnews .tnrem h2,#tnews .tnh2{margin:0;font-family:var(--display);font-size:20px}
+#tnews .tnh2{max-width:60rem;margin:28px auto 12px;padding:0 16px}#tnews .tnh2 small{font-family:var(--font);font-size:13px;font-weight:600;color:var(--muted)}
+#tnews .tnrem ul{list-style:none;margin:12px 0 0;padding:0;display:grid;gap:8px}
+#tnews .tnri{display:flex;align-items:center;gap:12px;width:100%;text-align:left;border:0;border-radius:12px;padding:11px 12px;background:var(--surface2);font:inherit;font-size:15px;font-weight:600;color:var(--ink)}
+#tnews .tnri.urgent{background:var(--bad-bg);color:var(--bad)}#tnews button.tnri{cursor:pointer}#tnews button.tnri:hover{box-shadow:0 0 0 2px var(--brand) inset}
+#tnews .tnri .tx{flex:1}#tnews .tnri .op{font-size:13px;font-weight:700;color:var(--brand)}
+#tnews .tngrid.after{margin-top:0}
