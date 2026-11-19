@@ -9,7 +9,7 @@ const TUON_NEWS = {
     { icon: '🔎', title: 'Meet the new Mata', text: 'Your guide is now a sharp-eyed guy with a magnifying glass. He blinks, looks surprised when you point at him, and zooms in when you tap him.' },
     { icon: '🦸', title: 'Your hero runs the stages', text: 'A hero jumps from lesson to lesson on your path. Tap your hero to choose one of 10 characters.', act: 'hero', cta: 'Choose my hero' },
     { icon: '🛠️', title: 'Smoother lessons', text: 'Tapping fast at the end of a lesson no longer freezes it.' },
-    { icon: '🏫', title: 'Inside the School Hub', text: 'Signing out of Tuon in the School Hub now takes you back to Reyel, ready for the next learner.' },
+    { icon: '🏫', title: 'Inside AskReyel', text: 'Signing out of Tuon in AskReyel now takes you back to Reyel, ready for the next learner.' },
   ],
 };
 
