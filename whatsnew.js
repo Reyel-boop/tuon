@@ -40,6 +40,7 @@ function newsKeyClose(e) { if (e.key === 'Escape') closeWhatsNew(); }
 
 function showWhatsNew() {
   const u = me(); if (!u) return;
+  if (typeof L !== 'undefined' && L) return; // a lesson already started: don't cover it
   const old = document.getElementById('tnews'); if (old) old.remove();
   const first = String(u.name || '').split(/\s+/)[0] || 'there';
   const el = document.createElement('div'); el.id = 'tnews'; el.setAttribute('role', 'dialog'); el.setAttribute('aria-modal', 'true'); el.setAttribute('aria-labelledby', 'tnewsT');

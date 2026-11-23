@@ -671,7 +671,7 @@ const A = window.A = {
     ev.stopPropagation();
     const u = me(), cid = u.course, n = ui * LPU + li, front = u.progress[cid] || 0, wrap = document.getElementById('nw-' + n);
     const open = wrap.querySelector('.pop');
-    document.querySelectorAll('.pop').forEach(p => { p.parentElement.style.zIndex = ''; p.remove(); });
+    document.querySelectorAll('.pop').forEach(p => { p.parentElement.style.zIndex = ''; const pp = p.closest('.path'); if (pp) pp.style.zIndex = ''; p.remove(); });
     if (open) return;
     const U = C[cid].units[ui], locked = n > front;
     const words = U.topics ? (li < 4 ? 'Learn it, then answer a quick quiz' : 'Review everything in this unit') : li < 2 ? U.words.slice(li * 4, li * 4 + 4).map(w => w[0]).join(', ') : li < 4 ? 'Build sentences with what you know' : 'Prove your skills to finish the unit';
@@ -681,13 +681,15 @@ const A = window.A = {
       ${locked ? '' : `<button class="btn" onclick="A.start(${ui},${li})">${n < front ? 'Practice +5 XP' : `Start +${li === LPU - 1 ? 15 : 10} XP`}</button>`}`;
     pop.onclick = e => e.stopPropagation();
     wrap.style.zIndex = 6; wrap.appendChild(pop);
+    // lift this unit's path above the sticky unit headers (z-index 3), so the next unit's header can't cover the Start button
+    { const pp = wrap.closest('.path'); if (pp) pp.style.zIndex = 4; }
     const path = wrap.closest('.path.hz');
     if (path) { const pr = path.getBoundingClientRect(), wr = wrap.getBoundingClientRect(), w = Math.min(280, pr.width - 16);
       pop.style.width = w + 'px'; pop.style.marginLeft = '0';
       pop.style.left = Math.max(pr.left - wr.left + 8, Math.min(pr.right - wr.left - w - 8, wr.width / 2 - w / 2)) + 'px'; }
     const mh = document.getElementById('mataHop');
     if (mh && mh.parentElement.contains(wrap)) { if (locked) { const sv = mh.querySelector('.mascot'); if (sv) mataCls(sv, 'tilt-l', 700); } else if (+mh.dataset.at !== n && !mataBusy) mataJump(n); }
-    document.addEventListener('click', () => { pop.remove(); wrap.style.zIndex = ''; }, { once: true });
+    document.addEventListener('click', () => { pop.remove(); wrap.style.zIndex = ''; const pp = wrap.closest('.path'); if (pp) pp.style.zIndex = ''; }, { once: true });
   },
   start(ui, li) {
     const u = me(); syncHearts(u);
