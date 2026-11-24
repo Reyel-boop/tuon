@@ -59,7 +59,7 @@ async function askReyelSignIn(pass) {
     const r = await fetch(ASKREYEL + '/api/sso', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ pass: decodeURIComponent(pass || '') }) });
     who = await r.json(); if (!r.ok) throw new Error(who.error || 'Sign-in failed.');
   } catch (e) {
-    $('#err').innerHTML = `${e.message || 'Sign-in failed.'} <a class="link" href="${ASKREYEL}/#/tuon">Open Tuon from AskReyel</a>`; return;
+    $('#err').innerHTML = `${e.message || 'Sign-in failed.'} <a class="link" target="_top" href="${ASKREYEL}/#/tuon">Open Tuon from AskReyel</a>`; return;
   }
   const key = String(who.email || 'askreyel:' + who.u).toLowerCase();
   if (users[key]) { session = key; store.set('tuon.session', session); hubId = null; return go('#/learn'); }
@@ -541,7 +541,7 @@ function renderLogin() {
     <input class="field" name="pass" type="password" placeholder="Password" autocomplete="current-password">
     <div class="err" id="err"></div>
     <button class="btn primary block">Log in</button>
-    <a class="btn ghost block" href="${ASKREYEL}/#/tuon" style="margin-top:4px">Sign in with AskReyel</a>
+    <a class="btn ghost block" target="_top" href="${ASKREYEL}/#/tuon" style="margin-top:4px">Sign in with AskReyel</a>
     <p style="text-align:center">New here? <a class="link" href="#/start/1">Create a profile</a></p>
   </form></div>`;
   $('#f').onsubmit = async e => {
