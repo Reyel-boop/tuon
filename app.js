@@ -47,6 +47,26 @@ let welcome = false;
 const me = () => (session && users[session]) || null;
 const save = () => store.set('tuon.users', users);
 const saveDraft = () => store.set('tuon.draft', draft);
+/* One AskReyel account: AskReyel opens Tuon at #/sso/<pass>; the pass is checked by AskReyel and signs in
+   that person's profile on this device (made on first visit, no Tuon password). */
+const ASKREYEL = 'https://school-hub-ten-orcin.vercel.app';
+let hubId = null; // {name, email} while a new AskReyel learner picks a course
+async function askReyelSignIn(pass) {
+  history.replaceState(null, '', location.pathname + location.search); // don't leave the pass in the address bar
+  app.innerHTML = `<div class="ob"><div class="form"><h1>Signing in with AskReyel…</h1><div class="err" id="err"></div></div></div>`;
+  let who;
+  try {
+    const r = await fetch(ASKREYEL + '/api/sso', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ pass: decodeURIComponent(pass || '') }) });
+    who = await r.json(); if (!r.ok) throw new Error(who.error || 'Sign-in failed.');
+  } catch (e) {
+    $('#err').innerHTML = `${e.message || 'Sign-in failed.'} <a class="link" href="${ASKREYEL}/#/tuon">Open Tuon from AskReyel</a>`; return;
+  }
+  const key = String(who.email || 'askreyel:' + who.u).toLowerCase();
+  if (users[key]) { session = key; store.set('tuon.session', session); hubId = null; return go('#/learn'); }
+  session = null; store.set('tuon.session', null);
+  hubId = { name: who.name || who.u, email: key }; draft = {}; saveDraft();
+  go('#/start/1');
+}
 async function hash(s) {
   try { const b = await crypto.subtle.digest('SHA-256', new TextEncoder().encode('tuon:' + s)); return [...new Uint8Array(b)].map(x => x.toString(16).padStart(2, '0')).join(''); }
   catch (e) { let h = 5381; for (const ch of 'tuon:' + s) h = ((h << 5) + h + ch.charCodeAt(0)) | 0; return 'x' + h; }
@@ -381,6 +401,7 @@ function render() {
   closeModal();
   const h = location.hash.replace(/^#\/?/, '') || '';
   const [page, arg] = h.split('/');
+  if (page === 'sso') return askReyelSignIn(arg);
   const u = me();
   if (u) { syncHearts(u); refreshStreak(u); save(); }
   window.scrollTo(0, 0);
@@ -481,6 +502,11 @@ function renderOnboard(step) {
 }
 function renderSignup() {
   if (!draft.course) return go('#/start/1');
+  if (hubId) { // signed in with AskReyel: no form, no password
+    users[hubId.email] = newUser({ name: hubId.name, age: null, email: hubId.email, passHash: null });
+    session = hubId.email; hubId = null; save(); store.set('tuon.session', session); draft = {}; saveDraft();
+    welcome = true; return go('#/learn');
+  }
   app.innerHTML = `<div class="ob"><div class="ob-top"><button class="icon-btn" onclick="history.back()" aria-label="Back">${ICON.back}</button><div class="bar"><i style="width:100%"></i></div></div>
   <form class="form" id="f" novalidate>
     <h1>Create your profile</h1>
@@ -515,6 +541,7 @@ function renderLogin() {
     <input class="field" name="pass" type="password" placeholder="Password" autocomplete="current-password">
     <div class="err" id="err"></div>
     <button class="btn primary block">Log in</button>
+    <a class="btn ghost block" href="${ASKREYEL}/#/tuon" style="margin-top:4px">Sign in with AskReyel</a>
     <p style="text-align:center">New here? <a class="link" href="#/start/1">Create a profile</a></p>
   </form></div>`;
   $('#f').onsubmit = async e => {
